@@ -23,7 +23,7 @@ setup(
     author="Mostafa Najmi",
     author_email="m.n.irib@gmail.com",
     url = 'https://github.com/mnwato/tradingview-scraper',
-    download_url = 'https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.0.1.tar.gz',
+    download_url = 'https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.0.2.tar.gz',
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
     long_description=readme(),
