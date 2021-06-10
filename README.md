@@ -36,7 +36,7 @@ main.scraper()
 ### Note:
 Default arguments are set to:
 ```sh
-main.scraper(symbol = 'btc',
+ClassA.scraper(symbol = 'btc',
             wholePage = False,
             startPage = 1,
             endPage = 2, 
