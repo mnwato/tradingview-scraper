@@ -13,7 +13,7 @@ classifiers = [
   'Programming Language :: Python :: 3.8'
 ]
 
-VERSION = '0.0.2'
+VERSION = '0.0.3'
 DESCRIPTION = 'Tradingview scraper tool'
 
 # Setting up
@@ -29,7 +29,7 @@ setup(
     long_description=readme(),
     License = 'MIT',
     packages=find_packages(),
-    install_requires=['requests==2.25.0', 'pandas==1.1.5', 'beautifulsoup4==4.9.3', 'numpy==1.14.4'],
+    install_requires=['requests', 'pandas==1.1.5', 'beautifulsoup4==4.9.3', 'numpy'],
     keywords=['tradingview', 'scraper', 'python', 'crawler', 'financial'],
     classifiers=classifiers
 )
