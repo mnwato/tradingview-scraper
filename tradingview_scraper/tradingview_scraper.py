@@ -102,12 +102,14 @@ class ClassA:
 
 			# print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 			sleep(5)
+		
+		data = {'timeStamp': timestampList, 'symbol': symbolList, 'timeFrame': timeFrameList, 'label': labelList,
+			'title': titleList, 'socialInfo': socialInfoList, 'description': description}
+		df = pd.DataFrame(data)
 
 		if to_csv == True:
-			data = {'timeStamp': timestampList, 'symbol': symbolList, 'timeFrame': timeFrameList, 'label': labelList,
-				'title': titleList, 'socialInfo': socialInfoList, 'description': description}
-			df = pd.DataFrame(data)
-
 			df.to_csv(f'tradingview_{symbol}.csv', index=False)
 		else:
 			pass
+
+		return description, df.drop(columns=['description'])
