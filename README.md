@@ -19,6 +19,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 -- Scrape specific range of pages
 - Save data into a CSV file
 
+
 ## Installation
 Open your favorite Terminal and run the command:
 ```sh
@@ -29,9 +30,13 @@ pip install tradingview_scrape_mnajmi
 ## Examples
 
 ```sh
-from tradingview_scraper_mnajmi import main
-main.scraper()
+from tradingview_scraper import scraper
+ClassA.scraper()
 ```
+### Output:
+A tuple which includes:
+1. A pandas dataframe (contains: timeStamp, symbol, timeFrame, label, title, socialInfo) 
+2. A string (Symbol description in the first webpage)
 
 ### Note:
 Default arguments are set to:
