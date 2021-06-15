@@ -6,7 +6,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 ## Features
 
 - Scrape idea's informations like:
--- Idea's Title
+. Idea's Title
 -- Idea's symbol
 -- Idea's timeframe
 -- Idea's timestamp
