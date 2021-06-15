@@ -6,13 +6,13 @@ The goal is to develop this package for scapping anything on https://tradingview
 ## Features
 
 - Scrape idea's informations like:
-> Idea's Title
-> Idea's symbol
-> Idea's timeframe
-> Idea's timestamp
-> Idea's label
-> Idea's social informations
-> Idea's description
+> *Idea's Title
+> *Idea's symbol
+> *Idea's timeframe
+> *Idea's timestamp
+> *Idea's label
+> *Idea's social informations
+> *Idea's description
 - Three ways to scrape webpage:
 > Scrape just first page
 > Scrape all pages
