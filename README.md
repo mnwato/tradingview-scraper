@@ -8,15 +8,15 @@ The goal is to develop this package for scapping anything on https://tradingview
 - Scrape idea's informations like:
 > #### Idea's Title
 > #### Idea's symbol
-> *Idea's timeframe
-> *Idea's timestamp
-> *Idea's label
-> *Idea's social informations
-> *Idea's description
+> #### Idea's timeframe
+> #### Idea's timestamp
+> #### Idea's label
+> #### Idea's social informations
+> #### Idea's description
 - Three ways to scrape webpage:
-> Scrape just first page
-> Scrape all pages
-> Scrape specific range of pages
+> #### Scrape just first page
+> #### Scrape all pages
+> #### Scrape specific range of pages
 - Save data into a CSV file
 
 
