@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: tradingview-scraper
-Version: 0.0.7
+Version: 0.0.8
 Summary: Tradingview scraper tool
 Home-page: https://github.com/mnwato/tradingview-scraper
 Download-URL: https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.0.7.tar.gz
@@ -52,7 +52,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 ## Installation
 Open your favorite Terminal and run the command:
 ```sh
-pip install tradingview_scrape
+pip install tradingview-scraper
 ```
 
 
