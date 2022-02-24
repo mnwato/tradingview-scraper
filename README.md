@@ -8,8 +8,8 @@ The goal is to develop this package for scapping anything on https://tradingview
 - [x] Scrape ideas section of a symbol
 - [x] Export as `csv` file
 - [ ] Export as `JSON`
-- [ ] Scrape indicators status data
-- ... (You suggest)
+- [ ] Scrape indicators status data             
+(You suggest)
 
 
 ## Features
