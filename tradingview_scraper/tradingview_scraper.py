@@ -10,10 +10,10 @@ class ClassA:
 	global base_url
 	base_url = 'https://www.tradingview.com/ideas/'
 
-	def scraper(symbol='btc', wholePage=False, stratPage=1, endPage=2, to_csv=False):
+	def scraper(symbol='btc', wholePage=False, startPage=1, endPage=2, to_csv=False):
 
 		if wholePage == True:
-			pageList = list(np.arange(stratPage, endPage+1))
+			pageList = list(np.arange(startPage, endPage+1))
 		else:
 			pageList = list(np.arange(1))
 
