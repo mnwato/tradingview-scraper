@@ -4,7 +4,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 **I would thankful of any contributers**
 
 
-# To Do List:
+## To Do List:
 - [x] Scrape ideas section of a symbol
 - [x] Export as `csv` file
 - [ ] Export as `JSON`
