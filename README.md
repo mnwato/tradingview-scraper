@@ -32,7 +32,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 ## Installation
 Open your favorite Terminal and run the command:
 ```sh
-pip install tradingview_scrape
+pip install tradingview-scraper
 ```
 
 
