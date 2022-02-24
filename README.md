@@ -3,6 +3,15 @@
 The goal is to develop this package for scapping anything on https://tradingview.com with realtime response.
 **I would thankful of any contributers**
 
+
+# To Do List:
+- [x] Scrape ideas section of a symbol
+- [x] Export as `csv` file
+- [ ] Export as `JSON`
+- [ ] Scrape indicators status data
+- ... (You suggest)
+
+
 ## Features
 
 - Scrape idea's informations like:
