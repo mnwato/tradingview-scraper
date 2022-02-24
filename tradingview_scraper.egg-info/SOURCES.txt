@@ -1,0 +1,13 @@
+LICENSE
+LICENSE.txt
+README.md
+setup.cfg
+setup.py
+tradingview_scraper/__init__.py
+tradingview_scraper/test.py
+tradingview_scraper/tradingview_scraper.py
+tradingview_scraper.egg-info/PKG-INFO
+tradingview_scraper.egg-info/SOURCES.txt
+tradingview_scraper.egg-info/dependency_links.txt
+tradingview_scraper.egg-info/requires.txt
+tradingview_scraper.egg-info/top_level.txt
