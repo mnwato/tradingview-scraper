@@ -9,7 +9,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 - [x] Export as `csv` file
 - [ ] Export as `JSON`
 - [ ] Scrape indicators status data             
-(You suggest)
+  etc ... (You suggest)
 
 
 ## Features
@@ -32,7 +32,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 ## Installation
 Open your favorite Terminal and run the command:
 ```sh
-pip install tradingview_scrape_mnajmi
+pip install tradingview_scrape
 ```
 
 
