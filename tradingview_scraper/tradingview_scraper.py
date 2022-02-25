@@ -27,7 +27,6 @@ class ClassA:
 		timestampList = []
 
 		for page in pageList:
-			# print('>>>Page {} scrapped'.format(page)) ##### <<<<<<<<<<<<<<<<<<<<<<<<<<<
 			symbol = symbol2	### Reset symbol to avoid changing in next page
 
 			if wholePage == True:
@@ -36,8 +35,6 @@ class ClassA:
 				payload = ''
 
 			x = requests.get(base_url+ symbol +payload)
-			# print('URL:', x.url)
-			# print(x.status_code)
 
 			soup = BeautifulSoup(x.text, "html.parser")
 
@@ -53,15 +50,9 @@ class ClassA:
 			for i in content.find_all('div', class_='tv-social-row tv-widget-idea__social-row'):
 				socialInfoList.append(json.loads(i['data-model']))
 
-			# print('len(socialInfoList)', len(socialInfoList))
-			# print(socialInfoList)
-
 			######################### Titles
 			for i in content.find_all('div', class_='tv-widget-idea__title-row'):
 				titleList.append(i.a.get_text())
-
-			# print('len(titleList)', len(titleList))
-			# print(titleList)
 
 			######################### Labels, timeFrame, Symbol
 
@@ -82,34 +73,24 @@ class ClassA:
 				timeFrameList.append(timeFrame)
 				labelList.append(label)
 
-
-			# print('len(labelList)', len(labelList))
-			# print('len(timeFrameList)', len(timeFrameList))
-			# print('len(symbolList)', len(symbolList))
-			# print(labelList)
-			# print(timeFrameList)
-			# print(symbolList)
-
 			######################### Timestamps
 			for i in content.find_all('span', class_='tv-card-stats__time js-time-upd'):
 				# print(i.prettify())
 
 				timestampList.append(i['data-timestamp'])
-
-			# print('len(timestampList)', len(timestampList))
-			# print(timestampList)
-
-
-			# print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 			sleep(5)
-		
-		data = {'timeStamp': timestampList, 'symbol': symbolList, 'timeFrame': timeFrameList, 'label': labelList,
-			'title': titleList, 'socialInfo': socialInfoList, 'description': description}
-		df = pd.DataFrame(data)
+
+		data = {'symbol_description': description}
+		for elem in range(len(timestampList)):
+			data.update({str(elem):{
+				'timeStamp': timestampList[elem], 'symbol': symbolList[elem], 'timeFrame': timeFrameList[elem],
+				'label': labelList[elem], 'title': titleList[elem], 'socialInfo': socialInfoList[elem]
+			}})
 
 		if to_csv == True:
+			data_copy = data.copy()
+			data_copy.pop('symbol_description')
+			df = pd.read_json(json.dumps(data_copy), orient='index')
 			df.to_csv(f'tradingview_{symbol}.csv', index=False)
-		else:
-			pass
 
-		return description, df.drop(columns=['description'])
+		return data
