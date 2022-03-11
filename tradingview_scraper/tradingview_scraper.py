@@ -152,7 +152,7 @@ class Indicators:
 			2- symbols(List of strings):\n
 				List of symbols (Default: `BTCUSD`)\n
 			3- indicators(List of string):\n
-				List of indicators (Default: `RSI`) (Others: https://github.com/mnwato/tradingview-scraper/tree/main/tradingview_scraper/indicatos.txt\n
+				List of indicators (Default: `RSI`) [Others](https://github.com/mnwato/tradingview-scraper/tree/main/tradingview_scraper/indicatos.txt)\n
 			4- allIndicators(Boolean):\n
 				True > Extract all indicators Whether the indicators are specified or not\n
 				False > Extract only indicators which are apecified in indicators arguments  
