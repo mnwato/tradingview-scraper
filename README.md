@@ -44,7 +44,8 @@ pip install tradingview-scraper
 from tradingview_scraper import scraper
 ClassA.scraper()
 ```
-### Output format:
+
+## Output format:
 - A tuple which contain:
   1. A pandas dataframe (contains: timeStamp, symbol, timeFrame, label, title, socialInfo) 
   2. A string (Symbol description in the first webpage)
@@ -52,7 +53,7 @@ ClassA.scraper()
   `dict_keys(['symbol_description', '0', '1', '2', '3', '4', '5'])`   
   which each of '0' to '5' keys containing ideas details like 'timestamp','symbol','timefram', etc.
   
-### Note:
+## Note:
 Default arguments are set to:
 ```sh
 ClassA.scraper(symbol = 'btc',
