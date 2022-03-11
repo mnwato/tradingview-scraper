@@ -9,8 +9,8 @@ import os
 
 class Ideas:
 	"""
-		## Note:\n
-			In release `0.1.0` and above the name of this class changed from `ClassA` to `Ideas`
+	## Note:\n
+		In release `0.1.0` and above the name of this class changed from `ClassA` to `Ideas`
 	"""
 	def __init__(self) -> None:
 		self.ideas_url = 'https://www.tradingview.com/ideas/'
@@ -18,26 +18,26 @@ class Ideas:
 
 	def scraper(self, symbol='btc', wholePage=False, startPage=1, endPage=2, to_csv=False, return_json=False):
 		"""
-			## Extract ideas of a specified symbol\n
-			## Args:\n
-				1- symbol name(string):\n
-					Like `btc`\n
-				2- wholePage(Boolean)\n
-					True > crawl all pages\n
-					False > crawl first page\n
-				3- startPage(int):\n
-					This argument defines start page to crawl if `wholePage=True`\n
-				4- endPage(int):\n
-					This argument defines end page to crawl if `wholePage=True`\n
-				5- to_csv(Boolean):\n
-					True > Will generate a csv file contains ideas\n
-					False > Return a tuple contains symbol's description and ideas dataframe\n
-				6- return_json(Boolean):\n
-					True > Return ideas as json format instead of default tuple format\n
-					False > Return a tuple contains symbol's description and ideas dataframe\n
-			## Return:\n
-				By default it returns a tuple contains symbol's description and ideas dataframe but\n
-				if `return_json=True` it will return ideas as json format
+		## Extract ideas of a specified symbol\n
+		## Args:\n
+			1- symbol name(string):\n
+				Like `btc`\n
+			2- wholePage(Boolean)\n
+				True > crawl all pages\n
+				False > crawl first page\n
+			3- startPage(int):\n
+				This argument defines start page to crawl if `wholePage=True`\n
+			4- endPage(int):\n
+				This argument defines end page to crawl if `wholePage=True`\n
+			5- to_csv(Boolean):\n
+				True > Will generate a csv file contains ideas\n
+				False > Return a tuple contains symbol's description and ideas dataframe\n
+			6- return_json(Boolean):\n
+				True > Return ideas as json format instead of default tuple format\n
+				False > Return a tuple contains symbol's description and ideas dataframe\n
+		## Return:\n
+			By default it returns a tuple contains symbol's description and ideas dataframe but\n
+			if `return_json=True` it will return ideas as json format
 
 		"""
 		if wholePage == True:
