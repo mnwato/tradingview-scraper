@@ -1,1 +1,5 @@
+# Ignore test script
 /tradingview_scraper/test.py
+
+# Ignore dev.ipynb
+/dev.ipynb
