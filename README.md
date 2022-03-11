@@ -12,7 +12,7 @@ The goal is to develop this package for scapping anything on https://tradingview
 - [ ] Review and fix bugs   
   etc ... (You suggest)
 
-### To be aware of last changes go to the [end of this page](https://github.com/mnwato/tradingview-scraper/edit/dev/README.md#changes)
+### To be aware of last changes go to the [end of this page](https://github.com/mnwato/tradingview-scraper#changes)
 
 ## Features:
 
