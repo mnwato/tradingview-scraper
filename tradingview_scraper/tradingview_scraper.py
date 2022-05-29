@@ -154,7 +154,7 @@ class Ideas:
                 "span", class_="tv-card-stats__time js-time-upd"
             ):
                 timestampList.append(
-                    datetime.datetime.fromtimestamp(float(time_upd["data-timestamp"]))
+                    str(datetime.datetime.fromtimestamp(float(time_upd["data-timestamp"])))
                 )
 
             # Wait 5 seconds before going to the next page
