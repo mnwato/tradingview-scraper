@@ -233,8 +233,8 @@ class Indicators:
     def scraper(
         self,
         exchange: str = "BITSTAMP",
-        symbols: list = ["BTCUSD"],
-        indicators: list = ["RSI"],
+        symbols: list = ["BTCUSD", "LTCUSDT"],
+        indicators: list = ["RSI", "Stoch.K"],
         allIndicators: bool = False,
     ) -> dict:
         """

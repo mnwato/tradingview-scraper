@@ -1,8 +1,13 @@
 # Tradingview scraper
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![MIT License](https://img.shields.io/github/license/mnwato/tradingview-scraper.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
 
-The goal is to develop this package for scapping anything on https://tradingview.com with realtime response.  
+---
+
+This is a Python library for scraping ideas and indicators of [TradingView.com](https://www.tradingview.com).
+The goal is to develop this package for scraping anything on [TradingView.com](https://www.tradingview.com) with realtime response.  
 **Thanks to contributors**
-
 
 ## To Do List:
 - [x] Scrape ideas section of a symbol
@@ -18,14 +23,15 @@ The goal is to develop this package for scapping anything on https://tradingview
 
 - Scrape idea's informations like:
   > #### Idea's Title
+  > #### Idea's description
   > #### Idea's symbol
   > #### Idea's timeframe
   > #### Idea's timestamp
   > #### Idea's label
   > #### Idea's social informations
-  > #### Idea's description
+
 - Three ways to scrape webpage:
-  > #### Scrape just first page
+  > #### Scrape the front page
   > #### Scrape all pages
   > #### Scrape specific range of pages
 - Extract indicators status like of symbols:
@@ -45,30 +51,31 @@ pip install tradingview-scraper
 #### 1. Getting ideas:
 ```sh
 from tradingview_scraper import Ideas
-obj = Ideas().scraper(symbol = 'btc',
-                      wholePage = False,
-                      startPage = 1,
-                      endPage = 2, 
-                      to_csv = False,
-                      return_json=False)
+obj = Ideas().scraper(symbol: str = None,
+                      startPage: int = 1,
+                      endPage: int = 2,
+                      to_csv: bool = False,
+                      return_json: bool = False)
 print(obj)
 ```
+Setting symbol to None will scrape the [ideas front page on TradingView](https://www.tradingview.com/ideas).
+
 #### Output:
 ```
-- A tuple which contain:
-  1. A pandas dataframe (contains: timeStamp, symbol, timeFrame, label, title, socialInfo) 
+- By default a tuple object containing the following columns is returned:
+  1. A pandas dataframe (contains: Timestamp, Title, Description, Symbol, Timeframe, Label, Url, ImageURL, Likes, Comments) 
   2. A string (Symbol description in the first webpage)
-- A Json which contain keys like bellow:   
-  `dict_keys(['symbol_description', '0', '1', '2', '3', '4', '5'])`   
-  which each of '0' to '5' keys containing ideas details like 'timestamp','symbol','timefram', etc.
+- If 'return_json' is set to True, a dictionary will be returned containing the keys below:   
+  `dict_keys(['symbol_description', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])`   
+  Where each of '0' to '9' keys contain an idea's details like 'Timestamp','Title','Description', etc.
  ```
 #### 2. Getting indicators status:
 ```sh
 from tradingview_scraper import Indicators
-obj = Indicators().scraper(exchange="BITSTAMP",
-                          symbols=["BTCUSD","LTCUSD"],
-                          indicators=["RSI","Stoch.K"],
-                          allIndicators=False)
+obj = Indicators().scraper(exchange: str = "BITSTAMP",
+                           symbols: list = ["BTCUSD", "LTCUSDT"],
+                           indicators: list = ["RSI", "Stoch.K"],
+                           allIndicators: bool = False)
 print(obj)
 ```
 #### Output:
@@ -79,34 +86,32 @@ print(obj)
 ## Note:
 ### Default arguments are set to:
 ```sh
-Ideas.scraper(symbol = 'btc',
-              wholePage = False,
-              startPage = 1,
-              endPage = 2, 
-              to_csv = False,
-              return_json = False)
+Ideas.scraper(symbol: str = None,
+              startPage: int = 1,
+              endPage: int = 2,
+              to_csv: bool = False,
+              return_json: bool = False)
 ```
 Argument  | Description
 --------  | -----------
 symbol | Symbol name
-wholePage | Set it True if you want to scrape all pages<br> (Then specify startPage and endPage)
 startPage | specify first page number to scrape
 endPage	| specify last page number to scrape
 to_csv | Set it True to save data as a 'CSV' file
 return_json | Set it True to have json format in return
 
 ```
-Indicators().scraper(exchange="BITSTAMP",
-                    symbols=["BTCUSD"],
-                    indicators=["RSI"],
-                    allIndicators=False)
+Indicators().scraper(exchange: str = "BITSTAMP",
+                     symbols: list = ["BTCUSD", "LTCUSDT"],
+                     indicators: list = ["RSI", "Stoch.K"],
+                     allIndicators: bool = False)
 ```
 Argument  | Description
 --------  | -----------
-exchange | Exchange name<br /> also you can use [another exchanges](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/exchanges.txt)
+exchange | Exchange name<br /> also you can use [another exchanges](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/data/exchanges.txt)
 symbols | A list of symbols
 indicators | A list of indicators
-allIndicators | Set it True if you need [all of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/indicators.txt)
+allIndicators | Set it True if you need [all of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/data/indicators.txt)
 
 
 ## Changes:
