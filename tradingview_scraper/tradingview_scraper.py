@@ -1,6 +1,5 @@
 ## > Imports
 # > Standard Library
-import os
 import requests
 import datetime
 from time import sleep
@@ -83,6 +82,9 @@ class Ideas:
                 class_="tv-card-container__ideas tv-card-container__ideas--with-padding js-balance-content",
             )
 
+            if content is None:
+                raise Exception("No ideas found. Check the symbol or page number.")
+
             # Get the description of this symbol (if there is any)
             if page == pageList[0]:
                 description = None
@@ -154,7 +156,11 @@ class Ideas:
                 "span", class_="tv-card-stats__time js-time-upd"
             ):
                 timestampList.append(
-                    str(datetime.datetime.fromtimestamp(float(time_upd["data-timestamp"])))
+                    str(
+                        datetime.datetime.fromtimestamp(
+                            float(time_upd["data-timestamp"])
+                        )
+                    )
                 )
 
             # Wait 5 seconds before going to the next page
@@ -212,72 +218,80 @@ class Ideas:
 
             return description, df
 
-
 class Indicators:
-    def __init__(self) -> None:
-        self.indicators_url = "https://scanner.tradingview.com/crypto/scan"
+    def __init__(self):
+
+        # Read and save all indicators
+        with open("./data/indicators.txt", "r") as f:
+            self.indicators = f.read().replace('"', "").split(",")
+            f.close()
+
+        with open("./data/exchanges.txt", "r") as f:
+            self.exchanges = f.read().split(",")
+            f.close()
 
     def scraper(
         self,
-        exchange="BITSTAMP",
-        symbols=["BTCUSD"],
-        indicators=["RSI"],
-        allIndicators=False,
-    ):
+        exchange: str = "BITSTAMP",
+        symbols: list = ["BTCUSD"],
+        indicators: list = ["RSI"],
+        allIndicators: bool = False,
+    ) -> dict:
         """
-        ## Extract symbol indicators
-        ## Args:\n
-                1- exchange(String):\n
-                Exchange name like (Default: `BITSTAMP`),`BINANCE`,`BINANCEUS`,`BITCOKE`,`BITFINEX`,\n
-                `BITTREX`,`BYBIT`,`CEXIO`,`EXMO`,`FTX`,`GEMINI`,`KRAKEN`,`OKCOIN`,`TIMEX`,\n
-                `TRADESTATION`
+        Extract indicators from TradingView for the given symbol and exchange.
 
-                2- symbols(List of strings):\n
-                        List of symbols (Default: `BTCUSD`)\n
-                3- indicators(List of string):\n
-                        List of indicators (Default: `RSI`) [Others](https://github.com/mnwato/tradingview-scraper/tree/main/tradingview_scraper/indicatos.txt)\n
-                4- allIndicators(Boolean):\n
-                        True > Extract all indicators Whether the indicators are specified or not\n
-                        False > Extract only indicators which are apecified in indicators arguments
-        ## Return(JSON):\n
-                List of indicators for specified symbols
+        Parameters
+        ----------
+        exchange : str
+            The name of the exchange, by default "BITSTAMP".
+            The supported exchanges can be found in the data/exchanges.txt file.
+        symbols : list
+            The list of symbols to scrape indicators for, by default ["BTCUSD"].
+        indicators : list
+            The list of indicators to scrape, by default ["RSI"].
+            The supported indicators can be found in the data/indicators.txt file.
+        allIndicators : bool, optional
+            If this is set to True return all the indicators, by default False.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the indicators for the given symbol and exchange.
+            The format is {symbol: {indicator: value}}.
         """
-        symbols = [f"{exchange}:" + x for x in symbols]
+
+        # Check if the exchange and indicators are supported
+        assert (
+            exchange in self.exchanges
+        ), "This exchange is not supported! Please check the list of supported exchanges."
+
+        if not allIndicators:
+            for indicator in indicators:
+                assert (
+                    indicator in self.indicators
+                ), "This indicator is not supported! Please check the list of supported indicators."
+
+        # Format the symbols based on given exchange
+        symbols = [f"{exchange}:{x}" for x in symbols]
+
+        # If it is set to True use all the indicators
         if allIndicators == True:
-            with open(
-                os.path.join(os.getcwd(), "tradingview_scraper", "indicators.txt"), "r"
-            ) as f:
-                indicators = f.read().replace('"', "").split(",")
+            indicators = self.indicators
 
         payload = {
-            "symbols": {"tickers": symbols, "query": {"types": []}},
+            "symbols": {"tickers": symbols},
             "columns": indicators,
         }
-        headers = {
-            "authority": "scanner.tradingview.com",
-            "method": "POST",
-            "path": "/crypto/scan",
-            "scheme": "https",
-            "accept": "*/*",
-            "accept-encoding": "gzip, deflate, br",
-            "accept-language": "en-US,en;q=0.9",
-            "content-length": "1269",
-            "content-type": "application/x-www-form-urlencoded",
-            "cookie": "_ga=GA1.2.170692871.1636066864; __gads=ID=eafb0f94683db984:T=1636066978:S=ALNI_MZ-0TZNoN6EUwbt302scWBNrnE-rA; sessionid=n27htwjuhx5678st2mpj5oe66y49lioh; tv_ecuid=f9bf1dfb-91fe-4e97-ada2-7cdcbc502c2e; _sp_ses.cf1a=*; _gid=GA1.2.734511956.1646977393; _gat_gtag_UA_24278967_1=1; _sp_id.cf1a=07117aec-f7ee-4bd8-af59-f80ae57f124d.1643982464.4.1646977457.1645721190.42cd0b0d-4b87-4c86-9350-8d5fea7a8f66",
-            "origin": "https://www.tradingview.com",
-            "referer": "https://www.tradingview.com/",
-            "sec-ch-ua": """Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99""",
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "Windows",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site",
-            "user-agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
-        }
-        res = requests.post(self.indicators_url, headers=headers, json=payload)
+
+        res = requests.post("https://scanner.tradingview.com/crypto/scan", json=payload)
+
+        # Save the response from tradingview in this dictionary
         inds = {}
         for elem in res.json()["data"]:
-            temp = []
-            temp = {key: str(val) for key, val in zip(indicators, elem["d"])}
-            inds.update({elem["s"].split(":")[-1]: temp})
+            # Save all indicator : value pairs in this dictionary
+            indicator = {key: str(val) for key, val in zip(indicators, elem["d"])}
+
+            # Add them to the list with the symbol as key
+            inds[elem["s"].split(":")[-1]] = indicator
+
         return inds
