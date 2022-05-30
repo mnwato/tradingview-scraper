@@ -3,3 +3,6 @@
 
 # Ignore dev.ipynb
 /dev.ipynb
+
+tradingview_scraper/__pycache__/__init__.cpython-38.pyc
+tradingview_scraper/__pycache__/tradingview_scraper.cpython-38.pyc
