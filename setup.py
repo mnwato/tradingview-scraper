@@ -13,7 +13,7 @@ classifiers = [
   'Programming Language :: Python :: 3.8'
 ]
 
-VERSION = '0.1.3'
+VERSION = '0.1.6'
 DESCRIPTION = 'Tradingview scraper tool'
 
 # Setting up
@@ -23,13 +23,13 @@ setup(
     author="Mostafa Najmi",
     author_email="m.n.irib@gmail.com",
     url = 'https://github.com/mnwato/tradingview-scraper',
-    download_url = 'https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.1.0.zip',
+    download_url = 'https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.1.6.zip',
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
     long_description=readme(),
     License = 'MIT',
     packages=find_packages(),
-    install_requires=['requests', 'pandas', 'beautifulsoup4', 'numpy'],
+    install_requires=['requests', 'pandas==1.0.5', 'beautifulsoup4', 'numpy'],
     keywords=['tradingview', 'scraper', 'python', 'crawler', 'financial'],
     classifiers=classifiers
 )
