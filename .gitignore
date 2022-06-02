@@ -2,7 +2,7 @@
 /tradingview_scraper/test.py
 
 # Ignore dev.ipynb
-/dev.ipynb
+/tradingview_scraper/run.py
 
 tradingview_scraper/__pycache__/__init__.cpython-38.pyc
 tradingview_scraper/__pycache__/tradingview_scraper.cpython-38.pyc
