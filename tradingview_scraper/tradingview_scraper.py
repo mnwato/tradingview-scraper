@@ -217,16 +217,16 @@ class Ideas:
                 df.to_csv(f"tradingview_{symbol}.csv", index=False)
 
             return description, df
-
+import os
 class Indicators:
     def __init__(self):
 
         # Read and save all indicators
-        with open("./data/indicators.txt", "r") as f:
+        with open(os.path.join(os.getcwd(), 'tradingview_scraper/data/indicators.txt'), "r") as f:
             self.indicators = f.read().replace('"', "").split(",")
             f.close()
 
-        with open("./data/exchanges.txt", "r") as f:
+        with open(os.path.join(os.getcwd(), 'tradingview_scraper/data/exchanges.txt'), "r") as f:
             self.exchanges = f.read().split(",")
             f.close()
 
