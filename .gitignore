@@ -1,8 +1,10 @@
 # Ignore test script
 /tradingview_scraper/test.py
 
-# Ignore dev.ipynb
-/tradingview_scraper/run.py
+# Ignore running script
+/run.py
 
 tradingview_scraper/__pycache__/__init__.cpython-38.pyc
 tradingview_scraper/__pycache__/tradingview_scraper.cpython-38.pyc
+build/bdist.win-amd64/dumb/Users/mostafa/AppData/Local/Programs/Python/Python38/Lib/site-packages/tradingview_scraper/run.py
+
