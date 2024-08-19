@@ -12,7 +12,6 @@ class Symbols(BaseModel):
 
     @field_validator('symbol')
     def validate_symbol(cls, value):
-        # Add any specific validation rules for symbol here
         if not value.isalnum():
             raise ValueError("symbol must be alphanumeric")
         return value
