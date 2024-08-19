@@ -5,7 +5,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 
 
-from symbols.utils import save_csv_file, save_json_file
+from symbols.utils import save_csv_file, save_json_file, generate_user_agent
 
 class Ideas:
     def __init__(self, export_result=False, export_type='json'):
@@ -50,6 +50,8 @@ class Ideas:
         the server with rapid requests.
         """
 
+        headers = {"user-agent": generate_user_agent()}
+        
         pageList = range(startPage, endPage + 1)
 
         articles = []
@@ -64,7 +66,8 @@ class Ideas:
 
             # Fetch the page as plain HTML text
             response = requests.get(
-                f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/"
+                f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/",
+                headers=headers
             ).text
 
             # Use BeautifulSoup to parse the HTML
