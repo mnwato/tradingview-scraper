@@ -5,12 +5,16 @@ from time import sleep
 from bs4 import BeautifulSoup
 
 
-from tradingview_scraper import Symbols
 from symbols.utils import save_csv_file, save_json_file
 
-class Ideas(Symbols):
+class Ideas:
+    def __init__(self, export_result=False, export_type='json'):
+        self.export_result = export_result
+        self.export_type = export_type
+        
     def scrape(
         self,
+        symbol: str = "BTCUSD",
         startPage: int = 1,
         endPage: int  = 1,
     ):
@@ -53,8 +57,8 @@ class Ideas(Symbols):
         for page in pageList:
 
             # If no symbol is provided check the front page
-            if self.symbol:
-                symbol_payload = f"/{self.symbol}/"
+            if symbol:
+                symbol_payload = f"/{symbol}/"
             else:
                 symbol_payload = "/"
 
@@ -93,19 +97,20 @@ class Ideas(Symbols):
             if len(pageList) > 1:
                 sleep(5)
 
-        if self.export_type:
-            self.export(articles)
-
+        # Save results
+        if self.export_result == True:
+            self._export(data=articles, symbol=symbol)
+            
         return articles
 
 
-    def export(self, data):
-        if self.export_type == 'json':
-            save_json_file(data=data, symbol=self.symbol)
-        
-        elif self.export_type == 'csv':
-            save_csv_file(data=data, symbol=self.symbol)
+    def _export(self, data, symbol):
+        if self.export_type == "json":
+            save_json_file(data=data, symbol=symbol, data_category='ideas')
             
+        elif self.export_type == "csv":
+            save_csv_file(data=data, symbol=symbol, data_category='ideas')
+
 
     def parse_article(self, article_tag):
         
