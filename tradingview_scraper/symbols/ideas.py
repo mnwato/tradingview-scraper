@@ -11,7 +11,6 @@ from symbols.utils import save_csv_file, save_json_file
 class Ideas(Symbols):
     def scrape(
         self,
-        symbol: str,
         startPage: int = 1,
         endPage: int  = 1,
     ):
@@ -24,9 +23,6 @@ class Ideas(Symbols):
 
         Parameters
         ----------
-        symbol : str
-            The symbol (e.g., 'BTC') or type of trading idea (e.g., 'stocks' or 'crypto').
-            If this is None, the front page will be used (tradingview.com/ideas).
         startPage : int, optional
             The page where the scraper should start, by default 1.
         endPage : int, optional
@@ -57,8 +53,8 @@ class Ideas(Symbols):
         for page in pageList:
 
             # If no symbol is provided check the front page
-            if symbol:
-                symbol_payload = f"/{symbol}/"
+            if self.symbol:
+                symbol_payload = f"/{self.symbol}/"
             else:
                 symbol_payload = "/"
 
