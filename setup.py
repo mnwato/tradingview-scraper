@@ -27,9 +27,9 @@ setup(
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
     long_description=readme(),
-    License = 'MIT',
+    license = 'MIT',
     packages=find_packages(),
-    install_requires=['requests', 'pandas==1.0.5', 'beautifulsoup4', 'numpy'],
+    install_requires=['requests==2.32.3', 'pandas==2.0.3', 'beautifulsoup4==4.12.3'],
     keywords=['tradingview', 'scraper', 'python', 'crawler', 'financial'],
     classifiers=classifiers
 )
