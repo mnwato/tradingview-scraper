@@ -1,10 +1,54 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Pytest
+.cache
+
+# Coverage
+coverage.xml
+*.cover
+*.py,cover
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Pylint
+pylint-report.txt
+pylint-output.txt
+
+# Other
+*.log
+*.pot
+*.pyc
+
 # Ignore test script
-/tradingview_scraper/test.py
+*test.py
 
 # Ignore running script
-/run.py
-
-tradingview_scraper/__pycache__/__init__.cpython-38.pyc
-tradingview_scraper/__pycache__/tradingview_scraper.cpython-38.pyc
-build/bdist.win-amd64/dumb/Users/mostafa/AppData/Local/Programs/Python/Python38/Lib/site-packages/tradingview_scraper/run.py
-
+run.py
