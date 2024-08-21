@@ -5,7 +5,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 
 
-from symbols.utils import save_csv_file, save_json_file, generate_user_agent
+from tradingview_scraper.symbols.utils import save_csv_file, save_json_file, generate_user_agent
 
 class Ideas:
     def __init__(self, export_result=False, export_type='json'):

@@ -1,13 +1,14 @@
 import requests
+import pkg_resources
 import os
-from symbols.utils import generate_user_agent, save_json_file, save_csv_file
+from tradingview_scraper.symbols.utils import generate_user_agent, save_json_file, save_csv_file
 
 class Indicators:
     def __init__(self, export_result=False, export_type='json'):
         self.export_result = export_result
         self.export_type = export_type
         
-        self.indicators = self.load_indicators()
+        self.indicators = self._load_indicators()
         self.exchanges = self._load_exchanges()
 
 
@@ -59,7 +60,7 @@ class Indicators:
             return indicators_json
         
         except requests.RequestException as e:
-            print(f"Failed to scrape data: {e}")
+            print(f"[ERROR] Failed to scrape data: {e}")
             return {}
 
 
@@ -71,7 +72,7 @@ class Indicators:
             save_csv_file(data=data, symbol=symbol, data_category='indicators')
             
             
-    def load_indicators(self):
+    def _load_indicators(self):
         """Load indicators from a specified file.
 
         Returns:
@@ -80,15 +81,17 @@ class Indicators:
         Raises:
             IOError: If there is an error reading the file.
         """
-        path = "tradingview_scraper/data/indicators.txt"
+        # Get the path to the indicators.txt file in the package
+        path = pkg_resources.resource_filename('tradingview_scraper', 'data/indicators.txt')
         if not os.path.exists(path):
-            print(f"Indicators file not found at {path}.")
+            print(f"[ERROR] Indicators file not found at {path}.")
             return []
         try:
             with open(path, 'r') as f:
-                return f.read().splitlines()
+                indicators = f.readlines()
+            return [indicator.strip() for indicator in indicators]
         except IOError as e:
-            print(f"Error reading indicators file: {e}")
+            print(f"[ERROR] Error reading indicators file: {e}")
             return []
         
 
@@ -101,13 +104,14 @@ class Indicators:
         Raises:
             IOError: If there is an error reading the file.
         """
-        path = "tradingview_scraper/data/exchanges.txt"
+        path = pkg_resources.resource_filename('tradingview_scraper', 'data/exchanges.txt')
         if not os.path.exists(path):
-            print(f"Exchanges file not found at {path}.")
+            print(f"[ERROR] Exchanges file not found at {path}.")
             return []
         try:
             with open(path, 'r') as f:
-                return f.read().splitlines()
+                exchanges = f.readlines()
+            return [exchange.strip() for exchange in exchanges]
         except IOError as e:
-            print(f"Error reading exchanges file: {e}")
+            print(f"[ERROR] Error reading exchanges file: {e}")
             return []

@@ -20,9 +20,9 @@ def ensure_export_directory(path='/export'):
     if not os.path.exists(path):
         try:
             os.makedirs(path)
-            print(f"Directory {path} created.")
+            print(f"[INFO] Directory {path} created.")
         except Exception as e:
-            print(f"Error creating directory {path}: {e}")
+            print(f"[ERROR] Error creating directory {path}: {e}")
 
 def generate_export_filepath(symbol, data_category, file_extension):
     """Generate a file path for exporting data, including the current timestamp.
@@ -85,15 +85,15 @@ def save_json_file(data, symbol, data_category):
     try:
         with open(output_path, 'w') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"JSON file saved at: {output_path}")
+        print(f"[INFO] JSON file saved at: {output_path}")
     except FileNotFoundError:
-        print(f"Error: The directory for {output_path} does not exist.")
+        print(f"[ERROR] Error: The directory for {output_path} does not exist.")
     except PermissionError:
-        print(f"Error: Permission denied when trying to write to {output_path}.")
+        print(f"[ERROR] Error: Permission denied when trying to write to {output_path}.")
     except TypeError as e:
-        print(f"Error: The data provided is not serializable. {e}")
+        print(f"[ERROR] Error: The data provided is not serializable. {e}")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print(f"[ERROR] An unexpected error occurred: {e}")
 
 def save_csv_file(data, symbol, data_category):
     """Save the provided data to a CSV file with a generated file path.
@@ -129,15 +129,15 @@ def save_csv_file(data, symbol, data_category):
     try:
         df = pd.DataFrame.from_dict(data)
         df.to_csv(output_path, index=False)
-        print(f"CSV file saved at: {output_path}")
+        print(f"[INFO] CSV file saved at: {output_path}")
     except ValueError as e:
-        print(f"Error: The data provided is not in a suitable format for a DataFrame. {e}")
+        print(f"[ERROR] Error: The data provided is not in a suitable format for a DataFrame. {e}")
     except FileNotFoundError:
-        print(f"Error: The directory for {output_path} does not exist.")
+        print(f"[ERROR] Error: The directory for {output_path} does not exist.")
     except PermissionError:
-        print(f"Error: Permission denied when trying to write to {output_path}.")
+        print(f"[ERROR] Error: Permission denied when trying to write to {output_path}.")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print(f"[ERROR] An unexpected error occurred: {e}")
 
 def generate_user_agent():
     """
