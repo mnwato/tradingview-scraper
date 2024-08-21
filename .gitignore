@@ -10,8 +10,9 @@ ENV/
 env.bak/
 venv.bak/
 *.egg-info/
-dist/
-build/
+dist/*
+build/*
+tradingview_scraper.egg-info/*
 
 # IDEs and editors
 .vscode/
