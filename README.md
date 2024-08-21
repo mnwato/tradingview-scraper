@@ -1,122 +1,178 @@
-# Tradingview scraper
+# TradingView Scraper
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![MIT License](https://img.shields.io/github/license/mnwato/tradingview-scraper.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
 
----
 
-This is a Python library for scraping ideas and indicators of [TradingView.com](https://www.tradingview.com).
-The goal is to develop this package for scraping anything on [TradingView.com](https://www.tradingview.com) with realtime response.  
-**Thanks to contributors**
+This is a Python library for scraping ideas and indicators from [TradingView.com](https://www.tradingview.com). The goal is to develop this package to scrape anything on [TradingView.com](https://www.tradingview.com) with real-time responses.  
+**Thanks to contributors!**
 
-## To Do List:
-- [x] Scrape ideas section of a symbol
-- [x] Export as `csv` file
+## To-Do List
+
+### Completed Tasks
+- [x] Export as a `CSV` file
 - [x] Export as `JSON`
-- [x] Scrape indicators status data
-- [ ] Review and fix bugs   
-  etc ... (You suggest)
 
-### To be aware of last changes go to the [end of this page](https://github.com/mnwato/tradingview-scraper#changes)
+### Pending Tasks
+- [ ] Scrape Symbol Subpages:
+  - [ ] [Indicators](https://www.tradingview.com/symbols/BTCUSD/technicals/)
+  - [ ] [Overview](https://www.tradingview.com/symbols/BTCUSD/)
+  - [ ] [News](https://www.tradingview.com/symbols/BTCUSD/news/)
+  - [ ] [Minds](https://www.tradingview.com/symbols/BTCUSD/minds/)
+  - [ ] [Technical](https://www.tradingview.com/symbols/BTCUSD/technicals/)
+  - [ ] [Market](https://www.tradingview.com/symbols/BTCUSD/markets/)
+  - [ ] Get data using TradingView WebSocket
+  - [ ] Additional suggestions welcome!
 
-## Features:
+### To be aware of the latest changes, go to the [end of this page](https://github.com/mnwato/tradingview-scraper#changes).
 
-- Scrape idea's informations like:
-  > #### Idea's Title
-  > #### Idea's description
-  > #### Idea's symbol
-  > #### Idea's timeframe
-  > #### Idea's timestamp
-  > #### Idea's label
-  > #### Idea's social informations
+## Features
 
-- Three ways to scrape webpage:
-  > #### Scrape the front page
-  > #### Scrape all pages
-  > #### Scrape specific range of pages
-- Extract indicators status like of symbols:
-  > `RSI` `Stoch.K` , etc [full list of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/indicators.txt)
-- Save data into a CSV file
-- Return json format
+- **Idea Information Scraping**
+  - Title
+  - Paragraph
+  - Preview Image
+  - Author
+  - Comments Count
+  - Boosts Count
+  - Publication Datetime
+  - Is Updated
+  - Idea Strategy
+
+- **Webpage Scraping Options**
+  - Scrape All Pages
+  - Scrape a Specific Range of Pages
+
+- **Indicator Extraction**
+  - Extract values for indicators like `RSI`, `Stoch.K`, etc. 
+  - [Full list of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/indicators.txt)
+
+- **Export Formats**
+  - CSV
+  - JSON
+
+- **Output Format**
+  - Returns data in JSON format
+
+Here’s a revised version of the Installation section that enhances clarity and encourages user engagement:
 
 
-## Installation:
-Open your favorite Terminal and run the command:
-```sh
-pip install tradingview-scraper
+## Installation
+
+To get started with the TradingView Scraper library, follow these simple steps:
+
+1. **Open your terminal**: Launch your preferred command line interface.
+
+2. **Install the package**: Run the following command to install the TradingView Scraper:
+   ```sh
+   pip install tradingview-scraper
+   ```
+
+3. **Upgrade if necessary**: If you already have the library installed and want to upgrade to the latest version, use:
+   ```sh
+   pip install --upgrade tradingview-scraper
+   ```
+
+Here’s a revised version of the Examples section, focusing on clarity, ease of understanding, and providing essential information about default values:
+
+
+## Examples
+
+### 1. Fast Running (Default Parameters)
+To quickly scrape ideas using default settings, use the following code:
+```python
+from symbols.ideas import Ideas
+
+# Initialize the Ideas scraper with default parameters
+ideas_scraper = Ideas()  # Default: export_result=False, export_type='json'
+ideas = ideas_scraper.scrape()  # Default symbol: 'BTCUSD'
+print("Ideas:", ideas)
+```
+**Default Parameters:**
+- `export_result`: `False` (no file will be saved)
+- `export_type`: `'json'` (output format)
+
+### 2. Getting Ideas for a Specific Symbol, Export Type, and Pages
+To scrape ideas for a specific symbol and export them as a CSV file, you can specify the parameters:
+```python
+from symbols.ideas import Ideas
+
+# Initialize the Ideas scraper with custom parameters
+ideas_scraper = Ideas(
+  export_result=True,  # Set to True to save the results
+  export_type='csv'    # Specify the export type (json or csv)
+)
+
+# Scrape ideas for the ETHUSD symbol, from page 1 to page 2
+ideas = ideas_scraper.scrape(
+  symbol="ETHUSD",
+  startPage=1,
+  endPage=2
+)
+print("Ideas:", ideas)
 ```
 
+**Output Format:**
+The output will always be a list of Python dictionaries, structured as follows:
+```json
+[
+  {
+      "title": "Bitcoin -65% crash, ETH -83%, DOGE -89%, SHIBA -90%",
+      "paragraph": "Name your altcoin in the comment section, and I will do a technical analysis for you!\n\nThe crypto market looks ...",
+      "preview_image": "https://s3.tradingview.com/6/6VQphWH6_mid.png",
+      "author": "Xanrox",
+      "comments_count": "295",
+      "boosts_count": "678",
+      "publication_datetime": "2024-08-18T05:55:19.000Z",
+      "is_updated": "True",
+      "idea_strategy": "Short"
+  }
+]
+```
+- When `export_result=True`, the default `export_type` is `'json'`, and a JSON file will be saved in the `/export` directory. To save as CSV, set `export_type='csv'`.
 
-## Examples:
-#### 1. Getting ideas:
-```sh
-from tradingview_scraper import Ideas
-obj = Ideas().scraper(symbol: str = None,
-                      startPage: int = 1,
-                      endPage: int = 2,
-                      to_csv: bool = False,
-                      return_json: bool = False)
-print(obj)
-```
-Setting symbol to None will scrape the [ideas front page on TradingView](https://www.tradingview.com/ideas).
+### 3. Getting Indicators Status
+To scrape the status of specific indicators, use the following code:
+```python
+from symbols.indicators import Indicators
 
-#### Output:
-```
-- By default a tuple object containing the following columns is returned:
-  1. A pandas dataframe (contains: Timestamp, Title, Description, Symbol, Timeframe, Label, Url, ImageURL, Likes, Comments) 
-  2. A string (Symbol description in the first webpage)
-- If 'return_json' is set to True, a dictionary will be returned containing the keys below:   
-  `dict_keys(['symbol_description', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])`   
-  Where each of '0' to '9' keys contain an idea's details like 'Timestamp','Title','Description', etc.
- ```
-#### 2. Getting indicators status:
-```sh
-from tradingview_scraper import Indicators
-obj = Indicators().scraper(exchange: str = "BITSTAMP",
-                           symbols: list = ["BTCUSD", "LTCUSDT"],
-                           indicators: list = ["RSI", "Stoch.K"],
-                           allIndicators: bool = False)
-print(obj)
-```
-#### Output:
-```
-{'BTCUSD': {'RSI': '46.34926112', 'Stoch.K': '40.40173723'}, 'LTCUSD': {'RSI': '43.38421064', 'Stoch.K': '42.32662465'}}
-```
-  
-## Note:
-### Default arguments are set to:
-```sh
-Ideas.scraper(symbol: str = None,
-              startPage: int = 1,
-              endPage: int = 2,
-              to_csv: bool = False,
-              return_json: bool = False)
-```
-Argument  | Description
---------  | -----------
-symbol | Symbol name
-startPage | specify first page number to scrape
-endPage	| specify last page number to scrape
-to_csv | Set it True to save data as a 'CSV' file
-return_json | Set it True to have json format in return
+# Initialize the Indicators scraper with export options
+indicators_scraper = Indicators(export_result=True, export_type='json')
 
+# Scrape indicators for the BTCUSD symbol from the BINANCE exchange
+indicators = indicators_scraper.scrape(
+    exchange="BINANCE",
+    symbol="BTCUSD",
+    indicators=["RSI", "Stoch.K"]
+)
+print("Indicators:", indicators)
 ```
-Indicators().scraper(exchange: str = "BITSTAMP",
-                     symbols: list = ["BTCUSD", "LTCUSDT"],
-                     indicators: list = ["RSI", "Stoch.K"],
-                     allIndicators: bool = False)
+
+**Output:**
+```json
+{'RSI': '46.34926112', 'Stoch.K': '40.40173723'}
 ```
-Argument  | Description
---------  | -----------
-exchange | Exchange name<br /> also you can use [another exchanges](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/data/exchanges.txt)
-symbols | A list of symbols
-indicators | A list of indicators
-allIndicators | Set it True if you need [all of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/data/indicators.txt)
 
+### 4. Getting All Indicators
+If you want to retrieve all available indicators for a symbol, set `allIndicators=True`:
+```python
+# Scrape all indicators for the BTCUSD symbol
+indicators_scraper = Indicators(export_result=True, export_type='json')
+indicators = indicators_scraper.scrape(
+    symbol="BTCUSD",
+    allIndicators=True
+)
+print("All Indicators:", indicators)
+```
 
+Feel free to further customize any part to better fit your documentation style!
 ## Changes:
- - Release `0.1.0` :  
-   The name of `ClassA` changed to `Ideas`
-    
-## License
-- MIT
+- Release `0.2.0`:   
+  Refactor for new TradingView structure
+- Release `0.1.0`:  
+  The name of `ClassA` changed to `Ideas`
+
+## License:
+```
+[MIT]
+```
