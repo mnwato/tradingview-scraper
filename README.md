@@ -15,7 +15,8 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
 
 ### Pending Tasks
 - [ ] Scrape Symbol Subpages:
-  - [ ] [Indicators](https://www.tradingview.com/symbols/BTCUSD/technicals/)
+  - [x] [Ideas](https://www.tradingview.com/symbols/BTCUSD/ideas/)
+  - [x] [Indicators](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Overview](https://www.tradingview.com/symbols/BTCUSD/)
   - [ ] [News](https://www.tradingview.com/symbols/BTCUSD/news/)
   - [ ] [Minds](https://www.tradingview.com/symbols/BTCUSD/minds/)
