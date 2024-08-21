@@ -168,7 +168,7 @@ print("All Indicators:", indicators)
 
 Feel free to further customize any part to better fit your documentation style!
 ## Changes:
-- Release `0.2.0`:   
+- Release `0.2.9`:   
   Refactor for new TradingView structure
 - Release `0.1.0`:  
   The name of `ClassA` changed to `Ideas`
