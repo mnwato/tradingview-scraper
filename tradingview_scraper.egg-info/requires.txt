@@ -1,4 +1,0 @@
-requests
-pandas==1.0.5
-beautifulsoup4
-numpy
