@@ -151,7 +151,7 @@ print("Indicators:", indicators)
 
 **Output:**
 ```json
-{'RSI': '46.34926112', 'Stoch.K': '40.40173723'}
+{"RSI": "46.34926112", "Stoch.K": "40.40173723"}
 ```
 
 ### 4. Getting All Indicators
