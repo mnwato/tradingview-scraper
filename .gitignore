@@ -46,6 +46,7 @@ pylint-output.txt
 *.log
 *.pot
 *.pyc
+/export/*.json
 
 # Ignore test script
 *test.py
