@@ -11,46 +11,50 @@ class Ideas:
     def __init__(self, export_result=False, export_type='json'):
         self.export_result = export_result
         self.export_type = export_type
+        self.headers = {"user-agent": generate_user_agent()}
         
     def scrape(
         self,
         symbol: str = "BTCUSD",
         startPage: int = 1,
         endPage: int  = 1,
+        sort: str = "popular"
     ):
         """
         Extract trading ideas from TradingView for a specified symbol over a range of pages.
 
-        This method scrapes trading ideas related to a particular symbol from TradingView. 
-        It allows users to specify the range of pages to scrape, enabling the collection 
-        of multiple ideas at once.
+        This method scrapes trading ideas related to a particular symbol from TradingView.
+        Users can specify the range of pages to scrape, enabling the collection of multiple ideas at once.
+        The results can be sorted by popularity or recency.
 
         Parameters
         ----------
+        symbol : str, optional
+            The trading symbol for which to scrape ideas. Defaults to "BTCUSD".
         startPage : int, optional
-            The page where the scraper should start, by default 1.
+            The page number where the scraper should start. Defaults to 1.
         endPage : int, optional
-            The page where the scraper should end, by default 1.
-            If this is left the same as startPage, the scraper will only scrape one page.
+            The page number where the scraper should end. Defaults to 1.
+            If this is the same as startPage, the scraper will only scrape one page.
+        sort : str, optional
+            The sorting criteria for the ideas. Can be either 'popular' or 'recent'. Defaults to 'popular'.
 
         Returns
         -------
         list
-            A list of dictionaries containing the scraped trading ideas. Each dictionary 
+            A list of dictionaries containing the scraped trading ideas. Each dictionary
             includes details such as title, paragraph, author, and publication date.
 
         Raises
         ------
         Exception
-            If no ideas are found for the specified symbol or page number.
+            If no ideas are found for the specified symbol or page number, or if the sort argument is invalid.
 
         Notes
         -----
-        The method includes a delay of 5 seconds between requests to avoid overwhelming 
+        The method includes a delay of 5 seconds between requests to avoid overwhelming
         the server with rapid requests.
         """
-
-        headers = {"user-agent": generate_user_agent()}
         
         pageList = range(startPage, endPage + 1)
 
@@ -58,46 +62,17 @@ class Ideas:
         
         for page in pageList:
 
-            # If no symbol is provided check the front page
-            if symbol:
-                symbol_payload = f"/{symbol}/"
+            if sort == "popular":
+                articles.extend(self.scrape_popular_ideas(symbol, page))
+            elif sort == "recent":
+                articles.extend(self.scrape_recent_ideas(symbol, page))
             else:
-                symbol_payload = "/"
-
-            # Fetch the page as plain HTML text
-            response = requests.get(
-                f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/",
-                headers=headers
-            ).text
-
-            # Use BeautifulSoup to parse the HTML
-            soup = BeautifulSoup(response, "html.parser")
-
-            # Each div contains a single idea
-            content = soup.find(
-                "div",
-                class_="listContainer-rqOoE_3Q",
-            )
-
-            if content is None:
-                raise Exception("No ideas found. Check the symbol or page number.")
-
-            articles_tag = content.find_all("article")
+                print("[ERROR] sort argument must be one 'popular' or 'recent'")
             
-            if articles_tag is None:
-                raise Exception("No ideas found. Check the symbol or page number.")
-
-            for tag in articles_tag:
-                
-                article_json = self.parse_article(tag)
-                
-                if article_json is not None:
-                    articles.append(article_json)
-
             print(f"[INFO] Page {page} scraped successfully")
 
             # Wait 5 seconds before going to the next page
-            if len(pageList) > 1:
+            if len(pageList) > 1 and page<len(pageList):
                 sleep(5)
 
         # Save results
@@ -167,3 +142,95 @@ class Ideas:
             article_json["idea_strategy"] = ideas_strategy_tag.get('title', '').strip()
 
         return article_json
+        
+    def scrape_popular_ideas(self, symbol, page):
+        """
+        Scrapes popular trading ideas for a specified symbol from TradingView.
+
+        Parameters
+        ----------
+        symbol : str
+            The trading symbol for which to scrape ideas.
+        page : int
+            The page number to scrape.
+
+        Returns
+        -------
+        list
+            A list of dictionaries containing the scraped popular ideas.
+
+        Raises
+        ------
+        Exception
+            If no ideas are found for the specified symbol or page number.
+        """
+        # If no symbol is provided check the front page
+        if symbol:
+            symbol_payload = f"/{symbol}/"
+        else:
+            symbol_payload = "/"
+
+        # Fetch the page as plain HTML text
+        response = requests.get(
+            f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?component-data-only=1&sort=recent",
+            headers=self.headers
+        ).text
+
+        # Use BeautifulSoup to parse the HTML
+        soup = BeautifulSoup(response, "html.parser")
+
+        # Each div contains a single idea
+        content = soup.find(
+            "div",
+            class_="listContainer-rqOoE_3Q",
+        )
+
+        if content is None:
+            raise Exception("No ideas found. Check the symbol or page number.")
+
+        articles_tag = content.find_all("article")
+        if not articles_tag:
+            raise Exception("No ideas found. Check the symbol or page number.")
+
+        return [self.parse_article(tag) for tag in articles_tag]
+
+
+    def scrape_recent_ideas(self, symbol, page):
+        """
+        Scrapes recent trading ideas for a specified symbol from TradingView.
+
+        Parameters
+        ----------
+        symbol : str
+            The trading symbol for which to scrape ideas.
+        page : int
+            The page number to scrape.
+
+        Returns
+        -------
+        list
+            A list of dictionaries containing the scraped recent ideas.
+
+        Raises
+        ------
+        Exception
+            If the symbol is None when trying to scrape recent ideas.
+        """
+        if symbol:
+            symbol_payload = f"/{symbol}/"
+        else:
+            raise Exception("[ERROR] symbol could not be null when getting recent ideas")
+            
+        if page == 1:
+            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/?component-data-only=1&sort=recent"
+        else:
+            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?sort=recent&component-data-only=1&sort=recent"
+
+        response = requests.get(url, headers=self.headers)
+        if response.status_code != 200:
+            return []
+
+        response_json = response.json()
+        items = response_json.get("data", {}).get("ideas", {}).get("data", {}).get("items", [])
+        
+        return [item for item in items if item.pop("symbol", None) is not None]
