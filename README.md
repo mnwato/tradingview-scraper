@@ -108,7 +108,8 @@ ideas_scraper = Ideas(
 ideas = ideas_scraper.scrape(
   symbol="ETHUSD",
   startPage=1,
-  endPage=2
+  endPage=2,
+  sort="popular"  #  Could be 'popupar' or 'recent'
 )
 print("Ideas:", ideas)
 ```
