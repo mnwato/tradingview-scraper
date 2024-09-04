@@ -39,7 +39,7 @@ class Indicators:
 
         if not allIndicators:
             for indicator in indicators:
-                assert indicator in self.indicators, "This indicator is not supported! Please check the list of supported indicators."
+                assert indicator in self.indicators, "This indicator is not supported! Please check the list of supported indicators at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/indicators.txt"
 
         # Construct the URL for scraping
         base_url = "https://scanner.tradingview.com/symbol"
