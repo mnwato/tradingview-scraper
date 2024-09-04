@@ -18,7 +18,7 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - [x] [Ideas](https://www.tradingview.com/symbols/BTCUSD/ideas/)
   - [x] [Indicators](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Overview](https://www.tradingview.com/symbols/BTCUSD/)
-  - [ ] [News](https://www.tradingview.com/symbols/BTCUSD/news/)
+  - [x] [News](https://www.tradingview.com/symbols/BTCUSD/news/)
   - [ ] [Minds](https://www.tradingview.com/symbols/BTCUSD/minds/)
   - [ ] [Technical](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Market](https://www.tradingview.com/symbols/BTCUSD/markets/)
@@ -29,7 +29,7 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
 
 ## Features
 
-- **Idea Information Scraping**
+- **Idea page Scraping**
   - Title
   - Paragraph
   - Preview Image
@@ -39,6 +39,14 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - Publication Datetime
   - Is Updated
   - Idea Strategy
+
+- **News page Scraping**
+  - Breadcrumbs
+  - Title
+  - Published datetime
+  - Related symbols
+  - Body
+  - Tags
 
 - **Webpage Scraping Options**
   - Scrape All Pages
@@ -167,8 +175,79 @@ indicators = indicators_scraper.scrape(
 print("All Indicators:", indicators)
 ```
 
-Feel free to further customize any part to better fit your documentation style!
+### 5. Getting News Headlines/Content
+```python
+# Create an instance of the NewsScraper with export options
+news_scraper = NewsScraper(export_result=True, export_type='json')
+
+# Retrieve news headlines from a specific provider
+news_headlines = news_scraper.scrape_headlines(
+    provider='newsbtc',  # Specify the news provider
+    # symbol='BTCUSD',      # Uncomment and specify if needed
+    # exchange='BINANCE', # Uncomment and specify if needed
+    sort='latest'
+)
+
+# Retrieve detailed news content for a specific story
+news_content = news_scraper.scrape_news_content(
+    story_path=news_headlines[0]['story_path']  # Specify the story path from scraped headlines
+)
+```
+- To Retrieve News by Providers:
+  - Specify a `provider`.
+  - Ensure that both `symbol` and `exchange` are left empty.
+- Retrieve news by symbol:
+  - Leave the `provider` empty.
+  - Specify both `symbol` and `exchange`.
+
+#### Output (news headline):
+```json
+[
+  {
+    "breadcrumbs": "News > U.Today > Bitcoin ETFs Record Enormous Outflows",
+    "title": "Bitcoin ETFs Record Enormous Outflows",
+    "published_datetime": "Wed, 04 Sep 2024 07:55:38 GMT",
+    "related_symbols": [
+      {
+        "name": "BTCUSDT",
+        "logo": "https://s3-symbol-logo.tradingview.com/crypto/XTVCUSDT.svg"
+      }
+    ],
+    "body": ["""<List of text page content>"""],
+    "tags": ["Crypto", "U.Today"]}
+]
+```
+#### Output (news content):
+```json
+[
+  {
+    "id": "tag:reuters.com,2024:newsml_L1N3KM09S:0",
+    "title": "Goldman Sachs sees biggest boost to US economy from Harris win",
+    "provider": "reuters",
+    "sourceLogoId": "reuters",
+    "published": 1725443676,
+    "source": "Reuters",
+    "urgency": 2,
+    "permission": "preview",
+    "relatedSymbols": [
+      {
+        "symbol": "BITMEX:XBTETH.P",
+        "currency-logoid": "country/US",
+        "base-currency-logoid": "crypto/XTVCBTC"
+      },
+      {
+        "symbol": "ICEUS:DXY",
+        "logoid": "indices/u-s-dollar-index"
+      }
+    ],
+    "storyPath": "/news/reuters.com,2024:newsml_L1N3KM09S:0-goldman-sachs-sees-biggest-boost-to-us-economy-from-harris-win/"
+  }
+]
+```
+
 ## Changes:
+- Release `0.3.0`:   
+  Add news scraper
 - Release `0.2.9`:   
   Refactor for new TradingView structure
 - Release `0.1.0`:  
