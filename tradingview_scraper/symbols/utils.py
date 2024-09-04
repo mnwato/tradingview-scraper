@@ -46,9 +46,9 @@ def generate_export_filepath(symbol, data_category, file_extension):
         "<current_directory>/export/<data_category>_<symbol>_<timestamp><file_extension>".
     """
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    symbol_lower = symbol.lower()
+    symbol_lower = f'{symbol.lower()}_' if symbol else ''
     root_path = os.getcwd()
-    path = os.path.join(root_path, "export", f"{data_category}_{symbol_lower}_{timestamp}{file_extension}")
+    path = os.path.join(root_path, "export", f"{data_category}_{symbol_lower}{timestamp}{file_extension}")
     return path
 
 def save_json_file(data, symbol, data_category):
