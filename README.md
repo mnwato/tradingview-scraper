@@ -190,7 +190,7 @@ news_headlines = news_scraper.scrape_headlines(
 
 # Retrieve detailed news content for a specific story
 news_content = news_scraper.scrape_news_content(
-    story_path=news_headlines[0]['story_path']  # Specify the story path from scraped headlines
+    story_path=news_headlines[0]['storyPath']  # Specify the story path from scraped headlines
 )
 ```
 - To Retrieve News by Providers:
