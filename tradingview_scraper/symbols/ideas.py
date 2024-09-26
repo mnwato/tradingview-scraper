@@ -125,7 +125,13 @@ class Ideas:
         # Extract boosts count
         boosts_count_tag = article_tag.find('button', class_=lambda x: x and x.startswith('boostButton-'))
         if boosts_count_tag:
-            article_json["boosts_count"] = boosts_count_tag.get('aria-label').split()[0]
+            aria_label = boosts_count_tag.get('aria-label')
+            if aria_label:
+                article_json["boosts_count"] = aria_label.split()[0]
+            else:
+                article_json["boosts_count"] = 0
+        else:
+            article_json["boosts_count"] = 0
 
         # Extract publication info
         publication_text = article_tag.find('time', class_=lambda x: x and x.startswith('publication-date-')).text.strip()
