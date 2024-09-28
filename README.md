@@ -144,7 +144,7 @@ The output will always be a list of Python dictionaries, structured as follows:
 ### 3. Getting Indicators Status
 To scrape the status of specific indicators, use the following code:
 ```python
-from symbols.indicators import Indicators
+from tradingview_scraper.symbols.technicals import Indicators
 
 # Initialize the Indicators scraper with export options
 indicators_scraper = Indicators(export_result=True, export_type='json')
@@ -166,6 +166,8 @@ print("Indicators:", indicators)
 ### 4. Getting All Indicators
 If you want to retrieve all available indicators for a symbol, set `allIndicators=True`:
 ```python
+from tradingview_scraper.symbols.technicals import Indicators
+
 # Scrape all indicators for the BTCUSD symbol
 indicators_scraper = Indicators(export_result=True, export_type='json')
 indicators = indicators_scraper.scrape(
