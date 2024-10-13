@@ -203,10 +203,8 @@ class NewsScraper:
             news_list = NewsScraper._sort_news(items, sort)
                         
             # Save results
-            if symbol and exchange and self.export_result == True:
-                self._export(data=news_list, symbol=symbol)
-            if provider and not (symbol or exchange):
-                self._export(data=news_list)
+            if self.export_result:
+                self._export(data=news_list, symbol=symbol, provider=provider, area=area)
 
             return news_list
             
@@ -237,8 +235,8 @@ class NewsScraper:
       return news_list
 
 
-    def _export(self, data, symbol=None):
-        data_category = 'news_symbol' if symbol else 'news_provider'
+    def _export(self, data, symbol=None, provider=None, area=None):
+        data_category = 'news_symbol' if symbol else 'news_provider' if provider else 'news_area'
         
         if self.export_type == "json":
             save_json_file(data=data, symbol=symbol, data_category=data_category)
