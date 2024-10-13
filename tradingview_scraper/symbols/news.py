@@ -17,6 +17,7 @@ class NewsScraper:
         self.exchanges = self._load_exchanges()
         self.languages = self._load_languages()
         self.news_providers = self._load_news_providers()
+        self.areas = self._load_areas()
 
     def scrape_news_content(
       self,
@@ -122,12 +123,13 @@ class NewsScraper:
         symbol: str = None,
         exchange: str = None,
         provider: str = None,
+        area: str = None,
         sort: str = "latest",
         section: str = "all",
         language: str = "en"
       ):
         """
-        Scrapes news headlines for a specified symbol from a given exchange.
+        Scrapes news headlines for a specified symbol from a given exchange, provider, or global area.
 
         Parameters:
             symbol (str): The trading symbol for which to fetch news..
@@ -138,6 +140,7 @@ class NewsScraper:
             section (str): The section of news to fetch. Options are "all" or "esg". 
                           Default is "all".
             language (str): The language code for the news.
+            area (str): The news area (e.g., "world", "americas", "europe", "asia", "oceania", "africa").
 
         Returns:
             list: A list of news articles, where each article is represented as a 
@@ -155,41 +158,43 @@ class NewsScraper:
         """
 
         # Validate inputs
-        if not symbol and not exchange and not provider:
-            raise ValueError("Symbol, exchange, and provide cannot all be empty at the same time.")
+        if not any([symbol, exchange, provider, area]):
+            raise ValueError("At least one of 'symbol', 'exchange', 'provider', or 'area' must be specified.")
 
-        if symbol and exchange and provider:
-            raise ValueError("Symbol, exchange, and provide cannot all be specified at the same time.")
+        if provider and (symbol or exchange or area):
+            raise ValueError("'provider' cannot be used together with 'symbol', 'exchange', or 'area'.")
 
-        if provider and (symbol or exchange):
-            raise ValueError("If 'provider' is specified, both 'symbol' and 'exchange' must be empty.")
-        
-        if not provider and not (symbol and exchange):
-            raise ValueError("If 'provider' is empty, 'symbol' and 'exchange' cannot all be  empty at the same time.")
+        if symbol and not exchange:
+            raise ValueError("'symbol' must be used together with 'exchange'.")
+
+        if exchange and exchange not in self.exchanges:
+            raise ValueError("Unsupported exchange! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
+
+        if provider and provider not in self.news_providers:
+            raise ValueError("Unsupported provider! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
+
+        if area and area not in self.areas:
+            raise ValueError(f"Invalid area! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/areas.json")
 
         if section not in ["all", "esg"]:
-            raise ValueError("This section is not supported! It must be 'all' or 'esg'")
-        section = "" if section == "all" else section
+            raise ValueError("Invalid section! It must be 'all' or 'esg'.")
 
         if sort not in ["latest", "oldest", "most_urgent", "least_urgent"]:
-            raise ValueError("This section is not supported! It must be 'latest' or 'esoldestg', or 'most_urgent', 'least_urgent'")
-        
+            raise ValueError("Invalid sort option! It must be one of 'latest', 'oldest', 'most_urgent', or 'least_urgent'.")
+
         if language not in self.languages:
-            raise ValueError("This language is not supported! Please check 'the available options' at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
-        
-        if symbol is not None and exchange is not None and exchange not in self.exchanges:
-            raise ValueError("This exchange is not supported! Please check 'the available options' at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
-        
-        if provider and provider not in self.news_providers:
-            raise ValueError("This provider is not supported! Please check 'the available options' at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
-        
-        # Construct the URL
-        if not provider:
-            url = f"https://news-headlines.tradingview.com/v2/view/headlines/symbol?client=web&lang={language}&section={section}&streaming=&symbol={exchange}:{symbol}"
-        else:
+            raise ValueError("Unsupported language! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
+
+
+        if area:
+            area_code = self.areas[area]
+            url = f"https://news-headlines.tradingview.com/v2/headlines?client=web&lang={language}&area={area_code}"
+        elif provider:
             provider = provider.replace('.', '_')
             url = f"https://news-headlines.tradingview.com/v2/headlines?client=web&lang={language}&provider={provider}"
-        
+        else:
+            url = f"https://news-headlines.tradingview.com/v2/view/headlines/symbol?client=web&lang={language}&section={section}&streaming=&symbol={exchange}:{symbol}"
+
         try:
             response = requests.get(url, headers=self.headers)
             response.raise_for_status()  # Raises HTTPError for bad responses (4xx and 5xx)
