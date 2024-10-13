@@ -311,3 +311,25 @@ class NewsScraper:
         except IOError as e:
             print(f"[ERROR] Error reading providers file: {e}")
             return []
+
+    
+    def _load_areas(self) -> list:
+        """Load areas from a specified file.
+
+        Returns:
+            list: A list of areas loaded from the file.
+
+        Raises:
+            IOError: If there is an error reading the file.
+        """
+        path = pkg_resources.resource_filename('tradingview_scraper', 'data/areas.json')
+        if not os.path.exists(path):
+            print(f"[ERROR] Areas file not found at {path}.")
+            return []
+        try:
+            with open(path, 'r') as f:
+                areas = json.load(f)
+            return areas
+        except IOError as e:
+            print(f"[ERROR] Error reading areas file: {e}")
+            return []
