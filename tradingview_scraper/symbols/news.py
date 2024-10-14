@@ -185,6 +185,7 @@ class NewsScraper:
         if language not in self.languages:
             raise ValueError("Unsupported language! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
 
+        section = "" if section == "all" else section
 
         if area:
             area_code = self.areas[area]
