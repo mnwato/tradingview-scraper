@@ -184,9 +184,11 @@ news_scraper = NewsScraper(export_result=True, export_type='json')
 
 # Retrieve news headlines from a specific provider
 news_headlines = news_scraper.scrape_headlines(
-    provider='newsbtc',  # Specify the news provider
-    # symbol='BTCUSD',      # Uncomment and specify if needed
-    # exchange='BINANCE', # Uncomment and specify if needed
+    symbol='BTCUSD',      # Uncomment and specify if needed
+    exchange='BINANCE', # Uncomment and specify if needed
+    # provider='newsbtc',  # Specify the news provider
+    # area='world',  # Specify the geographical area
+    # section='all',  # Specify the section of news
     sort='latest'
 )
 
@@ -195,12 +197,10 @@ news_content = news_scraper.scrape_news_content(
     story_path=news_headlines[0]['storyPath']  # Specify the story path from scraped headlines
 )
 ```
-- To Retrieve News by Providers:
-  - Specify a `provider`.
-  - Ensure that both `symbol` and `exchange` are left empty.
 - Retrieve news by symbol:
-  - Leave the `provider` empty.
-  - Specify both `symbol` and `exchange`.
+  - Both `symbol` and `exchange` are required parameters
+- Filter result by:
+  - `area`, `provider` and `section` can be specified to refine the news results.
 
 #### Output (news headline):
 ```json
