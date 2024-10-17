@@ -17,7 +17,43 @@ class NewsScraper:
         self.exchanges = self._load_exchanges()
         self.languages = self._load_languages()
         self.news_providers = self._load_news_providers()
+        self.areas = self._load_areas()
 
+    def validate_inputs(self, **kwargs):
+        symbol = kwargs.get('symbol')
+        exchange = kwargs.get('exchange')
+        provider = kwargs.get('provider')
+        area = kwargs.get('area')
+        sort = kwargs.get('sort')
+        section = kwargs.get('section')
+        language = kwargs.get('language')
+
+        if not any([symbol, exchange]):
+            raise ValueError("At least 'symbol' and 'exchange' must be specified.")
+
+        if symbol and not exchange:
+            raise ValueError("'symbol' must be used together with 'exchange'.")
+
+        if exchange and exchange not in self.exchanges:
+            raise ValueError("Unsupported exchange! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
+
+        if provider and provider not in self.news_providers:
+            raise ValueError("Unsupported provider! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
+
+        if area and area not in self.areas:
+            raise ValueError(f"Invalid area! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/areas.json")
+
+        if section not in ["all", "esg", "financial_statement", "press_release"]:
+            raise ValueError("Invalid section! It must be 'all' or 'esg'.")
+
+        if sort not in ["latest", "oldest", "most_urgent", "least_urgent"]:
+            raise ValueError("Invalid sort option! It must be one of 'latest', 'oldest', 'most_urgent', or 'least_urgent'.")
+
+        if language not in self.languages:
+            raise ValueError("Unsupported language! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
+
+        return kwargs
+        
     def scrape_news_content(
       self,
       story_path: str
@@ -119,15 +155,16 @@ class NewsScraper:
 
     def scrape_headlines(
         self,
-        symbol: str = None,
-        exchange: str = None,
+        symbol: str,
+        exchange: str,
         provider: str = None,
+        area: str = None,
         sort: str = "latest",
         section: str = "all",
         language: str = "en"
       ):
         """
-        Scrapes news headlines for a specified symbol from a given exchange.
+        Scrapes news headlines for a specified symbol from a given exchange, provider, or global area.
 
         Parameters:
             symbol (str): The trading symbol for which to fetch news..
@@ -138,6 +175,7 @@ class NewsScraper:
             section (str): The section of news to fetch. Options are "all" or "esg". 
                           Default is "all".
             language (str): The language code for the news.
+            area (str): The news area (e.g., "world", "americas", "europe", "asia", "oceania", "africa").
 
         Returns:
             list: A list of news articles, where each article is represented as a 
@@ -155,40 +193,30 @@ class NewsScraper:
         """
 
         # Validate inputs
-        if not symbol and not exchange and not provider:
-            raise ValueError("Symbol, exchange, and provide cannot all be empty at the same time.")
+        kwargs = self.validate_inputs(
+            symbol = symbol,
+            exchange = exchange,
+            provider = provider,
+            area = area,
+            sort = sort,
+            section = section,
+            language = language
+        )
+        symbol = kwargs['symbol']
+        exchange = kwargs['exchange']
+        provider = kwargs['provider']
+        area = kwargs['area']
+        sort = kwargs['sort']
+        section = kwargs['section']
+        language = kwargs['language']
 
-        if symbol and exchange and provider:
-            raise ValueError("Symbol, exchange, and provide cannot all be specified at the same time.")
-
-        if provider and (symbol or exchange):
-            raise ValueError("If 'provider' is specified, both 'symbol' and 'exchange' must be empty.")
-        
-        if not provider and not (symbol and exchange):
-            raise ValueError("If 'provider' is empty, 'symbol' and 'exchange' cannot all be  empty at the same time.")
-
-        if section not in ["all", "esg"]:
-            raise ValueError("This section is not supported! It must be 'all' or 'esg'")
         section = "" if section == "all" else section
 
-        if sort not in ["latest", "oldest", "most_urgent", "least_urgent"]:
-            raise ValueError("This section is not supported! It must be 'latest' or 'esoldestg', or 'most_urgent', 'least_urgent'")
+        area_code = "" if not area else self.areas[area]
         
-        if language not in self.languages:
-            raise ValueError("This language is not supported! Please check 'the available options' at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
-        
-        if symbol is not None and exchange is not None and exchange not in self.exchanges:
-            raise ValueError("This exchange is not supported! Please check 'the available options' at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
-        
-        if provider and provider not in self.news_providers:
-            raise ValueError("This provider is not supported! Please check 'the available options' at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
-        
-        # Construct the URL
-        if not provider:
-            url = f"https://news-headlines.tradingview.com/v2/view/headlines/symbol?client=web&lang={language}&section={section}&streaming=&symbol={exchange}:{symbol}"
-        else:
-            provider = provider.replace('.', '_')
-            url = f"https://news-headlines.tradingview.com/v2/headlines?client=web&lang={language}&provider={provider}"
+        provider = "" if not provider else provider.replace('.', '_')
+            
+        url = f"https://news-headlines.tradingview.com/v2/view/headlines/symbol?client=web&lang={language}&area={area_code}&provider={provider}&section={section}&streaming=&symbol={exchange}:{symbol}"
         
         try:
             response = requests.get(url, headers=self.headers)
@@ -203,10 +231,8 @@ class NewsScraper:
             news_list = NewsScraper._sort_news(items, sort)
                         
             # Save results
-            if symbol and exchange and self.export_result == True:
-                self._export(data=news_list, symbol=symbol)
-            if provider and not (symbol or exchange):
-                self._export(data=news_list)
+            if self.export_result:
+                self._export(data=news_list, symbol=symbol, provider=provider, area=area)
 
             return news_list
             
@@ -237,8 +263,8 @@ class NewsScraper:
       return news_list
 
 
-    def _export(self, data, symbol=None):
-        data_category = 'news_symbol' if symbol else 'news_provider'
+    def _export(self, data, symbol=None, provider=None, area=None):
+        data_category = 'news_symbol' if symbol else 'news_provider' if provider else 'news_area'
         
         if self.export_type == "json":
             save_json_file(data=data, symbol=symbol, data_category=data_category)
@@ -310,4 +336,26 @@ class NewsScraper:
             return [provider.strip() for provider in providers]
         except IOError as e:
             print(f"[ERROR] Error reading providers file: {e}")
+            return []
+
+    
+    def _load_areas(self) -> list:
+        """Load areas from a specified file.
+
+        Returns:
+            list: A list of areas loaded from the file.
+
+        Raises:
+            IOError: If there is an error reading the file.
+        """
+        path = pkg_resources.resource_filename('tradingview_scraper', 'data/areas.json')
+        if not os.path.exists(path):
+            print(f"[ERROR] Areas file not found at {path}.")
+            return []
+        try:
+            with open(path, 'r') as f:
+                areas = json.load(f)
+            return areas
+        except IOError as e:
+            print(f"[ERROR] Error reading areas file: {e}")
             return []
