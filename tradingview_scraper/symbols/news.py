@@ -19,6 +19,41 @@ class NewsScraper:
         self.news_providers = self._load_news_providers()
         self.areas = self._load_areas()
 
+    def validate_inputs(self, **kwargs):
+        symbol = kwargs.get('symbol')
+        exchange = kwargs.get('exchange')
+        provider = kwargs.get('provider')
+        area = kwargs.get('area')
+        sort = kwargs.get('sort')
+        section = kwargs.get('section')
+        language = kwargs.get('language')
+
+        if not any([symbol, exchange]):
+            raise ValueError("At least 'symbol' and 'exchange' must be specified.")
+
+        if symbol and not exchange:
+            raise ValueError("'symbol' must be used together with 'exchange'.")
+
+        if exchange and exchange not in self.exchanges:
+            raise ValueError("Unsupported exchange! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
+
+        if provider and provider not in self.news_providers:
+            raise ValueError("Unsupported provider! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
+
+        if area and area not in self.areas:
+            raise ValueError(f"Invalid area! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/areas.json")
+
+        if section not in ["all", "esg", "financial_statement", "press_release"]:
+            raise ValueError("Invalid section! It must be 'all' or 'esg'.")
+
+        if sort not in ["latest", "oldest", "most_urgent", "least_urgent"]:
+            raise ValueError("Invalid sort option! It must be one of 'latest', 'oldest', 'most_urgent', or 'least_urgent'.")
+
+        if language not in self.languages:
+            raise ValueError("Unsupported language! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
+
+        return kwargs
+        
     def scrape_news_content(
       self,
       story_path: str
@@ -120,8 +155,8 @@ class NewsScraper:
 
     def scrape_headlines(
         self,
-        symbol: str = None,
-        exchange: str = None,
+        symbol: str,
+        exchange: str,
         provider: str = None,
         area: str = None,
         sort: str = "latest",
@@ -158,44 +193,31 @@ class NewsScraper:
         """
 
         # Validate inputs
-        if not any([symbol, exchange, provider, area]):
-            raise ValueError("At least one of 'symbol', 'exchange', 'provider', or 'area' must be specified.")
-
-        if provider and (symbol or exchange or area):
-            raise ValueError("'provider' cannot be used together with 'symbol', 'exchange', or 'area'.")
-
-        if symbol and not exchange:
-            raise ValueError("'symbol' must be used together with 'exchange'.")
-
-        if exchange and exchange not in self.exchanges:
-            raise ValueError("Unsupported exchange! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
-
-        if provider and provider not in self.news_providers:
-            raise ValueError("Unsupported provider! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
-
-        if area and area not in self.areas:
-            raise ValueError(f"Invalid area! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/areas.json")
-
-        if section not in ["all", "esg"]:
-            raise ValueError("Invalid section! It must be 'all' or 'esg'.")
-
-        if sort not in ["latest", "oldest", "most_urgent", "least_urgent"]:
-            raise ValueError("Invalid sort option! It must be one of 'latest', 'oldest', 'most_urgent', or 'least_urgent'.")
-
-        if language not in self.languages:
-            raise ValueError("Unsupported language! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
+        kwargs = self.validate_inputs(
+            symbol = symbol,
+            exchange = exchange,
+            provider = provider,
+            area = area,
+            sort = sort,
+            section = section,
+            language = language
+        )
+        symbol = kwargs['symbol']
+        exchange = kwargs['exchange']
+        provider = kwargs['provider']
+        area = kwargs['area']
+        sort = kwargs['sort']
+        section = kwargs['section']
+        language = kwargs['language']
 
         section = "" if section == "all" else section
 
-        if area:
-            area_code = self.areas[area]
-            url = f"https://news-headlines.tradingview.com/v2/headlines?client=web&lang={language}&area={area_code}"
-        elif provider:
-            provider = provider.replace('.', '_')
-            url = f"https://news-headlines.tradingview.com/v2/headlines?client=web&lang={language}&provider={provider}"
-        else:
-            url = f"https://news-headlines.tradingview.com/v2/view/headlines/symbol?client=web&lang={language}&section={section}&streaming=&symbol={exchange}:{symbol}"
-
+        area_code = "" if not area else self.areas[area]
+        
+        provider = "" if not provider else provider.replace('.', '_')
+            
+        url = f"https://news-headlines.tradingview.com/v2/view/headlines/symbol?client=web&lang={language}&area={area_code}&provider={provider}&section={section}&streaming=&symbol={exchange}:{symbol}"
+        
         try:
             response = requests.get(url, headers=self.headers)
             response.raise_for_status()  # Raises HTTPError for bad responses (4xx and 5xx)
