@@ -3,6 +3,7 @@ import pkg_resources
 import os
 import re
 import json
+from typing import List, Optional
 
 from tradingview_scraper.symbols.utils import generate_user_agent, save_json_file, save_csv_file
 
@@ -65,8 +66,8 @@ class Indicators:
         self,
         exchange: str = "BITSTAMP",
         symbol: str = "BTCUSD",
-        timeframe: str = None,
-        indicators: list = ["RSI", "Stoch.K"],
+        timeframe: Optional[str] = None,
+        indicators: Optional[List[str]] = None,
         allIndicators: bool = False,
     ) -> dict:
         """Scrape data from the TradingView scanner.
@@ -89,13 +90,24 @@ class Indicators:
         self._validate_timeframe(timeframe)
         
 
-        # Check if the exchange and indicators are supported
-        assert exchange in self.exchanges, "This exchange is not supported! Please check the list of supported exchanges."
+        # Check if the exchange is supported
+        if exchange not in self.exchanges:
+            raise ValueError("This exchange is not supported! Please check the list of supported exchanges.")
 
+        # Validate indicators based on allIndicators flag
         if not allIndicators:
-            for indicator in indicators:
-                assert indicator in self.indicators, "This indicator is not supported! Please check the list of supported indicators at link bellow\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/indicators.txt"
+            if indicators is None or len(indicators) == 0:
+                raise ValueError("If allIndicators is False, indicators cannot be empty.")
+            
+            unsupported_indicators = [indicator for indicator in indicators if indicator not in self.indicators]
+            if unsupported_indicators:
+                raise ValueError(f"Unsupported indicators: {', '.join(unsupported_indicators)}. "
+                                "Please check the list of supported indicators at the following link:\n"
+                                "https://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/indicators.txt")
+        else:
+            indicators = self.indicators
 
+            
         # Construct the URL for scraping
         base_url = "https://scanner.tradingview.com/symbol"
         # fields = ','.join(indicators)
