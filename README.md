@@ -7,14 +7,12 @@
 This is a Python library for scraping ideas and indicators from [TradingView.com](https://www.tradingview.com). The goal is to develop this package to scrape anything on [TradingView.com](https://www.tradingview.com) with real-time responses.  
 **Thanks to contributors!**
 
+
 ## To-Do List
-
-### Completed Tasks
-- [x] Export as a `CSV` file
-- [x] Export as `JSON`
-
-### Pending Tasks
-- [ ] Scrape Symbol Subpages:
+- Export
+  - [x] Export as a `CSV` file
+  - [x] Export as `JSON`
+- Scrape Symbol Subpages:
   - [x] [Ideas](https://www.tradingview.com/symbols/BTCUSD/ideas/)
   - [x] [Indicators](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Overview](https://www.tradingview.com/symbols/BTCUSD/)
@@ -163,8 +161,8 @@ print("Indicators:", indicators)
 {"RSI": "46.34926112", "Stoch.K": "40.40173723"}
 ```
 
-### 4. Getting All Indicators
-If you want to retrieve all available indicators for a symbol, set `allIndicators=True`:
+### 4. Getting All Indicators in Specified timeframe
+If you want to retrieve all available indicators for a symbol, set `allIndicators=True`, `timeframe=4h`:
 ```python
 from tradingview_scraper.symbols.technicals import Indicators
 
@@ -172,6 +170,7 @@ from tradingview_scraper.symbols.technicals import Indicators
 indicators_scraper = Indicators(export_result=True, export_type='json')
 indicators = indicators_scraper.scrape(
     symbol="BTCUSD",
+    timeframe="4h",
     allIndicators=True
 )
 print("All Indicators:", indicators)
