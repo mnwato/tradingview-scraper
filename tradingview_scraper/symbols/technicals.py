@@ -103,6 +103,9 @@ class Indicators:
             
             if response.status_code == 200:
                 json_response = response.json()
+                if not json_response:
+                    return {"status": "failed"}
+                
                 if self.export_result:
                     self._export(data=[json_response], symbol=symbol)
                 return {"status": "success", "data": self.revise_response(json_response)}
