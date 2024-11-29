@@ -56,7 +56,7 @@ class Indicators:
         self,
         exchange: str = "BITSTAMP",
         symbol: str = "BTCUSD",
-        timeframe: Optional[str] = None,
+        timeframe: str = "1d",
         indicators: Optional[List[str]] = None,
         allIndicators: bool = False,
     ) -> dict:
@@ -65,7 +65,7 @@ class Indicators:
         Args:
             exchange (str): The exchange to scrape data from (default is "BITSTAMP").
             symbol (str): The symbol to scrape data for (default is "BTCUSD").
-            timeframe (Optional[str]): A timeframe. If not specify it will use '1d'(default is None).
+            timeframe (str): A timeframe. (default is "1d").
             indicators (Optional[List[str]]): A list of indicators to scrape (default is None).
             allIndicators (bool): If True, scrape all indicators; otherwise, check if specified indicators are valid (default is False).
 
@@ -100,17 +100,19 @@ class Indicators:
 
         try:
             response = requests.get(url, headers=headers)
-            response.raise_for_status()  # Raise an error for bad responses
-            json_response = response.json()
             
-            if self.export_result:
-                self._export(data=[json_response], symbol=symbol)
-
-            return self.revise_response(json_response)
+            if response.status_code == 200:
+                json_response = response.json()
+                if self.export_result:
+                    self._export(data=[json_response], symbol=symbol)
+                return {"status": "success", "data": self.revise_response(json_response)}
+            
+            else:
+                return {"status": "failed"}
             
         except requests.RequestException as e:
             print(f"[ERROR] Failed to scrape data: {e}")
-            return {}
+            return {"status": "failed"}
 
 
     def revise_response(self, json_response: dict) -> dict:
