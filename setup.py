@@ -13,7 +13,7 @@ classifiers = [
   'Programming Language :: Python :: 3.8'
 ]
 
-VERSION = '0.3.0'
+VERSION = '0.3.2'
 DESCRIPTION = 'Tradingview scraper tool'
 
 # Setting up
@@ -23,7 +23,7 @@ setup(
     author="Mostafa Najmi",
     author_email="m.n.irib@gmail.com",
     url='https://github.com/mnwato/tradingview-scraper',
-    download_url='https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.3.0.zip',
+    download_url='https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.3.2.zip',
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
     long_description=readme(),
@@ -35,6 +35,7 @@ setup(
             'data/indicators.txt',
             'data/languages.json',
             'data/news_providers.txt',
+            'data/timeframes.json',
         ],
     },
     install_requires=[
