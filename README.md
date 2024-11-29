@@ -77,7 +77,7 @@ To get started with the TradingView Scraper library, follow these simple steps:
 
 3. **Upgrade if necessary**: If you already have the library installed and want to upgrade to the latest version, use:
    ```sh
-   pip install --upgrade tradingview-scraper
+   pip install --upgrade --no-cache tradingview-scraper
    ```
 
 Here’s a revised version of the Examples section, focusing on clarity, ease of understanding, and providing essential information about default values:
@@ -151,6 +151,7 @@ indicators_scraper = Indicators(export_result=True, export_type='json')
 indicators = indicators_scraper.scrape(
     exchange="BINANCE",
     symbol="BTCUSD",
+    timeframe="1d",
     indicators=["RSI", "Stoch.K"]
 )
 print("Indicators:", indicators)
@@ -161,8 +162,8 @@ print("Indicators:", indicators)
 {"RSI": "46.34926112", "Stoch.K": "40.40173723"}
 ```
 
-### 4. Getting All Indicators in Specified timeframe
-If you want to retrieve all available indicators for a symbol, set `allIndicators=True`, `timeframe=4h`:
+### 4. Getting All Indicators
+If you want to retrieve all available indicators for a symbol, set `allIndicators=True`:
 ```python
 from tradingview_scraper.symbols.technicals import Indicators
 
@@ -247,6 +248,8 @@ news_content = news_scraper.scrape_news_content(
 ```
 
 ## Changes:
+- Release `0.3.2`:
+  Support timeframe to get Indicators
 - Release `0.3.0`:   
   Add news scraper
 - Release `0.2.9`:   
