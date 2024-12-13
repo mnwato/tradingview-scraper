@@ -18,9 +18,10 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - [ ] [Overview](https://www.tradingview.com/symbols/BTCUSD/)
   - [x] [News](https://www.tradingview.com/symbols/BTCUSD/news/)
   - [ ] [Minds](https://www.tradingview.com/symbols/BTCUSD/minds/)
-  - [ ] [Technical](https://www.tradingview.com/symbols/BTCUSD/technicals/)
+  - [x] [Technical](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Market](https://www.tradingview.com/symbols/BTCUSD/markets/)
-  - [ ] Get data using TradingView WebSocket
+  - [ ] [Screener](https://www.tradingview.com/screener/)
+  - [x] Get data using TradingView WebSocket
   - [ ] Additional suggestions welcome!
 
 ### To be aware of the latest changes, go to the [end of this page](https://github.com/mnwato/tradingview-scraper#changes).
@@ -53,6 +54,10 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
 - **Indicator Extraction**
   - Extract values for indicators like `RSI`, `Stoch.K`, etc. 
   - [Full list of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/indicators.txt)
+
+- **Real-Time data Extraction
+  - OHLCV
+  - Watchlist
 
 - **Export Formats**
   - CSV
@@ -247,8 +252,64 @@ news_content = news_scraper.scrape_news_content(
 ]
 ```
 
+### 6. Fetching Real-Time Trading Data
+- The RealTimeData class provides functionality to fetch real-time trading data from various exchanges. Below are usage examples demonstrating how to retrieve the latest trade information and OHLCV (Open, High, Low, Close, Volume) data.
+
+#### Retrieve OHLCV Data:
+  - Open
+  - High
+  - Low
+  - Close
+  - Volume
+##### Example:
+```python
+# Create an instance of the RealTimeData class
+real_time_data = RealTimeData()
+
+# Retrieve OHLCV data for a specific symbol
+data_generator = real_time_data.get_ohlcv(exchange_symbol="BINANCE:BTCUSDT")
+```
+
+#### Retrieve Watchlist Market Info
+  - You can send a list of exchange:symbol to get real-time market information, including:
+  - volume
+  - `lp_time` (Last Price Time)
+  - `lp` (Last Price)
+  - `ch` (Change in Price)
+  - `chp` (Change in Percent)
+##### Example:
+```python
+# Create an instance of the RealTimeData class
+real_time_data = RealTimeData()
+
+# Define the exchange symbols for which to fetch data
+exchange_symbol = ["BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "FXOPEN:XAUUSD"]
+
+# Retrieve the latest trade information for a specific symbol
+data_generator = real_time_data.get_latest_trade_info(exchange_symbol=exchange_symbol)
+```
+
+#### Printing Results
+- To display the real-time data packets, iterate over the generator as follows:
+```python
+for packet in data_generator:
+    print('-' * 50)
+    print(packet)
+```
+#### Output Examples
+##### Output (OHLCV):
+```text
+{'m': 'du', 'p': ['cs_qgmbtglzdudl', {'sds_1': {'s': [{'i': 9, 'v': [1734082440.0, 100010.0, 100010.01, 100006.27, 100006.27, 1.3242]}], 'ns': {'d': '', 'indexes': 'nochange'}, 't': 's1', 'lbs': {'bar_close_time': 1734082500}}}]}
+```
+##### Output (Watchlist market info):
+```text
+{'m': 'qsd', 'p': ['qs_folpuhzgowtu', {'n': 'BINANCE:BTCUSDT', 's': 'ok', 'v': {'volume': 6817.46425, 'lp_time': 1734082521, 'lp': 99957.9, 'chp': -0.05, 'ch': -46.39}}]}
+```
+
+
+
 ## Changes:
-- Release `0.3.2`:
+- Release `0.3.2`:  
   Support timeframe to get Indicators
 - Release `0.3.0`:   
   Add news scraper
