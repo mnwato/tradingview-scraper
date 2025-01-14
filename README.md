@@ -309,6 +309,9 @@ for packet in data_generator:
 
 
 ## Changes:
+- Release `0.4.0`:  
+  Update exchange list
+  Add real-time price streaming
 - Release `0.3.2`:  
   Support timeframe to get Indicators
 - Release `0.3.0`:   
