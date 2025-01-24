@@ -1,4 +1,3 @@
-
 from websocket import create_connection, WebSocketConnectionClosedException
 import json
 import string
@@ -7,9 +6,10 @@ import logging
 import signal
 import requests
 import secrets
-from typing import List
+from typing import List, Optional
 from time import sleep
 import time
+import traceback
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG,
@@ -34,10 +34,22 @@ class RealTimeData:
             "Upgrade": "websocket",
             "User-Agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
         }
-        self.ws_url = "wss://data.tradingview.com/socket.io/websocket?from=screener%2F&date={date}"
         self.ws_url = "wss://data.tradingview.com/socket.io/websocket?from=screener%2F"
         self.validate_url = "https://scanner.tradingview.com/symbol?symbol={exchange}%3A{symbol}&fields=market&no_404=false"
-        self.ws = create_connection(self.ws_url, headers=self.request_header)
+        self.ws: Optional[create_connection] = None
+        self.data_type: Optional[str] = None  # 'ohlcv' or 'trade_info'
+        self.current_symbol: Optional[str] = None
+        self.current_symbols: Optional[List[str]] = None
+        self.connect()
+
+
+    def connect(self):
+        """Establish initial WebSocket connection."""
+        try:
+            self.ws = create_connection(self.ws_url, headers=self.request_header)
+        except Exception as e:
+            logging.error(f"Failed to establish WebSocket connection: {e}")
+            raise
 
     def validate_symbols(self, exchange_symbol):
         """
@@ -54,7 +66,7 @@ class RealTimeData:
             bool: True if all symbols are valid.
         """
         if not exchange_symbol:
-            raise ValueError("exchange_symbol could not be empty")
+            raise ValueError("exchange_symbol cannot be empty")
         
         if isinstance(exchange_symbol, str):
             exchange_symbol = [exchange_symbol]
@@ -153,7 +165,7 @@ class RealTimeData:
         except Exception as e:
             logging.error(f"Failed to send message: {e}")
         
-    
+
     def get_ohlcv(self, exchange_symbol: str):
         """
         Returns a generator that yields OHLC data for a specified symbol in real-time.
@@ -165,6 +177,9 @@ class RealTimeData:
             generator: A generator yielding OHLC data as JSON objects.
         """
         self.validate_symbols(exchange_symbol)
+        self.data_type = 'ohlcv'
+        self.current_symbol = exchange_symbol
+
         quote_session = self.generate_session(prefix="qs_")
         chart_session = self.generate_session(prefix="cs_")
         logging.info(f"Quote session generated: {quote_session}, Chart session generated: {chart_session}")
@@ -173,6 +188,7 @@ class RealTimeData:
         self._add_symbol_to_sessions(quote_session, chart_session, exchange_symbol)
         
         return self.get_data()
+
 
     def _initialize_sessions(self, quote_session: str, chart_session: str):
         """
@@ -184,6 +200,7 @@ class RealTimeData:
         self.send_message("quote_create_session", [quote_session])
         self.send_message("quote_set_fields", [quote_session, *self._get_quote_fields()])
         self.send_message("quote_hibernate_all", [quote_session])
+
 
     def _get_quote_fields(self):
         """
@@ -197,6 +214,7 @@ class RealTimeData:
                 "lp_time", "minmov", "minmove2", "original_name", "pricescale", 
                 "pro_name", "short_name", "type", "update_mode", "volume", 
                 "currency_code", "rchp", "rtc"]
+
 
     def _add_symbol_to_sessions(self, quote_session: str, chart_session: str, exchange_symbol: str):
         """
@@ -223,6 +241,9 @@ class RealTimeData:
         Returns:
             generator: A generator yielding summary information as JSON objects.
         """
+        self.data_type = 'trade_info'
+        self.current_symbols = exchange_symbol
+
         quote_session = self.generate_session(prefix="qs_")
         chart_session = self.generate_session(prefix="cs_")
         logging.info(f"Session generated: {quote_session}, Chart session generated: {chart_session}")
@@ -231,6 +252,7 @@ class RealTimeData:
         self._add_multiple_symbols_to_sessions(quote_session, exchange_symbol)
 
         return self.get_data()
+
 
     def _add_multiple_symbols_to_sessions(self, quote_session: str, exchange_symbols: List[str]):
         """
@@ -244,6 +266,63 @@ class RealTimeData:
         self.send_message("quote_fast_symbols", [quote_session]+exchange_symbols)
 
 
+    def reconnect(self, max_retries=5, initial_delay=1, backoff=2):
+        """
+        Attempts to reconnect to the WebSocket server.
+
+        Args:
+            max_retries (int): Maximum number of reconnection attempts.
+            initial_delay (int): Initial delay before retrying (in seconds).
+        
+        Returns:
+            bool: True if reconnected successfully, False otherwise.
+        """
+        retry_delay = initial_delay
+        for attempt in range(max_retries):
+            try:
+                self.connect()
+                logging.info(f"Reconnected successfully on attempt {attempt + 1}.")
+                return True
+            except Exception as e:
+                logging.error(f"Reconnection attempt {attempt + 1} failed: {e}")
+                sleep(retry_delay)
+                retry_delay *= backoff
+        logging.error("Max reconnection attempts reached.")
+        return False
+    
+    
+    def _reinitialize_sessions(self):
+        """
+        Reinitializes sessions and re-adds symbols after reconnection.
+        """
+        if self.data_type is None:
+            logging.error("Cannot reinitialize sessions: No data type specified.")
+            return False
+
+        quote_session = self.generate_session(prefix="qs_")
+        chart_session = self.generate_session(prefix="cs_")
+        logging.info(f"Reinitializing sessions: quote={quote_session}, chart={chart_session}")
+
+        self._initialize_sessions(quote_session, chart_session)
+
+        try:
+            if self.data_type == 'ohlcv':
+                if not self.current_symbol:
+                    raise ValueError("No symbol stored for OHLCV data.")
+                self._add_symbol_to_sessions(quote_session, chart_session, self.current_symbol)
+            elif self.data_type == 'trade_info':
+                if not self.current_symbols:
+                    raise ValueError("No symbols stored for trade info data.")
+                self._add_multiple_symbols_to_sessions(quote_session, self.current_symbols)
+            else:
+                raise ValueError(f"Unknown data type: {self.data_type}")
+        except Exception as e:
+            logging.error(f"Failed to reinitialize sessions: {e}")
+            return False
+
+        return True
+
+
     def get_data(self):
         """
         Continuously receives data from the TradingView server via the WebSocket connection.
@@ -254,59 +333,56 @@ class RealTimeData:
         try:
             while True:
                 try:
-                    sleep(1)
                     result = self.ws.recv()
-                    # Check if the result is a heartbeat or actual data
+
                     if re.match(r"~m~\d+~m~~h~\d+$", result):
-                        self.ws.recv()  # Echo back the message
                         logging.debug(f"Received heartbeat: {result}")
-                        self.ws.send(result)
+                        try:
+                            self.ws.send(result)  # Echo heartbeat
+                        except (WebSocketConnectionClosedException, BrokenPipeError) as e:
+                            logging.error("WebSocket error during heartbeat: {e}")
+                            if not self.reconnect() or not self._reinitialize_sessions():
+                                break
                     else:
                         split_result = [x for x in re.split(r'~m~\d+~m~', result) if x]
                         for item in split_result:
                             if item:
-                                yield json.loads(item)  # Yield parsed JSON data
+                                yield json.loads(item)
 
                 except WebSocketConnectionClosedException:
-                    logging.error("WebSocket connection closed. Attempting to reconnect...")
-                    break  # Handle reconnection logic as needed
+                    logging.error("WebSocket connection closed. Reconnecting...")
+                    if not self.reconnect() or not self._reinitialize_sessions():
+                        break
                 except Exception as e:
-                    logging.error(f"An error occurred: {e}")
-                    break  # Handle other exceptions as needed
-        finally:
-            self.ws.close()
+                    logging.error(f"Unexpected error: {e}")
+                    logging.error(traceback.format_exc())
+                    break
 
-        
-# Signal handler for keyboard interrupt
+        except Exception as e:
+            logging.error(traceback.format_exc())
+            raise
+        finally:
+            if self.ws:
+                self.ws.close()
+
+
 def signal_handler(sig, frame):
     """
     Handles keyboard interrupt signals to gracefully close the WebSocket connection.
-
-    Args:
-        sig: The signal number.
-        frame: The current stack frame.
     """
     logging.info("Keyboard interrupt received. Closing WebSocket connection.")
     exit(0)
 
 
-# Register the signal handler
 signal.signal(signal.SIGINT, signal_handler)
 
 
-
-# Example Usage
 if __name__ == "__main__":
     real_time_data = RealTimeData()
-
-    exchange_symbol = ["BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "FXOPEN:XAUUSD"]  # Example symbol
-
-    data_generator = real_time_data.get_latest_trade_info(exchange_symbol=exchange_symbol)
-
+    exchange_symbols = ["FOREXCOM:XAUUSD", "FOREXCOM:EURUSD", "FOREXCOM:GBPJPY"]
+    data_generator = real_time_data.get_latest_trade_info(exchange_symbols)
     # data_generator = real_time_data.get_ohlcv(exchange_symbol="BINANCE:BTCUSDT")
-
-    # Iterate over the generator to get real-time data
+    
     for packet in data_generator:
         print('-'*50)
-        print(packet)
-
+        print('Packet type:', packet.get('m'))
