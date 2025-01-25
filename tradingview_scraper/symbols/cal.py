@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, Union, Optional, List, Dict
 import requests, datetime, json
 
 from tradingview_scraper.symbols.utils import (
@@ -11,15 +11,15 @@ from tradingview_scraper.symbols.utils import (
 class DividendEvent(TypedDict):
     full_symbol: str
     dividend_ex_date_recent: int
-    dividend_ex_date_upcoming: int | None
+    dividend_ex_date_upcoming: Union[int, None]
     logoid: str
     name: str
     description: str
     dividends_yield: float
     dividend_payment_date_recent: int
-    dividend_payment_date_upcoming: int | None
+    dividend_payment_date_upcoming: Union[int, None]
     dividend_amount_recent: float
-    dividend_amount_upcoming: float | None
+    dividend_amount_upcoming: Union[float, None]
     fundamental_currency_code: str
     market: str
 
@@ -30,23 +30,23 @@ class EarningsEvent(TypedDict):
     logoid: str
     name: str
     description: str
-    earnings_per_share_fq: float | None
-    earnings_per_share_forecast_next_fq: float | None
-    eps_surprise_fq: float | None
-    eps_surprise_percent_fq: float | None
-    revenue_fq: float | None
-    revenue_forecast_next_fq: float | None
+    earnings_per_share_fq: Union[float, None]
+    earnings_per_share_forecast_next_fq: Union[float, None]
+    eps_surprise_fq: Union[float, None]
+    eps_surprise_percent_fq: Union[float, None]
+    revenue_fq: Union[float, None]
+    revenue_forecast_next_fq: Union[float, None]
     market_cap_basic: float
     earnings_release_time: int
     earnings_release_next_time: int
-    earnings_per_share_forecast_fq: float | None
-    revenue_forecast_fq: float | None
+    earnings_per_share_forecast_fq: Union[float, None]
+    revenue_forecast_fq: Union[float, None]
     fundamental_currency_code: str
     market: str
     earnings_publication_type_fq: int
     earnings_publication_type_next_fq: int
-    revenue_surprise_fq: float | None
-    revenue_surprise_percent_fq: float | None
+    revenue_surprise_fq: Union[float, None]
+    revenue_surprise_percent_fq: Union[float, None]
 
 
 class CalendarScraper:
@@ -61,10 +61,10 @@ class CalendarScraper:
     def __init__(self, export_result: bool = False, export_type: str = "json"):
         self.export_result: bool = export_result
         self.export_type: str = export_type
-        self.headers: dict[str, str] = {"User-Agent": generate_user_agent()}
+        self.headers: Dict[str, str] = {"User-Agent": generate_user_agent()}
 
     def _export(
-        self, data, symbol: str | None = None, data_category: str | None = None
+        self, data, symbol: Union[str, None] = None, data_category: Union[str, None] = None
     ):
         if self.export_result:
             if self.export_type == "json":
@@ -74,10 +74,10 @@ class CalendarScraper:
 
     def scrape_dividends(
         self,
-        timestamp_from: int | None,
-        timestamp_to: int | None,
-        markets: list[str] | None,
-    ) -> list[DividendEvent]:
+        timestamp_from: Optional[int] = None,
+        timestamp_to: Optional[int] = None,
+        markets: Optional[List[str]] = None,
+    ) -> List[DividendEvent]:
         """
         Scrapes dividends events from the TradingView event calendar.
 
@@ -95,12 +95,12 @@ class CalendarScraper:
         url = "https://scanner.tradingview.com/global/scan?label-product=calendar-dividends"
 
         # By default the timestamps mimick the timestamps used in the web requests
-        if timestamp_from == None:
+        if timestamp_from is None:
             current_date = datetime.datetime.now().timestamp()
             current_date = current_date - (current_date % 86400) - (3 * 86400)
             timestamp_from = int(current_date)
 
-        if timestamp_to == None:
+        if timestamp_to is None:
             current_date = datetime.datetime.now().timestamp()
             current_date = current_date - (current_date % 86400) + (3 * 86400) + 86399
             timestamp_to = int(current_date)
@@ -138,7 +138,7 @@ class CalendarScraper:
         response.raise_for_status()
 
         # Parse the result into a list
-        dividend_events: list[DividendEvent] = []
+        dividend_events: List[DividendEvent] = []
 
         for event in response.json()["data"]:
             event_data = event.get("d")
@@ -165,12 +165,13 @@ class CalendarScraper:
 
         return dividend_events
 
+
     def scrape_earnings(
         self,
-        timestamp_from: int | None,
-        timestamp_to: int | None,
-        markets: list[str] | None,
-    ):
+        timestamp_from: Optional[int] = None,
+        timestamp_to: Optional[int] = None,
+        markets: Optional[List[str]] = None,
+    ) -> List[EarningsEvent]:
         """
         Scrapes earnings events from the TradingView event calendar.
 
@@ -188,12 +189,12 @@ class CalendarScraper:
         url = "https://scanner.tradingview.com/global/scan?label-product=calendar-earnings"
 
         # By default the timestamps mimick the timestamps used in the web requests
-        if timestamp_from == None:
+        if timestamp_from is None:
             current_date = datetime.datetime.now().timestamp()
             current_date = current_date - (current_date % 86400) - (3 * 86400)
             timestamp_from = int(current_date)
 
-        if timestamp_to == None:
+        if timestamp_to is None:
             current_date = datetime.datetime.now().timestamp()
             current_date = current_date - (current_date % 86400) + (3 * 86400) + 86399
             timestamp_to = int(current_date)
@@ -240,7 +241,7 @@ class CalendarScraper:
         response.raise_for_status()
 
         # Parse the result into a list
-        earnings_events: list[EarningsEvent] = []
+        earnings_events: List[EarningsEvent] = []
 
         for event in response.json()["data"]:
             event_data = event.get("d")
