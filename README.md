@@ -343,7 +343,7 @@ from datetime import datetime, timedelta
 timestamp_now = datetime.now().timestamp()
 timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
 
-res = calendar.scrape_earnings(scrape_dividends, timestamp_in_7_days, ["america"])
+res = calendar.scrape_dividends(scrape_dividends, timestamp_in_7_days, ["america"])
 ```
 
 ## Changes:
