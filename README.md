@@ -306,7 +306,45 @@ for packet in data_generator:
 {'m': 'qsd', 'p': ['qs_folpuhzgowtu', {'n': 'BINANCE:BTCUSDT', 's': 'ok', 'v': {'volume': 6817.46425, 'lp_time': 1734082521, 'lp': 99957.9, 'chp': -0.05, 'ch': -46.39}}]}
 ```
 
+### 7. Getting Calendar events
 
+#### Scraping Earnings events
+```python
+from tradingview_scraper.symbols.cal import CalendarScraper
+
+calendar_scraper = CalendarScraper()
+
+# Scrape earnings from all markets.
+res = calendar_scraper.scrape_earnings()
+
+
+# Scrape upcoming week earnings from the american market
+from datetime import datetime, timedelta
+
+timestamp_now = datetime.now().timestamp()
+timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
+
+res = calendar_scraper.scrape_earnings(timestamp_now, timestamp_in_7_days, ["america"])
+```
+
+#### Scraping Dividend events
+```python
+from tradingview_scraper.symbols.cal import CalendarScraper
+
+calendar_scraper = CalendarScraper()
+
+# Scrape dividends from all markets.
+res = calendar_scraper.scrape_dividends()
+
+
+# Scrape upcoming week dividends from the american market
+from datetime import datetime, timedelta
+
+timestamp_now = datetime.now().timestamp()
+timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
+
+res = calendar_scraper.scrape_dividends(timestamp_now, timestamp_in_7_days, ["america"])
+```
 
 ## Changes:
 - Release `0.4.0`:  
