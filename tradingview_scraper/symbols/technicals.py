@@ -1,9 +1,12 @@
-import requests
-import pkg_resources
+"""Module providing a function to recieve indicators of a symbol."""
+
 import os
 import re
 import json
 from typing import List, Optional
+
+import requests
+import pkg_resources
 
 from tradingview_scraper.symbols.utils import generate_user_agent, save_json_file, save_csv_file
 
@@ -99,7 +102,7 @@ class Indicators:
         headers = {'user-agent': generate_user_agent()}
 
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=5)
             
             if response.status_code == 200:
                 json_response = response.json()
@@ -155,7 +158,7 @@ class Indicators:
             print(f"[ERROR] file not found at {path}.")
             return []
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding="utf-8") as f:
                 return [line.strip() for line in f.readlines()]
         except IOError as e:
             print(f"[ERROR] Error reading file {path}: {e}")
@@ -190,7 +193,7 @@ class Indicators:
             print(f"[ERROR] Timeframe file not found at {path}.")
             return {"1d": None}
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding="utf-8") as f:
                 timeframes = json.load(f)
             return timeframes.get('indicators', {"1d": None})
         except IOError as e:

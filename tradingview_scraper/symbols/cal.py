@@ -1,6 +1,10 @@
-from typing import TypedDict, Union, Optional, List, Dict
-import requests, datetime, json
+"""Module providing a function to scrape dividend and earnings of a specific market."""
 
+import json
+import datetime
+from typing import TypedDict, Union, Optional, List, Dict
+
+import requests
 from tradingview_scraper.symbols.utils import (
     save_csv_file,
     save_json_file,
@@ -9,6 +13,24 @@ from tradingview_scraper.symbols.utils import (
 
 
 class DividendEvent(TypedDict):
+    """
+    Represents a dividend event for a financial asset.
+
+    Attributes:
+        full_symbol (str): The full trading symbol of the asset.
+        dividend_ex_date_recent (int): The most recent ex-dividend date as a timestamp.
+        dividend_ex_date_upcoming (Union[int, None]): The upcoming ex-dividend date as a timestamp, or None if not applicable.
+        logoid (str): The logo identifier for the asset.
+        name (str): The name of the asset.
+        description (str): A description of the asset.
+        dividends_yield (float): The dividend yield as a percentage.
+        dividend_payment_date_recent (int): The most recent dividend payment date as a timestamp.
+        dividend_payment_date_upcoming (Union[int, None]): The upcoming dividend payment date as a timestamp, or None if not applicable.
+        dividend_amount_recent (float): The amount of the most recent dividend payment.
+        dividend_amount_upcoming (Union[float, None]): The amount of the upcoming dividend payment, or None if not applicable.
+        fundamental_currency_code (str): The currency code used for the dividends.
+        market (str): The market in which the asset is traded.
+    """
     full_symbol: str
     dividend_ex_date_recent: int
     dividend_ex_date_upcoming: Union[int, None]
@@ -25,6 +47,33 @@ class DividendEvent(TypedDict):
 
 
 class EarningsEvent(TypedDict):
+    """
+    Represents an earnings event for a financial asset.
+
+    Attributes:
+        full_symbol (str): The full trading symbol of the asset.
+        earnings_release_next_date (int): The next earnings release date as a timestamp.
+        logoid (str): The logo identifier for the asset.
+        name (str): The name of the asset.
+        description (str): A description of the asset.
+        earnings_per_share_fq (Union[float, None]): The earnings per share for the most recent quarter, or None if not available.
+        earnings_per_share_forecast_next_fq (Union[float, None]): The forecasted earnings per share for the next quarter, or None if not available.
+        eps_surprise_fq (Union[float, None]): The earnings per share surprise for the most recent quarter, or None if not available.
+        eps_surprise_percent_fq (Union[float, None]): The percentage surprise for earnings per share for the most recent quarter, or None if not available.
+        revenue_fq (Union[float, None]): The revenue for the most recent quarter, or None if not available.
+        revenue_forecast_next_fq (Union[float, None]): The forecasted revenue for the next quarter, or None if not available.
+        market_cap_basic (float): The basic market capitalization of the asset.
+        earnings_release_time (int): The time of the earnings release as a timestamp.
+        earnings_release_next_time (int): The time of the next earnings release as a timestamp.
+        earnings_per_share_forecast_fq (Union[float, None]): The forecasted earnings per share for the most recent quarter, or None if not available.
+        revenue_forecast_fq (Union[float, None]): The forecasted revenue for the most recent quarter, or None if not available.
+        fundamental_currency_code (str): The currency code used for the earnings.
+        market (str): The market in which the asset is traded.
+        earnings_publication_type_fq (int): The type of earnings publication for the most recent quarter.
+        earnings_publication_type_next_fq (int): The type of earnings publication for the next quarter.
+        revenue_surprise_fq (Union[float, None]): The revenue surprise for the most recent quarter, or None if not available.
+        revenue_surprise_percent_fq (Union[float, None]): The percentage surprise for revenue for the most recent quarter, or None if not available.
+    """
     full_symbol: str
     earnings_release_next_date: int
     logoid: str
@@ -134,7 +183,7 @@ class CalendarScraper:
         if markets:
             payload["markets"] = markets
 
-        response = requests.post(url, headers=self.headers, data=json.dumps(payload))
+        response = requests.post(url, headers=self.headers, data=json.dumps(payload), timeout=5)
         response.raise_for_status()
 
         # Parse the result into a list
@@ -237,7 +286,7 @@ class CalendarScraper:
         if markets:
             payload["markets"] = markets
 
-        response = requests.post(url, headers=self.headers, data=json.dumps(payload))
+        response = requests.post(url, headers=self.headers, data=json.dumps(payload), timeout=5)
         response.raise_for_status()
 
         # Parse the result into a list

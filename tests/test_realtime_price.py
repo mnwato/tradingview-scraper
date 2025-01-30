@@ -1,14 +1,15 @@
+"""Test script for websocket realtime data generator"""
+
 import os
 import sys
 import time
-
-path = str(os.getcwd())
-if path not in sys.path:
-    sys.path.append(path)
-    
-    
 import unittest
 from unittest import mock
+
+PATH = str(os.getcwd())
+if PATH not in sys.path:
+    sys.path.append(PATH)
+    
 from tradingview_scraper.symbols.stream.price import RealTimeData
 
 
