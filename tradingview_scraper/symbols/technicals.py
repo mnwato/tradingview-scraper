@@ -141,8 +141,26 @@ class Indicators:
             save_json_file(data=data, symbol=symbol, data_category='indicators')
         elif self.export_type == "csv":
             save_csv_file(data=data, symbol=symbol, data_category='indicators')
-            
-                
+    
+    def _load_file(self, path):
+        """Load data from a specified file.
+
+        Args:
+            path (str): The path to the file.
+
+        Returns:
+            list: A list of data loaded from the file, or an empty list if the file is not found or an error occurs.
+        """
+        if not os.path.exists(path):
+            print(f"[ERROR] file not found at {path}.")
+            return []
+        try:
+            with open(path, 'r') as f:
+                return [line.strip() for line in f.readlines()]
+        except IOError as e:
+            print(f"[ERROR] Error reading file {path}: {e}")
+            return []
+
     def _load_indicators(self) -> List[str]:
         """Load indicators from a specified file.
 
@@ -150,15 +168,7 @@ class Indicators:
             List[str]: A list of indicators loaded from the file. Returns an empty list if the file is not found.
         """
         path = pkg_resources.resource_filename('tradingview_scraper', 'data/indicators.txt')
-        if not os.path.exists(path):
-            print(f"[ERROR] Indicators file not found at {path}.")
-            return []
-        try:
-            with open(path, 'r') as f:
-                return [indicator.strip() for indicator in f.readlines()]
-        except IOError as e:
-            print(f"[ERROR] Error reading indicators file: {e}")
-            return []
+        return self._load_file(path)
 
     def _load_exchanges(self) -> List[str]:
         """Load exchanges from a specified file.
@@ -167,16 +177,8 @@ class Indicators:
             List[str]: A list of exchanges loaded from the file. Returns an empty list if the file is not found.
         """
         path = pkg_resources.resource_filename('tradingview_scraper', 'data/exchanges.txt')
-        if not os.path.exists(path):
-            print(f"[ERROR] Exchanges file not found at {path}.")
-            return []
-        try:
-            with open(path, 'r') as f:
-                return [exchange.strip() for exchange in f.readlines()]
-        except IOError as e:
-            print(f"[ERROR] Error reading exchanges file: {e}")
-            return []
-
+        return self._load_file(path)
+    
     def _load_timeframes(self) -> dict:
         """Load timeframes from a specified file.
 

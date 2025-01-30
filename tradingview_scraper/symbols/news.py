@@ -123,9 +123,9 @@ class NewsScraper:
                     symbol_name_tag = a.find('span', class_='description-cBh_FN2P')
                     if symbol_name_tag:
                         symbol_name = symbol_name_tag.get_text(strip=True)
-                    symbol_img = a.find('img')
-                    if symbol_name:
-                        article_json['related_symbols'].append({'symbol': symbol_name, 'logo': symbol_img})
+                        if symbol_name:
+                            symbol_img = a.find('img')
+                            article_json['related_symbols'].append({'symbol': symbol_name, 'logo': symbol_img})
 
         # Body extraction
         body_content = article_tag.find('div', class_='body-KX2tCBZq')
@@ -228,7 +228,7 @@ class NewsScraper:
             if not items:
                 return []  # Return empty list if no items
             
-            news_list = NewsScraper._sort_news(items, sort)
+            news_list = self._sort_news(items, sort)
                         
             # Save results
             if self.export_result:
@@ -243,7 +243,7 @@ class NewsScraper:
         except Exception as err:
             raise RuntimeError("An error occurred while scraping news.") from err
 
-    def _sort_news(news_list, sort):
+    def _sort_news(self, news_list, sort):
       # Sort by latest published date
       if sort=="latest":
         news_list = sorted(news_list, key=lambda x: x['published'], reverse=True)
