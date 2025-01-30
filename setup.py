@@ -40,12 +40,12 @@ setup(
         ],
     },
     install_requires=[
-        'requests==2.32.3',
-        'pandas==2.0.3',
-        'beautifulsoup4==4.12.3',
-        'pydantic==2.8.2',
-        'websockets==13.1',
-        'websocket-client==1.8.0'
+        "requests>=2.32.3",
+        "pandas>=2.0.3",
+        "beautifulsoup4>=4.12.3",
+        "pydantic>=2.8.2",
+        "websockets>=13.1",
+        "websocket-client>=1.8.0",
     ],
     keywords=['tradingview', 'scraper', 'python', 'crawler', 'financial'],
     classifiers=classifiers
