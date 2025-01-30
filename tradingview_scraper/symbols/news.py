@@ -1,9 +1,11 @@
+"""Module providing a function to scrape published news about a symbol."""
+
+import os
+import json
 
 from bs4 import BeautifulSoup
 import requests
 import pkg_resources
-import json
-import os
 
 
 from tradingview_scraper.symbols.utils import save_csv_file, save_json_file, generate_user_agent
@@ -35,13 +37,16 @@ class NewsScraper:
             raise ValueError("'symbol' must be used together with 'exchange'.")
 
         if exchange and exchange not in self.exchanges:
-            raise ValueError("Unsupported exchange! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
+            raise ValueError("Unsupported exchange! Please check 'the available options' at the link below:\n\t"
+                             "https://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/exchanges.txt")
 
         if provider and provider not in self.news_providers:
-            raise ValueError("Unsupported provider! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
+            raise ValueError("Unsupported provider! Please check 'the available options' at the link below:\n\t"
+                             "https://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/news_providers.txt")
 
         if area and area not in self.areas:
-            raise ValueError(f"Invalid area! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/areas.json")
+            raise ValueError("Invalid area! Please check 'the available options' at the link below:\n\t"
+                             "https://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/areas.json")
 
         if section not in ["all", "esg", "financial_statement", "press_release"]:
             raise ValueError("Invalid section! It must be 'all' or 'esg'.")
@@ -50,7 +55,8 @@ class NewsScraper:
             raise ValueError("Invalid sort option! It must be one of 'latest', 'oldest', 'most_urgent', or 'least_urgent'.")
 
         if language not in self.languages:
-            raise ValueError("Unsupported language! Please check 'the available options' at the link below:\n\thttps://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
+            raise ValueError("Unsupported language! Please check 'the available options' at the link below:\n\t"
+                             "https://github.com/mnwato/tradingview-scraper/blob/main/tradingview_scraper/data/languages.json")
 
         return kwargs
         
@@ -79,7 +85,7 @@ class NewsScraper:
         # construct the URL
         url = f"https://tradingview.com{story_path}"
         
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(url, headers=self.headers, timeout=5)
         response.raise_for_status()
 
         # Use BeautifulSoup to parse the HTML
@@ -123,9 +129,9 @@ class NewsScraper:
                     symbol_name_tag = a.find('span', class_='description-cBh_FN2P')
                     if symbol_name_tag:
                         symbol_name = symbol_name_tag.get_text(strip=True)
-                    symbol_img = a.find('img')
-                    if symbol_name:
-                        article_json['related_symbols'].append({'symbol': symbol_name, 'logo': symbol_img})
+                        if symbol_name:
+                            symbol_img = a.find('img')
+                            article_json['related_symbols'].append({'symbol': symbol_name, 'logo': symbol_img})
 
         # Body extraction
         body_content = article_tag.find('div', class_='body-KX2tCBZq')
@@ -219,7 +225,7 @@ class NewsScraper:
         url = f"https://news-headlines.tradingview.com/v2/view/headlines/symbol?client=web&lang={language}&area={area_code}&provider={provider}&section={section}&streaming=&symbol={exchange}:{symbol}"
         
         try:
-            response = requests.get(url, headers=self.headers)
+            response = requests.get(url, headers=self.headers, timeout=5)
             response.raise_for_status()  # Raises HTTPError for bad responses (4xx and 5xx)
             
             response_json = response.json()
@@ -228,7 +234,7 @@ class NewsScraper:
             if not items:
                 return []  # Return empty list if no items
             
-            news_list = NewsScraper._sort_news(items, sort)
+            news_list = self._sort_news(items, sort)
                         
             # Save results
             if self.export_result:
@@ -243,7 +249,7 @@ class NewsScraper:
         except Exception as err:
             raise RuntimeError("An error occurred while scraping news.") from err
 
-    def _sort_news(news_list, sort):
+    def _sort_news(self, news_list, sort):
       # Sort by latest published date
       if sort=="latest":
         news_list = sorted(news_list, key=lambda x: x['published'], reverse=True)
@@ -287,7 +293,7 @@ class NewsScraper:
             print(f"[ERROR] Languages file not found at {path}.")
             return []
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding="utf-8") as f:
                 exchanges = json.load(f)
             return list(exchanges.values())
         except IOError as e:
@@ -309,7 +315,7 @@ class NewsScraper:
             print(f"[ERROR] Exchanges file not found at {path}.")
             return []
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding="utf-8") as f:
                 exchanges = f.readlines()
             return [exchange.strip() for exchange in exchanges]
         except IOError as e:
@@ -331,7 +337,7 @@ class NewsScraper:
             print(f"[ERROR] News provider file not found at {path}.")
             return []
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding="utf-8") as f:
                 providers = f.readlines()
             return [provider.strip() for provider in providers]
         except IOError as e:
@@ -353,7 +359,7 @@ class NewsScraper:
             print(f"[ERROR] Areas file not found at {path}.")
             return []
         try:
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding="utf-8") as f:
                 areas = json.load(f)
             return areas
         except IOError as e:

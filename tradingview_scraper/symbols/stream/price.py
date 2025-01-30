@@ -1,15 +1,17 @@
+"""Module providing a two function which return python generator contains trades realtime data."""
 
-from websocket import create_connection, WebSocketConnectionClosedException
-import json
-import string
 import re
+import json
+from typing import List
+import string
 import logging
 import signal
-import requests
-import secrets
-from typing import List
-from time import sleep
 import time
+from time import sleep
+import secrets
+
+from websocket import create_connection, WebSocketConnectionClosedException
+import requests
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG,
@@ -67,20 +69,20 @@ class RealTimeData:
             retries = 3
             for attempt in range(retries):
                 try:
-                    res = requests.get(self.validate_url.format(exchange=exchange, symbol=symbol))
+                    res = requests.get(self.validate_url.format(exchange=exchange, symbol=symbol), timeout=5)
                     res.raise_for_status()
                     break  # Exit the retry loop on success
 
                 except requests.RequestException as e:
                     if res.status_code == 404:
-                        raise ValueError(f"Invalid symbol '{item}' after {retries} attempts")
-                    else:
-                        logging.warning(f"Attempt {attempt + 1} failed to validate symbol '{item}': {e}")
+                        raise ValueError(f"Invalid exchange:symbol '{item}' after {retries} attempts") from e
+
+                    logging.warning("Attempt %d failed to validate exchange:symbol '%s': %s", attempt + 1, item, e)
 
                     if attempt < retries - 1:
                         time.sleep(1)  # Optional: wait before retrying
                     else:
-                        raise ValueError(f"Invalid symbol '{item}' after {retries} attempts")
+                        raise ValueError(f"Invalid exchange:symbol '{item}' after {retries} attempts") from e
         return True
 
 
@@ -147,11 +149,12 @@ class RealTimeData:
             args (list): The arguments for the function.
         """
         message = self.create_message(func, args)
-        logging.debug(f"Sending message: {message}")
+        logging.debug("Sending message: %s", message)
+        
         try:
             self.ws.send(message)
-        except Exception as e:
-            logging.error(f"Failed to send message: {e}")
+        except (ConnectionError, TimeoutError) as e:  # Catch specific exceptions
+            logging.error("Failed to send message: %s", e)
         
     
     def get_ohlcv(self, exchange_symbol: str):

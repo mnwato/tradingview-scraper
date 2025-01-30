@@ -1,9 +1,9 @@
+"""Module providing a function to scrape published user ideas about a symbol."""
 
-import requests
 from time import sleep
 
+import requests
 from bs4 import BeautifulSoup
-
 
 from tradingview_scraper.symbols.utils import save_csv_file, save_json_file, generate_user_agent
 
@@ -179,7 +179,8 @@ class Ideas:
         # Fetch the page as plain HTML text
         response = requests.get(
             f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?component-data-only=1&sort=recent",
-            headers=self.headers
+            headers=self.headers,
+            timeout=5
         ).text
 
         # Use BeautifulSoup to parse the HTML
@@ -192,11 +193,11 @@ class Ideas:
         )
 
         if content is None:
-            raise Exception("No ideas found. Check the symbol or page number.")
+            raise ValueError("No ideas found. Check the symbol or page number.")
 
         articles_tag = content.find_all("article")
         if not articles_tag:
-            raise Exception("No ideas found. Check the symbol or page number.")
+            raise ValueError("No ideas found. Check the symbol or page number.")
 
         return [self.parse_article(tag) for tag in articles_tag]
 
@@ -225,14 +226,14 @@ class Ideas:
         if symbol:
             symbol_payload = f"/{symbol}/"
         else:
-            raise Exception("[ERROR] symbol could not be null when getting recent ideas")
+            raise ValueError("symbol could not be null when getting recent ideas")
             
         if page == 1:
             url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/?component-data-only=1&sort=recent"
         else:
             url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?sort=recent&component-data-only=1&sort=recent"
 
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(url, headers=self.headers, timeout=5)
         if response.status_code != 200:
             return []
 
