@@ -347,7 +347,13 @@ res = calendar_scraper.scrape_dividends(timestamp_now, timestamp_in_7_days, ["am
 ```
 
 ## Changes:
-- Release `0.4.0`:  
+- Release `0.4.2`:
+  Add calander (Dividend, Earning)
+  Make requirements non-explicit
+  Lint fix
+  Add tests (ideas, realtime_price, indicators)
+  Add reconnection method for realtime price scraper
+- Release `0.4.0`:
   Update exchange list
   Add real-time price streaming
 - Release `0.3.2`:  
