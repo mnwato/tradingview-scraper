@@ -117,9 +117,9 @@ class CalendarScraper:
     ):
         if self.export_result:
             if self.export_type == "json":
-                save_json_file(data, symbol, data_category)
+                save_json_file(data, symbol=symbol, data_category=data_category)
             elif self.export_type == "csv":
-                save_csv_file(data, symbol, data_category)
+                save_csv_file(data, symbol=symbol, data_category=data_category)
 
     def scrape_dividends(
         self,
