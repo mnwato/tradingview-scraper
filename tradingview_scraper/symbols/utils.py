@@ -1,8 +1,11 @@
 import os
 import json
-import pandas as pd
 import random
 from datetime import datetime
+from typing import List
+
+import pandas as pd
+
 
 def ensure_export_directory(path='/export'):
     """Check if the export directory exists, and create it if it does not.
@@ -158,3 +161,32 @@ def generate_user_agent():
     ]
     
     return random.choice(user_agents)
+
+def validate_string_array(data: List[str], valid_values: List[str]) -> bool:
+    """
+    Validates a list of strings against a list of valid values.
+
+    This function checks if each item in the provided list of strings is present in the list of valid values.
+
+    Parameters
+    ----------
+    data : list[str]
+        The list of strings to validate.
+
+    valid_values : list[str]
+        The list of valid values to check against.
+
+    Returns
+    -------
+    bool
+        True if all items in the data list are valid, False otherwise.
+    """
+    
+    if not data:
+        return False
+
+    for item in data:
+        if item not in valid_values:
+            return False
+    
+    return True
