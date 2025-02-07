@@ -206,7 +206,6 @@ class CalendarScraper:
             event_symbol: str = event.get("s")
 
             if not event_symbol:
-                logging.debug(f"No symbol found for event. Skipping event. Evt data: {str(event_data or "n/a")}")
                 continue
 
             if not values:
@@ -349,7 +348,6 @@ class CalendarScraper:
             event_symbol: str = event.get("s")
 
             if not event_symbol:
-                logging.debug(f"No symbol found for event. Skipping event. Evt data: {str(event_data or "n/a")}")
                 continue
 
             if not values:
