@@ -110,7 +110,7 @@ class Indicators:
                     return {"status": "failed"}
                 
                 if self.export_result:
-                    self._export(data=[json_response], symbol=symbol)
+                    self._export(data=[json_response], symbol=symbol, timeframe=timeframe)
                 return {"status": "success", "data": self.revise_response(json_response)}
             
             else:
@@ -133,7 +133,7 @@ class Indicators:
         return {re.sub(r'\|.*', '', k): v for k, v in json_response.items()}
             
 
-    def _export(self, data: List[dict], symbol: str) -> None:
+    def _export(self, data: List[dict], symbol: str, timeframe: str) -> None:
         """Export data to a file in the specified format.
 
         Args:
@@ -141,9 +141,9 @@ class Indicators:
             symbol (str): The symbol associated with the data.
         """
         if self.export_type == "json":
-            save_json_file(data=data, symbol=symbol, data_category='indicators')
+            save_json_file(data=data, symbol=symbol, data_category='indicators', timeframe=timeframe)
         elif self.export_type == "csv":
-            save_csv_file(data=data, symbol=symbol, data_category='indicators')
+            save_csv_file(data=data, symbol=symbol, data_category='indicators', timeframe=timeframe)
     
     def _load_file(self, path):
         """Load data from a specified file.
