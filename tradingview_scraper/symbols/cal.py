@@ -1,7 +1,6 @@
 """Module providing a function to scrape dividend and earnings of a specific market."""
 
 import json
-import logging
 import datetime
 from typing import TypedDict, Union, Optional, List, Dict
 
@@ -224,7 +223,7 @@ class CalendarScraper:
                     fundamental_currency_code=event_data[10] or None,
                     market=event_data[11] or None,
                 )
-
+                dividend_event = {k:v for k,v in dividend_event.items() if v}
                 dividend_events.append(dividend_event)
 
             else:
@@ -243,6 +242,7 @@ class CalendarScraper:
                     fundamental_currency_code=None,
                     market=None,
                 )
+                dividend_event = {k:v for k,v in dividend_event.items() if v}
 
                 for i, value in enumerate(values):
                     dividend_event[value] = event_data[i]
@@ -280,38 +280,38 @@ class CalendarScraper:
         """
         url = "https://scanner.tradingview.com/global/scan?label-product=calendar-earnings"
 
-        # Define default values used by the web request (as of 2025 Janurary)
+        # Define default values used by the web request (as of 2025 January)
         default_fetch_values = [
-                "earnings_release_next_date",
-                "earnings_release_date",
-                "logoid",
-                "name",
-                "description",
-                "earnings_per_share_fq",
-                "earnings_per_share_forecast_next_fq",
-                "eps_surprise_fq",
-                "eps_surprise_percent_fq",
-                "revenue_fq",
-                "revenue_forecast_next_fq",
-                "market_cap_basic",
-                "earnings_release_time",
-                "earnings_release_next_time",
-                "earnings_per_share_forecast_fq",
-                "revenue_forecast_fq",
-                "fundamental_currency_code",
-                "market",
-                "earnings_publication_type_fq",
-                "earnings_publication_type_next_fq",
-                "revenue_surprise_fq",
-                "revenue_surprise_percent_fq",
+            "earnings_release_next_date",
+            "earnings_release_date",
+            "logoid",
+            "name",
+            "description",
+            "earnings_per_share_fq",
+            "earnings_per_share_forecast_next_fq",
+            "eps_surprise_fq",
+            "eps_surprise_percent_fq",
+            "revenue_fq",
+            "revenue_forecast_next_fq",
+            "market_cap_basic",
+            "earnings_release_time",
+            "earnings_release_next_time",
+            "earnings_per_share_forecast_fq",
+            "revenue_forecast_fq",
+            "fundamental_currency_code",
+            "market",
+            "earnings_publication_type_fq",
+            "earnings_publication_type_next_fq",
+            "revenue_surprise_fq",
+            "revenue_surprise_percent_fq",
         ]
 
-        # Incase "filter" values are provided, validate them
+        # In case "filter" values are provided, validate them
         if values and len(values) > 0:
             if not validate_string_array(values, default_fetch_values):
                 raise ValueError("Invalid values provided. Please provide valid values.")
 
-        # By default the timestamps mimick the timestamps used in the web requests
+        # By default the timestamps mimic the timestamps used in the web requests
         if timestamp_from is None:
             current_date = datetime.datetime.now().timestamp()
             current_date = current_date - (current_date % 86400) - (3 * 86400)
@@ -375,6 +375,7 @@ class CalendarScraper:
                     revenue_surprise_fq=event_data[19] or None,
                     revenue_surprise_percent_fq=event_data[20] or None,
                 )
+                earnings_event = {k:v for k,v in earnings_event.items() if v}
 
                 earnings_events.append(earnings_event)
         
@@ -403,6 +404,7 @@ class CalendarScraper:
                     revenue_surprise_fq=None,
                     revenue_surprise_percent_fq=None,
                 )
+                earnings_event = {k:v for k,v in earnings_event.items() if v}
 
                 for i, value in enumerate(values):
                     earnings_event[value] = event_data[i]
