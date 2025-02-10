@@ -257,15 +257,18 @@ news_content = news_scraper.scrape_news_content(
 ```
 
 ### 6. Fetching Real-Time Trading Data
-- The RealTimeData class provides functionality to fetch real-time trading data from various exchanges. Below are usage examples demonstrating how to retrieve the latest trade information and OHLCV (Open, High, Low, Close, Volume) data.
+- The `RealTimeData` class offers functionality to fetch real-time trading data from various exchanges. This section provides usage examples demonstrating how to retrieve the latest trade information and OHLCV (Open, High, Low, Close, Volume) data.
 
 #### Retrieve OHLCV Data:
-  - Open
-  - High
-  - Low
-  - Close
-  - Volume
+- **Timestamp**
+- **Open**
+- **High**
+- **Low**
+- **Close**
+- **Volume**
 ##### Example:
+#### Method 1: Simple OHLCV Retrieval
+This method is straightforward and streams only OHLC data.
 ```python
 # Create an instance of the RealTimeData class
 real_time_data = RealTimeData()
@@ -273,6 +276,34 @@ real_time_data = RealTimeData()
 # Retrieve OHLCV data for a specific symbol
 data_generator = real_time_data.get_ohlcv(exchange_symbol="BINANCE:BTCUSDT")
 ```
+#### Method 2: Streaming OHLC and Indicators Simultaneously
+- Streams both OHLC data and indicators
+- Exports historical data (price candles and indicator history).
+- Specifies the number of OHLCV historical candles to export.
+- Requires JWT token for indicator access.
+```python
+# Create an instance of the Streamer class
+streamer = Streamer(
+    export_result=False,
+    export_type='json',
+    websocket_jwt_token="Your-Tradingview-Websocket-JWT"
+    )
+
+data = streamer.stream(
+    exchange="BINANCE",
+    symbol="BTCUSDT",
+    numb_price_candles=100,
+    indicator_id="STD;RSI",
+    indicator_version="31.0"
+    )
+```
+#### Important Notes
+- **Export Historical Data**: Set `export_result=True` if only historical data is needed.
+- **Stream Only OHLCV**: Do not include `indicator_id` or `indicator_version`.
+
+#### Indicator Search
+- For assistance in finding your preferred indicator, visit: [TradingView Indicator Search](https://www.tradingview.com/pubscripts-suggest-json/?search=rsi).
+
 
 #### Retrieve Watchlist Market Info
   - You can send a list of exchange:symbol to get real-time market information, including:
