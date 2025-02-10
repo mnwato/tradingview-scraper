@@ -342,25 +342,3 @@ def signal_handler(sig, frame):
 
 # Register the signal handler
 signal.signal(signal.SIGINT, signal_handler)
-
-
-
-# Example Usage
-if __name__ == "__main__":
-    streamer = Streamer()
-
-    # exchange_symbol = ["BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "FXOPEN:XAUUSD"]  # Example symbol
-
-    data = streamer.stream(
-        exchange="BINANCE",
-        symbol="BTCUSDT",
-        # numb_price_candles: 10,
-        # indicator_id="STD;RSI",
-        # indicator_version="31.0",
-        # indicator_name="relative strength",
-        )
-
-    # Iterate over the generator to get real-time data
-    for packet in data:
-        print('-'*50)
-        print(packet)
