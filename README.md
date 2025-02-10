@@ -17,12 +17,15 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - [x] [Indicators](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Overview](https://www.tradingview.com/symbols/BTCUSD/)
   - [x] [News](https://www.tradingview.com/symbols/BTCUSD/news/)
+  - [x] [Earning-calendar](https://in.tradingview.com/earnings-calendar/)
   - [ ] [Minds](https://www.tradingview.com/symbols/BTCUSD/minds/)
   - [x] [Technical](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Market](https://www.tradingview.com/symbols/BTCUSD/markets/)
   - [ ] [Screener](https://www.tradingview.com/screener/)
-  - [x] Get data using TradingView WebSocket
-  - [ ] Additional suggestions welcome!
+  - [x] Get 'OHLC', 'Indicators' using TradingView WebSocket
+  - [x] Export historical OHLC candle and Indicator values
+  
+  Additional suggestions welcome!
 
 ### To be aware of the latest changes, go to the [end of this page](https://github.com/mnwato/tradingview-scraper#changes).
 
@@ -55,9 +58,10 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - Extract values for indicators like `RSI`, `Stoch.K`, etc. 
   - [Full list of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/indicators.txt)
 
-- **Real-Time data Extraction
+- **Real-Time data Extraction**
   - OHLCV
   - Watchlist
+  - Indicators
 
 - **Export Formats**
   - CSV
@@ -253,15 +257,18 @@ news_content = news_scraper.scrape_news_content(
 ```
 
 ### 6. Fetching Real-Time Trading Data
-- The RealTimeData class provides functionality to fetch real-time trading data from various exchanges. Below are usage examples demonstrating how to retrieve the latest trade information and OHLCV (Open, High, Low, Close, Volume) data.
+- The `RealTimeData` class offers functionality to fetch real-time trading data from various exchanges. This section provides usage examples demonstrating how to retrieve the latest trade information and OHLCV (Open, High, Low, Close, Volume) data.
 
 #### Retrieve OHLCV Data:
-  - Open
-  - High
-  - Low
-  - Close
-  - Volume
+- **Timestamp**
+- **Open**
+- **High**
+- **Low**
+- **Close**
+- **Volume**
 ##### Example:
+#### Method 1: Simple OHLCV Retrieval
+This method is straightforward and streams only OHLC data.
 ```python
 # Create an instance of the RealTimeData class
 real_time_data = RealTimeData()
@@ -269,6 +276,34 @@ real_time_data = RealTimeData()
 # Retrieve OHLCV data for a specific symbol
 data_generator = real_time_data.get_ohlcv(exchange_symbol="BINANCE:BTCUSDT")
 ```
+#### Method 2: Streaming OHLC and Indicators Simultaneously
+- Streams both OHLC data and indicators
+- Exports historical data (price candles and indicator history).
+- Specifies the number of OHLCV historical candles to export.
+- Requires JWT token for indicator access.
+```python
+# Create an instance of the Streamer class
+streamer = Streamer(
+    export_result=False,
+    export_type='json',
+    websocket_jwt_token="Your-Tradingview-Websocket-JWT"
+    )
+
+data_generator = streamer.stream(
+    exchange="BINANCE",
+    symbol="BTCUSDT",
+    numb_price_candles=100,
+    indicator_id="STD;RSI",
+    indicator_version="31.0"
+    )
+```
+#### Important Notes
+- **Export Historical Data**: Set `export_result=True` if only historical data is needed. (returns json instead of generator)
+- **Stream Only OHLCV**: Do not include `indicator_id` or `indicator_version`.
+
+#### Indicator Search
+- For assistance in finding your preferred indicator, visit: [TradingView Indicator Search](https://www.tradingview.com/pubscripts-suggest-json/?search=rsi).
+
 
 #### Retrieve Watchlist Market Info
   - You can send a list of exchange:symbol to get real-time market information, including:
@@ -315,7 +350,9 @@ from tradingview_scraper.symbols.cal import CalendarScraper
 calendar_scraper = CalendarScraper()
 
 # Scrape earnings from all markets.
-res = calendar_scraper.scrape_earnings()
+res = calendar_scraper.scrape_earnings(
+  values=["logoid", "name", "earnings_per_share_fq"]
+)
 
 
 # Scrape upcoming week earnings from the american market
@@ -324,7 +361,12 @@ from datetime import datetime, timedelta
 timestamp_now = datetime.now().timestamp()
 timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
 
-res = calendar_scraper.scrape_earnings(timestamp_now, timestamp_in_7_days, ["america"])
+res = calendar_scraper.scrape_earnings(
+  timestamp_now,
+  timestamp_in_7_days,
+  ["america"],
+  values=["logoid", "name", "earnings_per_share_fq"]
+  )
 ```
 
 #### Scraping Dividend events
@@ -334,7 +376,9 @@ from tradingview_scraper.symbols.cal import CalendarScraper
 calendar_scraper = CalendarScraper()
 
 # Scrape dividends from all markets.
-res = calendar_scraper.scrape_dividends()
+res = calendar_scraper.scrape_dividends(
+  values=["logoid", "name", "dividends_yield"]
+)
 
 
 # Scrape upcoming week dividends from the american market
@@ -343,10 +387,19 @@ from datetime import datetime, timedelta
 timestamp_now = datetime.now().timestamp()
 timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
 
-res = calendar_scraper.scrape_dividends(timestamp_now, timestamp_in_7_days, ["america"])
+res = calendar_scraper.scrape_dividends(
+  timestamp_now,
+  timestamp_in_7_days,
+  ["america"],
+  values=["logoid", "name", "dividends_yield"]
+  )
 ```
 
 ## Changes:
+- Release `0.4.5`:
+  Add value argument to specify calander fields
+  Add Streamer class for getting OHLCV and indicator simultaneously
+  Integrate realtime data and historical exporter into Streamer class
 - Release `0.4.2`:
   Add calander (Dividend, Earning)
   Make requirements non-explicit
