@@ -17,12 +17,15 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - [x] [Indicators](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Overview](https://www.tradingview.com/symbols/BTCUSD/)
   - [x] [News](https://www.tradingview.com/symbols/BTCUSD/news/)
+  - [x] [Earning-calendar](https://in.tradingview.com/earnings-calendar/)
   - [ ] [Minds](https://www.tradingview.com/symbols/BTCUSD/minds/)
   - [x] [Technical](https://www.tradingview.com/symbols/BTCUSD/technicals/)
   - [ ] [Market](https://www.tradingview.com/symbols/BTCUSD/markets/)
   - [ ] [Screener](https://www.tradingview.com/screener/)
-  - [x] Get data using TradingView WebSocket
-  - [ ] Additional suggestions welcome!
+  - [x] Get 'OHLC', 'Indicators' using TradingView WebSocket
+  - [x] Export historical OHLC candle and Indicator values
+  
+  Additional suggestions welcome!
 
 ### To be aware of the latest changes, go to the [end of this page](https://github.com/mnwato/tradingview-scraper#changes).
 
@@ -55,9 +58,10 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - Extract values for indicators like `RSI`, `Stoch.K`, etc. 
   - [Full list of indicators](https://github.com/mnwato/tradingview-scraper/blob/dev/tradingview_scraper/indicators.txt)
 
-- **Real-Time data Extraction
+- **Real-Time data Extraction**
   - OHLCV
   - Watchlist
+  - Indicators
 
 - **Export Formats**
   - CSV
@@ -315,7 +319,9 @@ from tradingview_scraper.symbols.cal import CalendarScraper
 calendar_scraper = CalendarScraper()
 
 # Scrape earnings from all markets.
-res = calendar_scraper.scrape_earnings()
+res = calendar_scraper.scrape_earnings(
+  values=["logoid", "name", "earnings_per_share_fq"]
+)
 
 
 # Scrape upcoming week earnings from the american market
@@ -324,7 +330,12 @@ from datetime import datetime, timedelta
 timestamp_now = datetime.now().timestamp()
 timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
 
-res = calendar_scraper.scrape_earnings(timestamp_now, timestamp_in_7_days, ["america"])
+res = calendar_scraper.scrape_earnings(
+  timestamp_now,
+  timestamp_in_7_days,
+  ["america"],
+  values=["logoid", "name", "earnings_per_share_fq"]
+  )
 ```
 
 #### Scraping Dividend events
@@ -334,7 +345,9 @@ from tradingview_scraper.symbols.cal import CalendarScraper
 calendar_scraper = CalendarScraper()
 
 # Scrape dividends from all markets.
-res = calendar_scraper.scrape_dividends()
+res = calendar_scraper.scrape_dividends(
+  values=["logoid", "name", "dividends_yield"]
+)
 
 
 # Scrape upcoming week dividends from the american market
@@ -343,7 +356,12 @@ from datetime import datetime, timedelta
 timestamp_now = datetime.now().timestamp()
 timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
 
-res = calendar_scraper.scrape_dividends(timestamp_now, timestamp_in_7_days, ["america"])
+res = calendar_scraper.scrape_dividends(
+  timestamp_now,
+  timestamp_in_7_days,
+  ["america"],
+  values=["logoid", "name", "dividends_yield"]
+  )
 ```
 
 ## Changes:
