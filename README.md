@@ -289,7 +289,7 @@ streamer = Streamer(
     websocket_jwt_token="Your-Tradingview-Websocket-JWT"
     )
 
-data = streamer.stream(
+data_generator = streamer.stream(
     exchange="BINANCE",
     symbol="BTCUSDT",
     numb_price_candles=100,
@@ -298,7 +298,7 @@ data = streamer.stream(
     )
 ```
 #### Important Notes
-- **Export Historical Data**: Set `export_result=True` if only historical data is needed.
+- **Export Historical Data**: Set `export_result=True` if only historical data is needed. (returns json instead of generator)
 - **Stream Only OHLCV**: Do not include `indicator_id` or `indicator_version`.
 
 #### Indicator Search
