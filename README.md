@@ -270,6 +270,7 @@ news_content = news_scraper.scrape_news_content(
 #### Method 1: Simple OHLCV Retrieval
 This method is straightforward and streams only OHLC data.
 ```python
+from tradingview_scraper.symbols.stream import RealTimeData
 # Create an instance of the RealTimeData class
 real_time_data = RealTimeData()
 
@@ -282,6 +283,7 @@ data_generator = real_time_data.get_ohlcv(exchange_symbol="BINANCE:BTCUSDT")
 - Specifies the number of OHLCV historical candles to export.
 - Requires JWT token for indicator access.
 ```python
+from tradingview_scraper.symbols.stream import Streamer
 # Create an instance of the Streamer class
 streamer = Streamer(
     export_result=False,
@@ -314,6 +316,7 @@ data_generator = streamer.stream(
   - `chp` (Change in Percent)
 ##### Example:
 ```python
+from tradingview_scraper.symbols.stream import RealTimeData
 # Create an instance of the RealTimeData class
 real_time_data = RealTimeData()
 
