@@ -399,7 +399,9 @@ res = calendar_scraper.scrape_dividends(
 ```
 
 ## Changes:
-- Release `0.4.5`:
+- Release `0.4.7`:
+  Fix bug undefined RealTimeData class
+- Release `0.4.6`:
   Add value argument to specify calander fields
   Add Streamer class for getting OHLCV and indicator simultaneously
   Integrate realtime data and historical exporter into Streamer class

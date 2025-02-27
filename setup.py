@@ -13,7 +13,7 @@ classifiers = [
   'Programming Language :: Python :: 3.8'
 ]
 
-VERSION = '0.4.6'
+VERSION = '0.4.7'
 DESCRIPTION = 'Tradingview scraper tool'
 
 # Setting up
