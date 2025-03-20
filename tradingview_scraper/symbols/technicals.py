@@ -97,7 +97,7 @@ class Indicators:
             indicators = self.indicators
 
         base_url = "https://scanner.tradingview.com/symbol"
-        fields = self._edit_indicators_by_specified_timeframe(indicators, timeframe)
+        fields = self._edit_indicators_by_specified_timeframe(indicators, timeframe).replace('+', '%2B')
         url = f"{base_url}?symbol={exchange}:{symbol}&fields={fields}&no_404=true"
         headers = {'user-agent': generate_user_agent()}
 
