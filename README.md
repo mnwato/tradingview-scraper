@@ -279,7 +279,7 @@ data_generator = real_time_data.get_ohlcv(exchange_symbol="BINANCE:BTCUSDT")
 ```
 #### Method 2: Streaming OHLC and Indicators Simultaneously
 - Streams both OHLC data and indicators
-- Exports historical data (price candles and indicator history).
+- Exports historical data in specific timeframe (price candles and indicator history).
 - Specifies the number of OHLCV historical candles to export.
 - Requires JWT token for indicator access.
 ```python
@@ -294,6 +294,7 @@ streamer = Streamer(
 data_generator = streamer.stream(
     exchange="BINANCE",
     symbol="BTCUSDT",
+    timeframe="4h",
     numb_price_candles=100,
     indicator_id="STD;RSI",
     indicator_version="31.0"
@@ -399,6 +400,9 @@ res = calendar_scraper.scrape_dividends(
 ```
 
 ## Changes:
+- Release `0.4.8`:
+  Fix bug while fetching ADX+DI indicators
+  Add timeframe param for streamer export data
 - Release `0.4.7`:
   Fix bug undefined RealTimeData class
 - Release `0.4.6`:
