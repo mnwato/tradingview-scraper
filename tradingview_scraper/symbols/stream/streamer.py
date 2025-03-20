@@ -26,6 +26,7 @@ from tradingview_scraper.symbols.stream.utils import (
 )
 from tradingview_scraper.symbols.utils import save_json_file, save_csv_file
 from tradingview_scraper.symbols.exceptions import DataNotFoundError
+from tradingview_scraper.utils import OHLCVConverter
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG,
@@ -212,6 +213,7 @@ class Streamer:
         self,
         exchange: str,
         symbol: str,
+        timeframe: str = '1m',
         numb_price_candles: int = 10,
         indicator_id: Optional[str] = None,
         indicator_version: Optional[str] = None
@@ -231,6 +233,8 @@ class Streamer:
         """
         exchange_symbol = f"{exchange}:{symbol}"
         validate_symbols(exchange_symbol)
+
+        tf_converter = OHLCVConverter(target_timeframe=timeframe)
 
         if indicator_id is not None and indicator_version is not None:
             ind_flag = True
@@ -268,8 +272,10 @@ class Streamer:
                 if i > 15:
                     raise DataNotFoundError("No 'OHLC' packet found within the first 15 packets.")
 
+            ohlc_json_data = tf_converter.convert(ohlc_json_data)
             self._export(json_data=ohlc_json_data, symbol=symbol, data_category="ohlc")
             if ind_flag is True:
+                indicator_json_data = tf_converter.convert(indicator_json_data)
                 self._export(
                     json_data=indicator_json_data,
                     symbol=symbol,
