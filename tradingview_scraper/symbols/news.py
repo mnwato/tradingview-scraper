@@ -168,36 +168,46 @@ class NewsScraper:
         sort: str = "latest",
         section: str = "all",
         language: str = "en"
-      ):
+    ):
         """
         Scrapes news headlines for a specified symbol from a given exchange, provider, or global area.
 
-        Parameters:
-            symbol (str): The trading symbol for which to fetch news..
-            exchange (str): The exchange from which to fetch news.
-            provider (str): The provider from which to fetch news.
-            sort (str): The sorting order of the news. Options are "latest", "oldest", 
-                        "most_urgent", or "least_urgent"..
-            section (str): The section of news to fetch. Options are "all" or "esg". 
-                          Default is "all".
-            language (str): The language code for the news.
-            area (str): The news area (e.g., "world", "americas", "europe", "asia", "oceania", "africa").
+        Parameters
+        ----------
+        symbol : str
+            The trading symbol for which to fetch news.
+        exchange : str
+            The exchange from which to fetch news.
+        provider : str, optional
+            The provider from which to fetch news. Defaults to None.
+        area : str, optional
+            The news area (e.g., "world", "americas", "europe", "asia", "oceania", "africa"). Defaults to None.
+        sort : str, optional
+            The sorting order of the news. Options are "latest", "oldest", "most_urgent", or "least_urgent". Defaults to "latest".
+        section : str, optional
+            The section of news to fetch. Options are "all" or "esg". Defaults to "all".
+        language : str, optional
+            The language code for the news. Defaults to "en".
 
-        Returns:
-            list: A list of news articles, where each article is represented as a 
-                  dictionary containing relevant details. Returns an empty list if 
-                  no news items are found.
+        Returns
+        -------
+        list
+            A list of news articles, where each article is represented as a dictionary containing relevant details.
+            Returns an empty list if no news items are found.
 
-        Raises:
-            ValueError: If the provided section, sort option, language, or exchange 
-                        is not supported.
-            RuntimeError: If an error occurs during the scraping process.
-            HTTPError: If the HTTP request returns an error response.
+        Raises
+        ------
+        ValueError
+            If the provided section, sort option, language, or exchange is not supported.
+        RuntimeError
+            If an error occurs during the scraping process.
+        HTTPError
+            If the HTTP request returns an error response.
 
-        Example:
-            news = scraper.scrape_news(symbol="AAPL", exchange="NASDAQ", sort="most_urgent")
+        Example
+        -------
+        news = scraper.scrape_headlines(symbol="AAPL", exchange="NASDAQ", sort="most_urgent")
         """
-
         # Validate inputs
         kwargs = self.validate_inputs(
             symbol = symbol,

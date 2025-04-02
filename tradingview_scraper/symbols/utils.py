@@ -58,7 +58,8 @@ def generate_export_filepath(symbol, data_category, timeframe, file_extension):
     return path
 
 def save_json_file(data, **kwargs):
-    """Save the provided data to a JSON file with a generated file path.
+    """
+    Save the provided data to a JSON file with a generated file path.
 
     This function creates a JSON file using the specified symbol and data category
     to generate a unique file name. The file is saved in the 'export' directory.
@@ -67,14 +68,11 @@ def save_json_file(data, **kwargs):
     ----------
     data : dict
         The data to be saved in the JSON file. Must be serializable to JSON format.
-    **kwargs : keyword arguments
+    **kwargs : dict
         Additional parameters for file naming:
-        - symbol : str
-            The symbol to include in the file name, formatted to lowercase.
-        - data_category : str
-            The category of the data, used to distinguish between different datasets.
-        - timeframe : str, optional
-            The timeframe for the data, which can be included in the file name. Defaults to an empty string.
+        - symbol (str): The symbol to include in the file name, formatted to lowercase.
+        - data_category (str): The category of the data, used to distinguish between different datasets.
+        - timeframe (str, optional): The timeframe for the data, which can be included in the file name. Defaults to an empty string.
 
     Raises
     ------
@@ -107,7 +105,8 @@ def save_json_file(data, **kwargs):
         print(f"[ERROR] An unexpected error occurred: {e}")
 
 def save_csv_file(data, **kwargs):
-    """Save the provided data to a CSV file with a generated file path.
+    """
+    Save the provided data to a CSV file with a generated file path.
 
     This function creates a CSV file using the specified symbol and data category
     to generate a unique file name. The file is saved in the 'export' directory.
@@ -116,14 +115,11 @@ def save_csv_file(data, **kwargs):
     ----------
     data : dict
         The data to be saved in the CSV file. Must be in a suitable format for a DataFrame.
-    **kwargs : keyword arguments
+    **kwargs : dict
         Additional parameters for file naming:
-        - symbol : str
-            The symbol to include in the file name, which will be formatted to lowercase.
-        - data_category : str
-            The category of the data, used to distinguish between different datasets.
-        - timeframe : str, optional
-            The timeframe for the data, which can be included in the file name. Defaults to an empty string.
+        - symbol (str): The symbol to include in the file name, formatted to lowercase.
+        - data_category (str): The category of the data, used to distinguish between different datasets.
+        - timeframe (str, optional): The timeframe for the data, which can be included in the file name. Defaults to an empty string.
 
     Raises
     ------
