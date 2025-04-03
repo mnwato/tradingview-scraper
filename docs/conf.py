@@ -13,9 +13,9 @@ author = 'Mostafa Najmi'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 import sphinx_rtd_theme
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../'))
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('../'))
 
 extensions = [
     "sphinx_rtd_theme",
