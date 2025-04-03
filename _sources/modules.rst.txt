@@ -4,4 +4,7 @@ tradingview_scraper
 .. toctree::
    :maxdepth: 4
 
-   tradingview_scraper
+   symbols
+   stream
+   utils
+   tests
