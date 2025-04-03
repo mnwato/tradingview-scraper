@@ -400,6 +400,8 @@ res = calendar_scraper.scrape_dividends(
 ```
 
 ## Changes:
+- Release `0.4.9`:
+  Add [documentation](https://mnwato.github.io/tradingview-scraper/)
 - Release `0.4.8`:
   Fix bug while fetching ADX+DI indicators
   Add timeframe param for streamer export data
