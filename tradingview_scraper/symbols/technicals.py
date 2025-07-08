@@ -6,7 +6,12 @@ import json
 from typing import List, Optional
 
 import requests
-import pkg_resources
+try:
+    # Python 3.9+
+    from importlib.resources import files
+except ImportError:
+    # Python 3.7-3.8 fallback
+    from importlib_resources import files
 
 from tradingview_scraper.symbols.utils import generate_user_agent, save_json_file, save_csv_file
 
@@ -145,23 +150,23 @@ class Indicators:
         elif self.export_type == "csv":
             save_csv_file(data=data, symbol=symbol, data_category='indicators', timeframe=timeframe)
     
-    def _load_file(self, path):
-        """Load data from a specified file.
+    def _load_file(self, resource_path):
+        """Load data from a specified resource file.
 
         Args:
-            path (str): The path to the file.
+            resource_path: The resource path to the file.
 
         Returns:
             list: A list of data loaded from the file, or an empty list if the file is not found or an error occurs.
         """
-        if not os.path.exists(path):
-            print(f"[ERROR] file not found at {path}.")
-            return []
         try:
-            with open(path, 'r', encoding="utf-8") as f:
-                return [line.strip() for line in f.readlines()]
+            content = resource_path.read_text(encoding="utf-8")
+            return [line.strip() for line in content.splitlines()]
+        except FileNotFoundError:
+            print(f"[ERROR] Resource file not found: {resource_path}")
+            return []
         except IOError as e:
-            print(f"[ERROR] Error reading file {path}: {e}")
+            print(f"[ERROR] Error reading resource file {resource_path}: {e}")
             return []
 
     def _load_indicators(self) -> List[str]:
@@ -170,8 +175,8 @@ class Indicators:
         Returns:
             List[str]: A list of indicators loaded from the file. Returns an empty list if the file is not found.
         """
-        path = pkg_resources.resource_filename('tradingview_scraper', 'data/indicators.txt')
-        return self._load_file(path)
+        resource_path = files('tradingview_scraper.data') / 'indicators.txt'
+        return self._load_file(resource_path)
 
     def _load_exchanges(self) -> List[str]:
         """Load exchanges from a specified file.
@@ -179,8 +184,8 @@ class Indicators:
         Returns:
             List[str]: A list of exchanges loaded from the file. Returns an empty list if the file is not found.
         """
-        path = pkg_resources.resource_filename('tradingview_scraper', 'data/exchanges.txt')
-        return self._load_file(path)
+        resource_path = files('tradingview_scraper.data') / 'exchanges.txt'
+        return self._load_file(resource_path)
     
     def _load_timeframes(self) -> dict:
         """Load timeframes from a specified file.
@@ -188,14 +193,17 @@ class Indicators:
         Returns:
             dict: A dictionary of timeframes loaded from the file. Returns a dict with '1d' as default.
         """
-        path = pkg_resources.resource_filename('tradingview_scraper', 'data/timeframes.json')
-        if not os.path.exists(path):
-            print(f"[ERROR] Timeframe file not found at {path}.")
-            return {"1d": None}
+        resource_path = files('tradingview_scraper.data') / 'timeframes.json'
         try:
-            with open(path, 'r', encoding="utf-8") as f:
-                timeframes = json.load(f)
+            content = resource_path.read_text(encoding="utf-8")
+            timeframes = json.loads(content)
             return timeframes.get('indicators', {"1d": None})
+        except FileNotFoundError:
+            print(f"[ERROR] Timeframe resource file not found: {resource_path}")
+            return {"1d": None}
         except IOError as e:
-            print(f"[ERROR] Error reading timeframe file: {e}")
+            print(f"[ERROR] Error reading timeframe resource file: {e}")
+            return {"1d": None}
+        except json.JSONDecodeError as e:
+            print(f"[ERROR] Error parsing JSON from timeframe file: {e}")
             return {"1d": None}
