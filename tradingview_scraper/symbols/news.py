@@ -1,11 +1,15 @@
 """Module providing a function to scrape published news about a symbol."""
 
-import os
 import json
 
 from bs4 import BeautifulSoup
 import requests
-import pkg_resources
+try:
+    # Python 3.9+
+    from importlib.resources import files
+except ImportError:
+    # Python 3.7-3.8 fallback
+    from importlib_resources import files
 
 
 from tradingview_scraper.symbols.utils import save_csv_file, save_json_file, generate_user_agent
@@ -298,16 +302,19 @@ class NewsScraper:
         Raises:
             IOError: If there is an error reading the file.
         """
-        path = pkg_resources.resource_filename('tradingview_scraper', 'data/languages.json')
-        if not os.path.exists(path):
-            print(f"[ERROR] Languages file not found at {path}.")
-            return []
+        resource_path = files('tradingview_scraper.data') / 'languages.json'
         try:
-            with open(path, 'r', encoding="utf-8") as f:
-                exchanges = json.load(f)
-            return list(exchanges.values())
+            content = resource_path.read_text(encoding="utf-8")
+            languages = json.loads(content)
+            return list(languages.values())
+        except FileNotFoundError:
+            print(f"[ERROR] Languages resource file not found: {resource_path}")
+            return []
         except IOError as e:
-            print(f"[ERROR] Error reading languages file: {e}")
+            print(f"[ERROR] Error reading languages resource file: {e}")
+            return []
+        except json.JSONDecodeError as e:
+            print(f"[ERROR] Error parsing JSON from languages file: {e}")
             return []
 
 
@@ -320,16 +327,15 @@ class NewsScraper:
         Raises:
             IOError: If there is an error reading the file.
         """
-        path = pkg_resources.resource_filename('tradingview_scraper', 'data/exchanges.txt')
-        if not os.path.exists(path):
-            print(f"[ERROR] Exchanges file not found at {path}.")
-            return []
+        resource_path = files('tradingview_scraper.data') / 'exchanges.txt'
         try:
-            with open(path, 'r', encoding="utf-8") as f:
-                exchanges = f.readlines()
-            return [exchange.strip() for exchange in exchanges]
+            content = resource_path.read_text(encoding="utf-8")
+            return [line.strip() for line in content.splitlines()]
+        except FileNotFoundError:
+            print(f"[ERROR] Exchanges resource file not found: {resource_path}")
+            return []
         except IOError as e:
-            print(f"[ERROR] Error reading exchanges file: {e}")
+            print(f"[ERROR] Error reading exchanges resource file: {e}")
             return []
 
 
@@ -342,36 +348,37 @@ class NewsScraper:
         Raises:
             IOError: If there is an error reading the file.
         """
-        path = pkg_resources.resource_filename('tradingview_scraper', 'data/news_providers.txt')
-        if not os.path.exists(path):
-            print(f"[ERROR] News provider file not found at {path}.")
-            return []
+        resource_path = files('tradingview_scraper.data') / 'news_providers.txt'
         try:
-            with open(path, 'r', encoding="utf-8") as f:
-                providers = f.readlines()
-            return [provider.strip() for provider in providers]
+            content = resource_path.read_text(encoding="utf-8")
+            return [line.strip() for line in content.splitlines()]
+        except FileNotFoundError:
+            print(f"[ERROR] News provider resource file not found: {resource_path}")
+            return []
         except IOError as e:
-            print(f"[ERROR] Error reading providers file: {e}")
+            print(f"[ERROR] Error reading news provider resource file: {e}")
             return []
 
     
-    def _load_areas(self) -> list:
+    def _load_areas(self) -> dict:
         """Load areas from a specified file.
 
         Returns:
-            list: A list of areas loaded from the file.
+            dict: A dictionary of areas loaded from the file.
 
         Raises:
             IOError: If there is an error reading the file.
         """
-        path = pkg_resources.resource_filename('tradingview_scraper', 'data/areas.json')
-        if not os.path.exists(path):
-            print(f"[ERROR] Areas file not found at {path}.")
-            return []
+        resource_path = files('tradingview_scraper.data') / 'areas.json'
         try:
-            with open(path, 'r', encoding="utf-8") as f:
-                areas = json.load(f)
-            return areas
+            content = resource_path.read_text(encoding="utf-8")
+            return json.loads(content)
+        except FileNotFoundError:
+            print(f"[ERROR] Areas resource file not found: {resource_path}")
+            return {}
         except IOError as e:
-            print(f"[ERROR] Error reading areas file: {e}")
-            return []
+            print(f"[ERROR] Error reading areas resource file: {e}")
+            return {}
+        except json.JSONDecodeError as e:
+            print(f"[ERROR] Error parsing JSON from areas file: {e}")
+            return {}
