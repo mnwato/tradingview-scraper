@@ -167,7 +167,7 @@ class RealTimeData:
         Returns:
             generator: A generator yielding OHLC data as JSON objects.
         """
-        self.validate_symbols(exchange_symbol)
+        #self.validate_symbols(exchange_symbol)
         quote_session = self.generate_session(prefix="qs_")
         chart_session = self.generate_session(prefix="cs_")
         logging.info(f"Quote session generated: {quote_session}, Chart session generated: {chart_session}")
