@@ -167,7 +167,7 @@ class RealTimeData:
         Returns:
             generator: A generator yielding OHLC data as JSON objects.
         """
-        self.validate_symbols(exchange_symbol)
+        #self.validate_symbols(exchange_symbol)
         quote_session = self.generate_session(prefix="qs_")
         chart_session = self.generate_session(prefix="cs_")
         logging.info(f"Quote session generated: {quote_session}, Chart session generated: {chart_session}")
@@ -267,8 +267,12 @@ class RealTimeData:
                     else:
                         split_result = [x for x in re.split(r'~m~\d+~m~', result) if x]
                         for item in split_result:
-                            if item:
-                                yield json.loads(item)  # Yield parsed JSON data
+                           if item:
+                                try:
+                                    yield json.loads(item)  # Yield parsed JSON data
+                                except Exception as e:
+                                    logging.error(f"Failed to parse JSON data: {item} - Error: {e}")
+                                    continue
 
                 except WebSocketConnectionClosedException:
                     logging.error("WebSocket connection closed. Attempting to reconnect...")
