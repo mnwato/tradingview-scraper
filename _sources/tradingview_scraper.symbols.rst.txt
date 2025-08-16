@@ -1,10 +1,18 @@
-tradingview_scraper.symbols
+tradingview\_scraper.symbols package
 ====================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tradingview_scraper.symbols.stream
 
 Submodules
 ----------
 
-tradingview_scraper.symbols.cal module
+tradingview\_scraper.symbols.cal module
 ---------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.cal
@@ -12,7 +20,7 @@ tradingview_scraper.symbols.cal module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.exceptions module
+tradingview\_scraper.symbols.exceptions module
 ----------------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.exceptions
@@ -20,7 +28,7 @@ tradingview_scraper.symbols.exceptions module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.ideas module
+tradingview\_scraper.symbols.ideas module
 -----------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.ideas
@@ -28,7 +36,7 @@ tradingview_scraper.symbols.ideas module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.news module
+tradingview\_scraper.symbols.news module
 ----------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.news
@@ -36,7 +44,7 @@ tradingview_scraper.symbols.news module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.technicals module
+tradingview\_scraper.symbols.technicals module
 ----------------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.technicals
@@ -44,7 +52,7 @@ tradingview_scraper.symbols.technicals module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.utils module
+tradingview\_scraper.symbols.utils module
 -----------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.utils

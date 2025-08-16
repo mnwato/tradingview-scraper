@@ -1,10 +1,10 @@
-tradingview_scraper.symbols.stream
+tradingview\_scraper.symbols.stream package
 ===========================================
 
 Submodules
 ----------
 
-tradingview_scraper.symbols.stream.price module
+tradingview\_scraper.symbols.stream.price module
 ------------------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.stream.price
@@ -12,7 +12,7 @@ tradingview_scraper.symbols.stream.price module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.stream.stream\_handler module
+tradingview\_scraper.symbols.stream.stream\_handler module
 ----------------------------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.stream.stream_handler
@@ -20,7 +20,7 @@ tradingview_scraper.symbols.stream.stream\_handler module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.stream.streamer module
+tradingview\_scraper.symbols.stream.streamer module
 ---------------------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.stream.streamer
@@ -28,7 +28,7 @@ tradingview_scraper.symbols.stream.streamer module
    :undoc-members:
    :show-inheritance:
 
-tradingview_scraper.symbols.stream.utils module
+tradingview\_scraper.symbols.stream.utils module
 ------------------------------------------------
 
 .. automodule:: tradingview_scraper.symbols.stream.utils
