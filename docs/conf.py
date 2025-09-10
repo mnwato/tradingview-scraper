@@ -19,7 +19,8 @@ sys.path.insert(0, os.path.abspath('../'))
 
 extensions = [
     "sphinx_rtd_theme",
-    "sphinx.ext.autodoc"
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode"
 ]
 
 templates_path = ['_templates']

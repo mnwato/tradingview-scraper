@@ -20,8 +20,11 @@ This is a Python library for scraping ideas and indicators from [TradingView.com
   - [x] [Earning-calendar](https://in.tradingview.com/earnings-calendar/)
   - [ ] [Minds](https://www.tradingview.com/symbols/BTCUSD/minds/)
   - [x] [Technical](https://www.tradingview.com/symbols/BTCUSD/technicals/)
-  - [ ] [Market](https://www.tradingview.com/symbols/BTCUSD/markets/)
+  - [ ] [Symbol-Market](https://www.tradingview.com/symbols/BTCUSD/markets/)
+  - [ ] [Markets](https://www.tradingview.com/markets)
+  - [ ] [Markets-Quotes](https://www.tradingview.com/markets/stocks-usa/market-movers-penny-stocks/)
   - [ ] [Screener](https://www.tradingview.com/screener/)
+  - [ ] [Fundamental-Graphs](https://www.tradingview.com/fundamental-graphs/?selected-metric=STD%3BFund_total_revenue_fq&symbols=NASDAQ%3AAAPL%2CNASDAQ%3AGOOGL&metrics=STD%3BFund_total_revenue_fq/)
   - [x] Get 'OHLC', 'Indicators' using TradingView WebSocket
   - [x] Export historical OHLC candle and Indicator values
   
