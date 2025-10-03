@@ -40,6 +40,7 @@ setup(
         ],
     },
     install_requires=[
+        "setuptools",
         "requests>=2.32.5",
         "pandas>=2.0.3",
         "beautifulsoup4>=4.12.3",
