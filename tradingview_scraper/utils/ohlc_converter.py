@@ -1,8 +1,11 @@
 from typing import List, Dict
 import pkg_resources
+import logging
 import json
 import os
 
+
+logger = logging.getLogger(__name__)
 
 class OHLCVConverter:
     def __init__(self, target_timeframe: str):
@@ -123,13 +126,15 @@ class OHLCVConverter:
             dict: A dictionary of timeframes loaded from the file. Returns a dict with '1d' as default.
         """
         path = pkg_resources.resource_filename('tradingview_scraper', 'data/timeframes.json')
+        
         if not os.path.exists(path):
-            print(f"[ERROR] Timeframe file not found at {path}.")
+            logger.error("[ERROR] Timeframe file not found at %s.", path)
             return {"1d": None}
+
         try:
-            with open(path, 'r', encoding="utf-8") as f:
+            with open(path, 'r', encoding='utf-8') as f:
                 timeframes = json.load(f)
             return timeframes.get('indicators', {"1d": None})
-        except IOError as e:
-            print(f"[ERROR] Error reading timeframe file: {e}")
+        except (IOError, json.JSONDecodeError) as e:
+            logger.error("[ERROR] Error reading timeframe file: %s", e)
             return {"1d": None}
