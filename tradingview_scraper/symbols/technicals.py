@@ -3,12 +3,16 @@
 import os
 import re
 import json
+import logging
 from typing import List, Optional
 
 import requests
 import pkg_resources
 
 from tradingview_scraper.symbols.utils import generate_user_agent, save_json_file, save_csv_file
+
+
+logger = logging.getLogger(__name__)
 
 class Indicators:
     def __init__(self, export_result: bool = False, export_type: str = 'json'):
@@ -190,12 +194,12 @@ class Indicators:
         """
         path = pkg_resources.resource_filename('tradingview_scraper', 'data/timeframes.json')
         if not os.path.exists(path):
-            print(f"[ERROR] Timeframe file not found at {path}.")
+            logger.error(f"[ERROR] Timeframe file not found at {path}.")
             return {"1d": None}
         try:
             with open(path, 'r', encoding="utf-8") as f:
                 timeframes = json.load(f)
             return timeframes.get('indicators', {"1d": None})
         except IOError as e:
-            print(f"[ERROR] Error reading timeframe file: {e}")
+            logger.error(f"[ERROR] Error reading timeframe file: {e}")
             return {"1d": None}
