@@ -154,7 +154,7 @@ Here’s a revised version of the Examples section, focusing on clarity, ease of
 ### 1. Fast Running (Default Parameters)
 To quickly scrape ideas using default settings, use the following code:
 ```python
-from symbols.ideas import Ideas
+from tradingview_scraper.symbols.ideas import Ideas
 
 # Initialize the Ideas scraper with default parameters
 ideas_scraper = Ideas()  # Default: export_result=False, export_type='json'
@@ -168,7 +168,7 @@ print("Ideas:", ideas)
 ### 2. Getting Ideas for a Specific Symbol, Export Type, and Pages
 To scrape ideas for a specific symbol and export them as a CSV file, you can specify the parameters:
 ```python
-from symbols.ideas import Ideas
+from tradingview_scraper.symbols.ideas import Ideas
 
 # Initialize the Ideas scraper with custom parameters
 ideas_scraper = Ideas(
@@ -181,7 +181,7 @@ ideas = ideas_scraper.scrape(
   symbol="ETHUSD",
   startPage=1,
   endPage=2,
-  sort="popular"  #  Could be 'popupar' or 'recent'
+  sort="popular"  #  Could be 'popular' or 'recent'
 )
 print("Ideas:", ideas)
 ```
@@ -225,7 +225,13 @@ print("Indicators:", indicators)
 
 **Output:**
 ```json
-{"RSI": "46.34926112", "Stoch.K": "40.40173723"}
+{
+  "status": "success",
+  "data": {
+    "RSI": "46.34926112",
+    "Stoch.K": "40.40173723"
+  }
+}
 ```
 
 ### 4. Getting All Indicators
@@ -245,6 +251,8 @@ print("All Indicators:", indicators)
 
 ### 5. Getting News Headlines/Content
 ```python
+from tradingview_scraper.symbols.news import NewsScraper
+
 # Create an instance of the NewsScraper with export options
 news_scraper = NewsScraper(export_result=True, export_type='json')
 
@@ -260,7 +268,7 @@ news_headlines = news_scraper.scrape_headlines(
 
 # Retrieve detailed news content for a specific story
 news_content = news_scraper.scrape_news_content(
-    story_path=news_headlines[0]['storyPath']  # Specify the story path from scraped headlines
+    story_path=news_headlines['data'][0]['storyPath']  # Specify the story path from scraped headlines
 )
 ```
 - Retrieve news by symbol:
@@ -270,8 +278,40 @@ news_content = news_scraper.scrape_news_content(
 
 #### Output (news headline):
 ```json
-[
-  {
+{
+  "status": "success",
+  "data": [
+    {
+      "id": "tag:reuters.com,2024:newsml_L1N3KM09S:0",
+      "title": "Goldman Sachs sees biggest boost to US economy from Harris win",
+      "provider": "reuters",
+      "sourceLogoId": "reuters",
+      "published": 1725443676,
+      "source": "Reuters",
+      "urgency": 2,
+      "permission": "preview",
+      "relatedSymbols": [
+        {
+          "symbol": "BITMEX:XBTETH.P",
+          "currency-logoid": "country/US",
+          "base-currency-logoid": "crypto/XTVCBTC"
+        },
+        {
+          "symbol": "ICEUS:DXY",
+          "logoid": "indices/u-s-dollar-index"
+        }
+      ],
+      "storyPath": "/news/reuters.com,2024:newsml_L1N3KM09S:0-goldman-sachs-sees-biggest-boost-to-us-economy-from-harris-win/"
+    }
+  ],
+  "total": 1
+}
+```
+#### Output (news content):
+```json
+{
+  "status": "success",
+  "data": {
     "breadcrumbs": "News > U.Today > Bitcoin ETFs Record Enormous Outflows",
     "title": "Bitcoin ETFs Record Enormous Outflows",
     "published_datetime": "Wed, 04 Sep 2024 07:55:38 GMT",
@@ -281,36 +321,10 @@ news_content = news_scraper.scrape_news_content(
         "logo": "https://s3-symbol-logo.tradingview.com/crypto/XTVCUSDT.svg"
       }
     ],
-    "body": ["""<List of text page content>"""],
-    "tags": ["Crypto", "U.Today"]}
-]
-```
-#### Output (news content):
-```json
-[
-  {
-    "id": "tag:reuters.com,2024:newsml_L1N3KM09S:0",
-    "title": "Goldman Sachs sees biggest boost to US economy from Harris win",
-    "provider": "reuters",
-    "sourceLogoId": "reuters",
-    "published": 1725443676,
-    "source": "Reuters",
-    "urgency": 2,
-    "permission": "preview",
-    "relatedSymbols": [
-      {
-        "symbol": "BITMEX:XBTETH.P",
-        "currency-logoid": "country/US",
-        "base-currency-logoid": "crypto/XTVCBTC"
-      },
-      {
-        "symbol": "ICEUS:DXY",
-        "logoid": "indices/u-s-dollar-index"
-      }
-    ],
-    "storyPath": "/news/reuters.com,2024:newsml_L1N3KM09S:0-goldman-sachs-sees-biggest-boost-to-us-economy-from-harris-win/"
+    "body": ["<List of text page content>"],
+    "tags": ["Crypto", "U.Today"]
   }
-]
+}
 ```
 
 ### 6. Fetching Real-Time Trading Data
