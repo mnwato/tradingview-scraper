@@ -41,7 +41,7 @@ html_static_path = ['_static']
 
 
 
-def skip(app, what, name, obj, would_skip, options):  # pylint: disable=unused-argument,too-many-arguments,too-many-positional-arguments
+def skip(app, what, name, obj, would_skip, options):  # pylint: disable=unused-argument,too-many-arguments
     """Skip autodoc for __init__ method."""
     if name == "__init__":
         return False
