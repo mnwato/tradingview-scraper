@@ -1,0 +1,25 @@
+[MAIN]
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    invalid-name,
+    wrong-import-position,
+    wrong-import-order,
+    import-error,
+    unused-import,
+    unused-argument,
+    duplicate-code,
+    cyclic-import,
+    consider-merging-isinstance,
+    trailing-whitespace
+
+[MESSAGES CONTROL]
+# Disable specific warnings for test files
+[DESIGN]
+max-attributes=10
+max-args=6
+max-locals=20
+
+[FORMAT]
+max-line-length=127

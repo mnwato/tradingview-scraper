@@ -1,10 +1,13 @@
+"""Setup configuration for tradingview-scraper package."""
+
 from setuptools import setup, find_packages
 
 def readme():
-    with open('README.md') as f:
-        README = f.read()
-    return README
- 
+    """Read README.md file."""
+    with open('README.md', encoding='utf-8') as f:
+        readme_content = f.read()
+    return readme_content
+
 classifiers = [
   'Development Status :: 2 - Pre-Alpha',
   'Intended Audience :: Developers',
