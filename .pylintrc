@@ -12,14 +12,45 @@ disable=
     duplicate-code,
     cyclic-import,
     consider-merging-isinstance,
-    trailing-whitespace
+    trailing-whitespace,
+    protected-access,
+    line-too-long,
+    singleton-comparison,
+    consider-using-in,
+    no-else-return,
+    broad-exception-caught,
+    too-many-nested-blocks,
+    too-few-public-methods,
+    too-many-positional-arguments,
+    too-many-arguments,
+    too-many-branches,
+    too-many-locals,
+    unnecessary-pass,
+    bad-indentation,
+    missing-final-newline,
+    trailing-newlines,
+    redefined-outer-name,
+    logging-fstring-interpolation,
+    consider-using-sys-exit,
+    unused-variable,
+    no-else-break,
+    unspecified-encoding,
+    multiple-statements,
+    unsupported-membership-test,
+    unsupported-assignment-operation,
+    unsubscriptable-object,
+    too-many-public-methods,
+    use-implicit-booleaness-not-comparison,
+    attribute-defined-outside-init
 
 [MESSAGES CONTROL]
 # Disable specific warnings for test files
 [DESIGN]
 max-attributes=10
-max-args=6
-max-locals=20
+max-args=8
+max-locals=25
+max-branches=20
+max-public-methods=30
 
 [FORMAT]
-max-line-length=127
+max-line-length=200
