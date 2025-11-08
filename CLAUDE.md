@@ -176,6 +176,15 @@ GitHub Actions workflows:
 - **release.yml**: Handles PyPI releases
 - **docs.yml**: Builds and publishes documentation
 
+## Git Commit Guidelines
+
+When creating git commits:
+- **NEVER** add "Co-Authored-By: Claude" or similar AI attribution to commit messages
+- **NEVER** add "Generated with Claude Code" or similar phrases to commit messages
+- Keep commit messages focused on what changed and why
+- Follow conventional commit format: `type: description`
+- Use these types: feat, fix, docs, test, refactor, chore
+
 ## Common Patterns to Follow
 
 When adding new scrapers:
