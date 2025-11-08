@@ -22,6 +22,7 @@ disable=
     too-many-nested-blocks,
     too-few-public-methods,
     too-many-arguments,
+    too-many-positional-arguments,
     too-many-branches,
     too-many-locals,
     unnecessary-pass,
