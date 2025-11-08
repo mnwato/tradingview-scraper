@@ -54,3 +54,9 @@ pylint-output.txt
 
 # Ignore running script
 run.py
+
+# Docs
+.DS_Store
+docs/_build/
+docs/_static/
+docs/_templates

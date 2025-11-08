@@ -1,8 +1,11 @@
 import os
 import json
-import pandas as pd
 import random
 from datetime import datetime
+from typing import List
+
+import pandas as pd
+
 
 def ensure_export_directory(path='/export'):
     """Check if the export directory exists, and create it if it does not.
@@ -24,7 +27,7 @@ def ensure_export_directory(path='/export'):
         except Exception as e:
             print(f"[ERROR] Error creating directory {path}: {e}")
 
-def generate_export_filepath(symbol, data_category, file_extension):
+def generate_export_filepath(symbol, data_category, timeframe, file_extension):
     """Generate a file path for exporting data, including the current timestamp.
 
     This function constructs a file path based on the provided symbol, data category,
@@ -38,6 +41,8 @@ def generate_export_filepath(symbol, data_category, file_extension):
         The category of data being exported, which will be prefixed in the file name.
     file_extension : str
         The file extension for the export file (e.g., '.json', '.csv').
+    timeframe: str
+        Timeframe of report like (e.g., '1M', '1W').
 
     Returns
     -------
@@ -47,12 +52,14 @@ def generate_export_filepath(symbol, data_category, file_extension):
     """
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     symbol_lower = f'{symbol.lower()}_' if symbol else ''
+    timeframe = f'{timeframe}_' if timeframe else ''
     root_path = os.getcwd()
-    path = os.path.join(root_path, "export", f"{data_category}_{symbol_lower}{timestamp}{file_extension}")
+    path = os.path.join(root_path, "export", f"{data_category}_{symbol_lower}{timeframe}{timestamp}{file_extension}")
     return path
 
-def save_json_file(data, symbol, data_category):
-    """Save the provided data to a JSON file with a generated file path.
+def save_json_file(data, **kwargs):
+    """
+    Save the provided data to a JSON file with a generated file path.
 
     This function creates a JSON file using the specified symbol and data category
     to generate a unique file name. The file is saved in the 'export' directory.
@@ -60,9 +67,12 @@ def save_json_file(data, symbol, data_category):
     Parameters
     ----------
     data : dict
-        The data to be saved in the JSON file. Must be serializable to JSON.
-    symbol : str
-        The symbol to include in the file name, which will be formatted to lowercase.
+        The data to be saved in the JSON file. Must be serializable to JSON format.
+    **kwargs : dict
+        Additional parameters for file naming:
+        - symbol (str): The symbol to include in the file name, formatted to lowercase.
+        - data_category (str): The category of the data, used to distinguish between different datasets.
+        - timeframe (str, optional): The timeframe for the data, which can be included in the file name. Defaults to an empty string.
 
     Raises
     ------
@@ -74,13 +84,12 @@ def save_json_file(data, symbol, data_category):
         If the data provided is not serializable to JSON.
     Exception
         For any unexpected errors that may occur during file writing.
-
-    Example
-    -------
-    >>> save_json_file({'key': 'value'}, 'BTCUSD', 'prices')
-    JSON file saved at: current_directory/export/prices_btcusd_20230101-123456.json
     """
-    output_path = generate_export_filepath(symbol, data_category, '.json')
+    symbol = kwargs.get('symbol')
+    data_category = kwargs.get('data_category')
+    timeframe = kwargs.get('timeframe', '')
+    
+    output_path = generate_export_filepath(symbol, data_category, timeframe, '.json')
     ensure_export_directory(os.path.dirname(output_path))  # Ensure the directory exists
     try:
         with open(output_path, 'w') as f:
@@ -95,8 +104,9 @@ def save_json_file(data, symbol, data_category):
     except Exception as e:
         print(f"[ERROR] An unexpected error occurred: {e}")
 
-def save_csv_file(data, symbol, data_category):
-    """Save the provided data to a CSV file with a generated file path.
+def save_csv_file(data, **kwargs):
+    """
+    Save the provided data to a CSV file with a generated file path.
 
     This function creates a CSV file using the specified symbol and data category
     to generate a unique file name. The file is saved in the 'export' directory.
@@ -105,8 +115,11 @@ def save_csv_file(data, symbol, data_category):
     ----------
     data : dict
         The data to be saved in the CSV file. Must be in a suitable format for a DataFrame.
-    symbol : str
-        The symbol to include in the file name, which will be formatted to lowercase.
+    **kwargs : dict
+        Additional parameters for file naming:
+        - symbol (str): The symbol to include in the file name, formatted to lowercase.
+        - data_category (str): The category of the data, used to distinguish between different datasets.
+        - timeframe (str, optional): The timeframe for the data, which can be included in the file name. Defaults to an empty string.
 
     Raises
     ------
@@ -118,13 +131,12 @@ def save_csv_file(data, symbol, data_category):
         If permission is denied when trying to write to the file.
     Exception
         For any unexpected errors that may occur during file writing.
-
-    Example
-    -------
-    >>> save_csv_file({'column1': [1, 2], 'column2': [3, 4]}, 'BTCUSD', 'prices')
-    CSV file saved at: current_directory/export/prices_btcusd_20230101-123456.csv
     """
-    output_path = generate_export_filepath(symbol, data_category, '.csv')
+    symbol = kwargs.get('symbol')
+    data_category = kwargs.get('data_category')
+    timeframe = kwargs.get('timeframe', '')
+
+    output_path = generate_export_filepath(symbol, data_category, timeframe, '.csv')
     ensure_export_directory(os.path.dirname(output_path))  # Ensure the directory exists
     try:
         df = pd.DataFrame.from_dict(data)
@@ -158,3 +170,32 @@ def generate_user_agent():
     ]
     
     return random.choice(user_agents)
+
+def validate_string_array(data: List[str], valid_values: List[str]) -> bool:
+    """
+    Validates a list of strings against a list of valid values.
+
+    This function checks if each item in the provided list of strings is present in the list of valid values.
+
+    Parameters
+    ----------
+    data : list[str]
+        The list of strings to validate.
+
+    valid_values : list[str]
+        The list of valid values to check against.
+
+    Returns
+    -------
+    bool
+        True if all items in the data list are valid, False otherwise.
+    """
+    
+    if not data:
+        return False
+
+    for item in data:
+        if item not in valid_values:
+            return False
+    
+    return True

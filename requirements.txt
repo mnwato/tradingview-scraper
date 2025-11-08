@@ -1,0 +1,7 @@
+setuptools
+requests==2.32.4
+pandas>=2.0.3
+beautifulsoup4>=4.12.3
+pydantic>=2.8.2
+websockets>=13.1
+websocket-client>=1.8.0
