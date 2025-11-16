@@ -3,30 +3,17 @@ disable=
     missing-module-docstring,
     missing-class-docstring,
     missing-function-docstring,
-    invalid-name,
-    wrong-import-position,
-    wrong-import-order,
-    import-error,
-    unused-import,
-    unused-argument,
-    duplicate-code,
-    cyclic-import,
-    consider-merging-isinstance,
-    trailing-whitespace,
-    protected-access,
-    line-too-long,
-    singleton-comparison,
-    consider-using-in,
-    no-else-return,
-    broad-exception-caught,
-    too-many-nested-blocks,
-    too-few-public-methods,
-    too-many-arguments,
+    invalid-name,                # allow short variable names in tight loops
+    line-too-long,               # handled by max-line-length below
+    too-few-public-methods,      # useful for data‑only classes
+    too-many-public-methods,     # sometimes needed in large APIs
+    too-many-arguments,          # legacy APIs may exceed the limit
     too-many-positional-arguments,
-    too-many-branches,
-    too-many-locals,
-    unnecessary-pass,
-    bad-indentation,
+    too-many-branches,           # complex state machines can be acceptable
+    too-many-nested-blocks,      # deep nesting may be unavoidable in some parsers
+    too-many-locals,             # high‑performance code may need many locals
+    unnecessary-pass,            # sometimes used as placeholders
+    bad-indentation,             # let the formatter handle indentation
     missing-final-newline,
     trailing-newlines,
     redefined-outer-name,
@@ -39,7 +26,6 @@ disable=
     unsupported-membership-test,
     unsupported-assignment-operation,
     unsubscriptable-object,
-    too-many-public-methods,
     use-implicit-booleaness-not-comparison,
     attribute-defined-outside-init
 
