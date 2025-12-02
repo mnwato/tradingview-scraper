@@ -166,7 +166,7 @@ When adding tests:
 
 - Python 3.8+ required
 - Key dependencies: requests==2.32.4, pandas>=2.0.3, beautifulsoup4>=4.12.3, pydantic>=2.8.2, websockets>=13.1, websocket-client>=1.8.0
-- Current version: 0.4.18 (see setup.py:16)
+- Current version: 0.4.19 (see setup.py:16)
 
 ## CI/CD
 
