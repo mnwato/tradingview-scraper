@@ -140,6 +140,30 @@ class OHLCVExtractor(RealTimeData):
             result["metadata"]["processing_time_seconds"] = round(time.time() - start_time, 2)
             
         return result
+
+    def _convert_timeframe(self, timeframe: str) -> str:
+        """
+        Converts timeframe string to TradingView WebSocket format.
+        
+        Args:
+            timeframe (str): Timeframe string (e.g., '1h', '4h', '1D')
+            
+        Returns:
+            str: Converted timeframe string (e.g., '60', '240', '1D')
+        """
+        tf_map = {
+            "1m": "1",
+            "5m": "5",
+            "15m": "15",
+            "30m": "30",
+            "1h": "60",
+            "2h": "120",
+            "4h": "240",
+            "1D": "1D",
+            "1W": "1W",
+            "1M": "1M"
+        }
+        return tf_map.get(timeframe, timeframe)
     
     def _add_symbol_to_sessions_custom(self, quote_session: str, chart_session: str, 
                                      exchange_symbol: str, timeframe: str, bars_count: int):
@@ -148,9 +172,12 @@ class OHLCVExtractor(RealTimeData):
         """
         resolve_symbol = json.dumps({"adjustment": "splits", "symbol": exchange_symbol})
         
+        # Convert timeframe to format expected by WebSocket
+        ws_timeframe = self._convert_timeframe(timeframe)
+        
         self.send_message("quote_add_symbols", [quote_session, f"={resolve_symbol}"])
         self.send_message("resolve_symbol", [chart_session, "sds_sym_1", f"={resolve_symbol}"])
-        self.send_message("create_series", [chart_session, "sds_1", "s1", "sds_sym_1", timeframe, bars_count, ""]) 
+        self.send_message("create_series", [chart_session, "sds_1", "s1", "sds_sym_1", ws_timeframe, bars_count, ""]) 
         self.send_message("quote_fast_symbols", [quote_session, exchange_symbol])
         self.send_message("create_study", [chart_session, "st1", "st1", "sds_1", 
                             "Volume@tv-basicstudies-246", {"length": 20, "col_prev_close": "false"}])
