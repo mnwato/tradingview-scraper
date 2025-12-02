@@ -1599,6 +1599,8 @@ All symbols must include exchange prefix:
 ```
 
 ## Changes:
+- Release `0.4.19`:
+  Fix raise error while fetching ideas for pages greater than 1
 - Release `0.4.17`:
   Add Fundamental Graphs feature for comprehensive financial data
   Support 9 field categories: income statement, balance sheet, cash flow, profitability, liquidity, leverage, margins, valuation, dividends
