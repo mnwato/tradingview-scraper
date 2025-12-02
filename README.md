@@ -416,6 +416,153 @@ for packet in data_generator:
 {'m': 'qsd', 'p': ['qs_folpuhzgowtu', {'n': 'BINANCE:BTCUSDT', 's': 'ok', 'v': {'volume': 6817.46425, 'lp_time': 1734082521, 'lp': 99957.9, 'chp': -0.05, 'ch': -46.39}}]}
 ```
 
+### 6.1. Historical OHLCV Data Extraction
+
+The `OHLCVExtractor` class provides a convenient way to fetch historical OHLCV (Open, High, Low, Close, Volume) data for any symbol with customizable timeframes and bar counts. Unlike the streaming methods above, this extractor is designed for on-demand historical data retrieval.
+
+#### Features
+- **On-Demand Data**: Fetch historical bars without maintaining a persistent connection
+- **Multiple Timeframes**: Support for 1m, 5m, 15m, 30m, 1h, 2h, 4h, 1D, 1W, 1M
+- **Batch Processing**: Retrieve data for multiple symbols efficiently
+- **Rich Metadata**: Includes timestamps, datetime formatting, and percentage changes
+- **Debug Mode**: Optional verbose logging for troubleshooting
+- **Export Options**: Save results to JSON files
+
+#### Quick Start - Single Symbol
+
+```python
+from tradingview_scraper.symbols.stream import get_ohlcv_json
+
+# Fetch 10 daily bars for Bitcoin
+data = get_ohlcv_json(
+    symbol="BINANCE:BTCUSDT",
+    timeframe="1D",
+    bars_count=10,
+    save_to_file=True,
+    debug=False
+)
+
+if data['success']:
+    print(f"Retrieved {data['bars_received']} bars")
+    latest_bar = data['data'][-1]
+    print(f"Latest close: ${latest_bar['close']:,.2f}")
+    print(f"Change: {latest_bar['change_percent']}%")
+else:
+    print(f"Error: {data['metadata']['error']}")
+```
+
+#### Multiple Symbols
+
+```python
+from tradingview_scraper.symbols.stream import get_multiple_ohlcv_json
+
+# Fetch data for multiple cryptocurrencies
+symbols = ["BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "BINANCE:ADAUSDT"]
+
+results = get_multiple_ohlcv_json(
+    symbols=symbols,
+    timeframe="1h",
+    bars_count=5,
+    save_to_file=True,
+    debug=False
+)
+
+print(f"Successful: {results['successful_symbols']}/{results['total_symbols']}")
+
+for symbol, data in results['data'].items():
+    latest = data['data'][-1]
+    print(f"{symbol}: ${latest['close']:,.2f} ({latest['change_percent']:+.2f}%)")
+```
+
+#### Advanced Usage - Class Instance
+
+```python
+from tradingview_scraper.symbols.stream import OHLCVExtractor
+
+# Create extractor with debug mode enabled
+extractor = OHLCVExtractor(debug_mode=True)
+
+# Fetch 15-minute bars with custom timeout
+result = extractor.get_ohlcv_data(
+    symbol="BINANCE:ETHUSDT",
+    timeframe="15m",
+    bars_count=20,
+    timeout=45  # seconds
+)
+
+if result['success']:
+    # Calculate statistics
+    closes = [bar['close'] for bar in result['data']]
+    avg_price = sum(closes) / len(closes)
+    print(f"Average price: ${avg_price:,.2f}")
+    print(f"Processing time: {result['metadata']['processing_time_seconds']}s")
+```
+
+#### Output Format
+
+Each successful response includes:
+
+```json
+{
+  "success": true,
+  "symbol": "BINANCE:BTCUSDT",
+  "timeframe": "1D",
+  "bars_requested": 10,
+  "bars_received": 10,
+  "data": [
+    {
+      "timestamp": 1701388800,
+      "datetime": "2023-12-01T00:00:00",
+      "date": "2023-12-01",
+      "time": "00:00:00",
+      "open": 37500.50,
+      "high": 38200.75,
+      "low": 37300.25,
+      "close": 38000.00,
+      "volume": 15234.5678,
+      "change_percent": 1.3333
+    }
+  ],
+  "metadata": {
+    "timestamp": "2023-12-01T12:00:00",
+    "processing_time_seconds": 2.5,
+    "error": null
+  }
+}
+```
+
+#### Supported Timeframes
+- **Minutes**: `1m`, `5m`, `15m`, `30m`
+- **Hours**: `1h`, `2h`, `4h`
+- **Days**: `1D`
+- **Weeks**: `1W`
+- **Months**: `1M`
+
+#### Error Handling
+
+The extractor includes robust error handling:
+
+```python
+result = get_ohlcv_json("BINANCE:BTCUSDT", timeframe="1D", bars_count=5)
+
+if not result['success']:
+    error = result['metadata']['error']
+    if 'timeout' in error.lower():
+        print("Request timed out - try again")
+    elif 'websocket' in error.lower():
+        print("Connection issue - check network")
+    else:
+        print(f"Error: {error}")
+```
+
+#### Complete Example
+
+See `examples/ohlcv_extractor_example.py` for comprehensive usage examples including:
+- Single symbol extraction
+- Multiple symbol batch processing
+- Custom configuration and statistics
+- Different timeframe comparisons
+
 ### 7. Getting Calendar events
 
 #### Scraping Earnings events
