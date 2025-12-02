@@ -6,7 +6,7 @@ Set the TRADINGVIEW_JWT_TOKEN environment variable to run these tests:
     export TRADINGVIEW_JWT_TOKEN="your_jwt_token_here"
 """
 import pytest
-import json
+import time
 import os
 from tradingview_scraper.symbols.stream import Streamer
 
@@ -46,6 +46,8 @@ class TestStreamerOHLC:
         assert isinstance(result["indicator"], dict)
         assert len(result["ohlc"]) > 0
         assert len(result["indicator"]) == 0  # No indicators requested
+        
+        time.sleep(10)
 
 
 class TestStreamerSingleIndicator:
@@ -76,6 +78,7 @@ class TestStreamerSingleIndicator:
         assert isinstance(result["indicator"]["STD;RSI"], list)
         assert len(result["indicator"]["STD;RSI"]) > 0
 
+        time.sleep(10)
 
 class TestStreamerMultipleIndicators:
     """Test streaming with multiple indicators"""
@@ -107,6 +110,8 @@ class TestStreamerMultipleIndicators:
         assert isinstance(result["indicator"]["STD;MACD"], list)
         assert len(result["indicator"]["STD;RSI"]) > 0
         assert len(result["indicator"]["STD;MACD"]) > 0
+        
+        time.sleep(10)
     
     def test_stream_with_three_indicators(self):
         """Test streaming with three indicators: RSI, MACD, and CCI
@@ -139,6 +144,7 @@ class TestStreamerMultipleIndicators:
         assert "STD;RSI" in result["indicator"], "RSI should be present"
         assert "STD;MACD" in result["indicator"], "MACD should be present"
 
+        time.sleep(10)
 
 class TestStreamerDataStructure:
     """Test data structure and content validation"""
@@ -163,6 +169,8 @@ class TestStreamerDataStructure:
         required_keys = ['index', 'timestamp', 'open', 'high', 'low', 'close', 'volume']
         for key in required_keys:
             assert key in ohlc_candle, f"Missing key: {key}"
+            
+        time.sleep(10)
     
     def test_indicator_data_structure(self):
         """Test that indicator data has correct structure"""
@@ -185,6 +193,8 @@ class TestStreamerDataStructure:
         assert 'index' in rsi_data
         assert 'timestamp' in rsi_data
         assert isinstance(rsi_data['timestamp'], (int, float))
+        
+        time.sleep(10)
 
 
 if __name__ == "__main__":
