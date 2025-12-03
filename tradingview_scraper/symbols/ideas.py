@@ -176,30 +176,19 @@ class Ideas:
         else:
             symbol_payload = "/"
 
-        # Fetch the page as plain HTML text
-        response = requests.get(
-            f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?component-data-only=1&sort=recent",
-            headers=self.headers,
-            timeout=5
-        ).text
+        if page == 1:
+            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/?component-data-only=1&sort=recent"
+        else:
+            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?component-data-only=1&sort=recent"
 
-        # Use BeautifulSoup to parse the HTML
-        soup = BeautifulSoup(response, "html.parser")
+        response = requests.get(url, headers=self.headers, timeout=5)
+        if response.status_code != 200:
+            return []
 
-        # Each div contains a single idea
-        content = soup.find(
-            "div",
-            class_="listContainer-rqOoE_3Q",
-        )
-
-        if content is None:
-            raise ValueError("No ideas found. Check the symbol or page number.")
-
-        articles_tag = content.find_all("article")
-        if not articles_tag:
-            raise ValueError("No ideas found. Check the symbol or page number.")
-
-        return [self.parse_article(tag) for tag in articles_tag]
+        response_json = response.json()
+        items = response_json.get("data", {}).get("ideas", {}).get("data", {}).get("items", [])
+        
+        return [item for item in items if item.pop("symbol", None) is not None]
 
 
     def scrape_recent_ideas(self, symbol, page):
