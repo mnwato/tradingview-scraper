@@ -68,7 +68,7 @@ The package is organized into the following key components:
 - `utils.py` - WebSocket utilities, symbol validation, indicator metadata fetching
 
 **`tradingview_scraper/utils/`** - Shared utilities
-- `ohlc_converter.py` - Converts OHLCV data between timeframes
+- Currently empty, reserved for future shared utilities
 
 **`tradingview_scraper/data/`** - Static configuration files
 - `indicators.txt` - List of supported indicator names
@@ -145,10 +145,10 @@ User Request → Streamer/RealTimeData
 - Messages are JSON-RPC style with method names like "quote_add_symbols", "create_series"
 - Packet types identified by `m` field: "du" (data update), "qsd" (quote data), "timescale_update" (OHLC)
 
-#### OHLC Timeframe Conversion
-- WebSocket always returns 1-minute candles
-- `OHLCVConverter` aggregates to target timeframe (e.g., 4h, 1d)
-- Conversion happens before export when using `Streamer` class
+#### OHLC Timeframe Handling
+- WebSocket streaming returns 1-minute candles by default
+- Timeframe conversion is not currently implemented in the streamer
+- Raw 1-minute data is exported as-is
 
 ## Testing Strategy
 
@@ -165,8 +165,8 @@ When adding tests:
 ## Version and Dependencies
 
 - Python 3.8+ required
-- Key dependencies: requests==2.32.4, pandas>=2.0.3, beautifulsoup4>=4.12.3, pydantic>=2.8.2, websockets>=13.1, websocket-client>=1.8.0
-- Current version: 0.4.10 (see setup.py:16)
+- Key dependencies: setuptools, requests==2.32.4, pandas>=2.0.3, beautifulsoup4>=4.12.3, pydantic>=2.8.2, websockets>=13.1, websocket-client>=1.8.0
+- Current version: 0.4.19 (see setup.py:19)
 
 ## CI/CD
 
