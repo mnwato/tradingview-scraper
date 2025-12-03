@@ -8,6 +8,7 @@ Set the TRADINGVIEW_JWT_TOKEN environment variable to run these tests:
 import pytest
 import json
 import os
+import time
 from tradingview_scraper.symbols.stream import Streamer
 
 
@@ -46,6 +47,9 @@ class TestStreamerOHLC:
         assert isinstance(result["indicator"], dict)
         assert len(result["ohlc"]) > 0
         assert len(result["indicator"]) == 0  # No indicators requested
+        
+        # Sleep to avoid forbidden error
+        time.sleep(10)
 
 
 class TestStreamerSingleIndicator:
@@ -75,6 +79,9 @@ class TestStreamerSingleIndicator:
         assert "STD;RSI" in result["indicator"]
         assert isinstance(result["indicator"]["STD;RSI"], list)
         assert len(result["indicator"]["STD;RSI"]) > 0
+        
+        # Sleep to avoid forbidden error
+        time.sleep(10)
 
 
 class TestStreamerMultipleIndicators:
@@ -107,6 +114,9 @@ class TestStreamerMultipleIndicators:
         assert isinstance(result["indicator"]["STD;MACD"], list)
         assert len(result["indicator"]["STD;RSI"]) > 0
         assert len(result["indicator"]["STD;MACD"]) > 0
+        
+        # Sleep to avoid forbidden error
+        time.sleep(10)
     
     def test_stream_with_three_indicators(self):
         """Test streaming with three indicators: RSI, MACD, and CCI
@@ -138,6 +148,9 @@ class TestStreamerMultipleIndicators:
         assert len(result["indicator"]) == 2, f"Free accounts can only stream 2 indicators, got {len(result['indicator'])}"
         assert "STD;RSI" in result["indicator"], "RSI should be present"
         assert "STD;MACD" in result["indicator"], "MACD should be present"
+        
+        # Sleep to avoid forbidden error
+        time.sleep(10)
 
 
 class TestStreamerDataStructure:
@@ -163,6 +176,9 @@ class TestStreamerDataStructure:
         required_keys = ['index', 'timestamp', 'open', 'high', 'low', 'close', 'volume']
         for key in required_keys:
             assert key in ohlc_candle, f"Missing key: {key}"
+        
+        # Sleep to avoid forbidden error
+        time.sleep(10)
     
     def test_indicator_data_structure(self):
         """Test that indicator data has correct structure"""
@@ -185,6 +201,9 @@ class TestStreamerDataStructure:
         assert 'index' in rsi_data
         assert 'timestamp' in rsi_data
         assert isinstance(rsi_data['timestamp'], (int, float))
+        
+        # Sleep to avoid forbidden error
+        time.sleep(10)
 
 
 if __name__ == "__main__":

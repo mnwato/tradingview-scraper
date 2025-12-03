@@ -176,7 +176,7 @@ class Streamer:
                 'close': entry['v'][4]
             }
             #some packets may not have volume data to avoid KeyError
-            if len(entry['v'][5]) > 5: json_entry["volume"] = entry['v'][5]
+            if len(entry['v']) > 5: json_entry["volume"] = entry['v'][5]
             json_data.append(json_entry)
         return json_data
 
