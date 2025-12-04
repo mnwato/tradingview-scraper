@@ -181,28 +181,55 @@ ideas = ideas_scraper.scrape(
   symbol="ETHUSD",
   startPage=1,
   endPage=2,
-  sort="popular"  #  Could be 'popular' or 'recent'
+  sort="popular"  # Could be 'popular' or 'recent'
 )
 print("Ideas:", ideas)
 ```
+
+#### Using Cookie for Captcha Bypass
+To avoid captcha challenges, you can provide a cookie from TradingView:
+```python
+from tradingview_scraper.symbols.ideas import Ideas
+
+# Option 1: Pass cookie directly
+ideas_scraper = Ideas()
+ideas = ideas_scraper.scrape(
+  symbol="BTCUSD",
+  cookie="your_tradingview_cookie_here"
+)
+
+# Option 2: Set environment variable (recommended)
+# Add to your .env file: TRADINGVIEW_COOKIE=your_cookie_here
+ideas_scraper = Ideas()
+ideas = ideas_scraper.scrape(symbol="BTCUSD")  # Cookie loaded from env
+```
+
+**Cookie Setup Instructions:**
+1. Open https://www.tradingview.com/symbols/BTCUSD/ideas/ in your browser
+2. Open Developer Tools (F12) and go to Network tab
+3. Verify the captcha if prompted
+4. Refresh the page and find the GET request at the top of the list with URL `https://www.tradingview.com/symbols/BTCUSD/ideas/`
+5. Copy the cookie value and set it as `TRADINGVIEW_COOKIE` in your `.env` file
+
 
 **Output Format:**
 The output will always be a list of Python dictionaries, structured as follows:
 ```json
 [
   {
-      "title": "Bitcoin -65% crash, ETH -83%, DOGE -89%, SHIBA -90%",
-      "paragraph": "Name your altcoin in the comment section, and I will do a technical analysis for you!\n\nThe crypto market looks ...",
-      "preview_image": "https://s3.tradingview.com/6/6VQphWH6_mid.png",
-      "author": "Xanrox",
-      "comments_count": "295",
-      "boosts_count": "678",
-      "publication_datetime": "2024-08-18T05:55:19.000Z",
-      "is_updated": "True",
-      "idea_strategy": "Short"
+    "title": "Bitcoin Analysis: Bullish Momentum Building",
+    "description": "Technical analysis showing strong bullish signals...",
+    "preview_image": ["https://s3.tradingview.com/logo.png"],
+    "chart_url": "https://www.tradingview.com/chart/BTCUSD/...",
+    "comments_count": 25,
+    "views_count": 1250,
+    "author": "CryptoAnalyst",
+    "likes_count": 45,
+    "timestamp": 1672531200
   }
 ]
 ```
+
 - When `export_result=True`, the default `export_type` is `'json'`, and a JSON file will be saved in the `/export` directory. To save as CSV, set `export_type='csv'`.
 
 ### 3. Getting Indicators Status
