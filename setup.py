@@ -50,7 +50,7 @@ setup(
         "pydantic>=2.8.2",
         "websockets>=13.1",
         "websocket-client>=1.8.0",
-        "python-dotenv==1.2.1",
+        "python-dotenv>=1.0.1",
     ],
     keywords=['tradingview', 'scraper', 'python', 'crawler', 'financial'],
     classifiers=classifiers
