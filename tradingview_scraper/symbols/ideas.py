@@ -124,7 +124,7 @@ class Ideas:
                 logging.error(f"HTTP {response.status_code}: Failed to fetch page {page} for {symbol}")
                 return []
             if r"<title>Captcha Challenge</title>" in response.text:
-                logging.error(f"Captcha Challenge encountered for page {page} of {symbol}")
+                logging.error(f"Captcha Challenge encountered for page {page} of {symbol}. Try updating the TRADINGVIEW_COOKIE in your .env file.")
                 return []
             data = response.json()
         
