@@ -20,7 +20,6 @@ class Ideas:
         
     def scrape(
         self,
-        cookie: str="",
         symbol: str = "BTCUSD",
         startPage: int = 1,
         endPage: int  = 1,
@@ -61,12 +60,8 @@ class Ideas:
         The method includes a delay of 5 seconds between requests to avoid overwhelming
         the server with rapid requests.
         """
-        # if cookie is directly provided use it otherwise get from environment variable
-        if cookie == "":
-            cookie = os.getenv("TRADINGVIEW_COOKIE","")
-
-        # to check that the cookies is not null in environment variable
-        if cookie != "":
+        cookie = os.getenv("TRADINGVIEW_COOKIE", "")
+        if cookie:
             self.headers["cookie"] = cookie
         pageList = range(startPage, endPage + 1)
         articles = []

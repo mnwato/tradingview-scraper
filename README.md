@@ -187,30 +187,23 @@ print("Ideas:", ideas)
 ```
 
 #### Using Cookie for Captcha Bypass
-To avoid captcha challenges, you can provide a cookie from TradingView:
-```python
-from tradingview_scraper.symbols.ideas import Ideas
+To avoid captcha challenges, set your TradingView cookie as an environment variable:
 
-# Option 1: Pass cookie directly
-ideas_scraper = Ideas()
-ideas = ideas_scraper.scrape(
-  symbol="BTCUSD",
-  cookie="your_tradingview_cookie_here"
-)
-
-# Option 2: Set environment variable (recommended)
-# Add to your .env file: TRADINGVIEW_COOKIE=your_cookie_here
-ideas_scraper = Ideas()
-ideas = ideas_scraper.scrape(symbol="BTCUSD")  # Cookie loaded from env
-```
-
-**Cookie Setup Instructions:**
 1. Open https://www.tradingview.com/symbols/BTCUSD/ideas/ in your browser
 2. Open Developer Tools (F12) and go to Network tab
 3. Verify the captcha if prompted
 4. Refresh the page and find the GET request at the top of the list with URL `https://www.tradingview.com/symbols/BTCUSD/ideas/`
-5. Copy the cookie value and set it as `TRADINGVIEW_COOKIE` in your `.env` file
+5. Copy the cookie value and add it to your `.env` file:
+   ```
+   TRADINGVIEW_COOKIE=your_cookie_here
+   ```
 
+```python
+from tradingview_scraper.symbols.ideas import Ideas
+
+ideas_scraper = Ideas()
+ideas = ideas_scraper.scrape(symbol="BTCUSD")
+```
 
 **Output Format:**
 The output will always be a list of Python dictionaries, structured as follows:
