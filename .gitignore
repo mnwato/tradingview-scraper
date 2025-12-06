@@ -60,3 +60,6 @@ run.py
 docs/_build/
 docs/_static/
 docs/_templates
+
+# Environment variables file
+.env

@@ -130,9 +130,11 @@ User Request → Streamer/RealTimeData
 ### Important Implementation Details
 
 #### Ideas Scraping
-- Uses two different scraping strategies: `scrape_popular_ideas()` uses HTML parsing, `scrape_recent_ideas()` uses JSON API
-- Page-by-page iteration with 5-second delays between requests
-- Class-based CSS selectors using lambda functions due to dynamic TradingView class names
+- Uses JSON API for both popular and recent ideas via TradingView's component-data-only endpoint
+- Concurrent page scraping with ThreadPoolExecutor (3 workers) to avoid rate limiting
+- Cookie authentication support for captcha avoidance (set via `TRADINGVIEW_COOKIE` env var)
+- Automatic error handling for captcha challenges and network issues
+- Structured output with consistent field mapping from API response
 
 #### Indicators
 - Timeframe handling: indicators are modified with `|{timeframe}` suffix for non-daily timeframes
@@ -152,10 +154,11 @@ User Request → Streamer/RealTimeData
 
 ## Testing Strategy
 
-Tests use pytest with mocking for HTTP requests. Key patterns:
-- Use `@mock.patch('tradingview_scraper.symbols.ideas.requests.get')` for HTTP mocking
-- `time.sleep(3)` delays between tests to avoid rate limiting
-- Test both success cases and error handling (invalid symbols, no data, etc.)
+Tests use pytest with both mocking and real API calls. Key patterns:
+- Mocked tests use `@mock.patch('tradingview_scraper.symbols.ideas.requests.get')` for HTTP mocking
+- Real API tests validate end-to-end functionality with live TradingView data
+- Threading tests verify concurrent requests don't hit rate limits
+- Test both success cases and error handling (invalid symbols, no data, captcha challenges, etc.)
 
 When adding tests:
 - Follow the fixture pattern (see `test_ideas.py:17`)

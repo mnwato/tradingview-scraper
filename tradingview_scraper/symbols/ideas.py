@@ -1,11 +1,16 @@
 """Module providing a function to scrape published user ideas about a symbol."""
 
 from time import sleep
-
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
 import requests
-from bs4 import BeautifulSoup
-
+from requests.exceptions import RequestException, JSONDecodeError
 from tradingview_scraper.symbols.utils import save_csv_file, save_json_file, generate_user_agent
+
+#loading environment variables
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 class Ideas:
     def __init__(self, export_result=False, export_type='json'):
@@ -43,7 +48,7 @@ class Ideas:
         -------
         list
             A list of dictionaries containing the scraped trading ideas. Each dictionary
-            includes details such as title, paragraph, author, and publication date.
+            includes details such as title, description, author, and publication date.
 
         Raises
         ------
@@ -55,32 +60,35 @@ class Ideas:
         The method includes a delay of 5 seconds between requests to avoid overwhelming
         the server with rapid requests.
         """
-        
+        cookie = os.getenv("TRADINGVIEW_COOKIE", "")
+        if cookie:
+            self.headers["cookie"] = cookie
         pageList = range(startPage, endPage + 1)
-
         articles = []
+
         
-        for page in pageList:
-
-            if sort == "popular":
-                articles.extend(self.scrape_popular_ideas(symbol, page))
-            elif sort == "recent":
-                articles.extend(self.scrape_recent_ideas(symbol, page))
-            else:
-                print("[ERROR] sort argument must be one 'popular' or 'recent'")
-            
-            print(f"[INFO] Page {page} scraped successfully")
-
-            # Wait 5 seconds before going to the next page
-            if len(pageList) > 1 and page<len(pageList):
-                sleep(5)
+        if sort not in ["popular", "recent"]:
+            logging.error("sort argument must be one 'popular' or 'recent'")
+            return []
+        
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {executor.submit(self.scrape_ideas, symbol, page, sort): page for page in pageList}
+            for future in as_completed(futures):
+                page = futures[future]
+                try:
+                    result = future.result()
+                    articles.extend(result)
+                    # print(f"[INFO] Page {page} scraped successfully") 
+                except Exception as e:
+                    logging.error(f"Failed to scrape page {page}: {e}")
+                    # errors.append(f"[ERROR] Failed to scrape page {page}: {e}")
 
         # Save results
         if self.export_result == True:
             self._export(data=articles, symbol=symbol)
-            
+        
         return articles
-
+        
 
     def _export(self, data, symbol):
         if self.export_type == "json":
@@ -89,144 +97,59 @@ class Ideas:
         elif self.export_type == "csv":
             save_csv_file(data=data, symbol=symbol, data_category='ideas')
 
-
-    def parse_article(self, article_tag):
-        
-        article_json = {
-            "title": None,
-            "paragraph": None,
-            "preview_image": None,
-            "author": None,
-            "comments_count": None,
-            "boosts_count": None,
-            "publication_datetime": None,
-            "is_updated": False,
-            "idea_strategy": None,
-        }
-
-        # Extract title
-        article_json["title"] = article_tag.find('a', class_=lambda x: x and x.startswith('title-')).text
-
-        # Extract paragraph
-        article_json["paragraph"] = article_tag.find('a', class_=lambda x: x and x.startswith('paragraph-')).text
-
-        # Extract picture and preview image
-        picture_tag = article_tag.find('picture')
-        article_json["preview_image"] = picture_tag.find('img')['src'] if picture_tag else None
-
-        # Extract author
-        article_json["author"] = article_tag.find('span', class_=lambda x: x and x.startswith('card-author-')).text.replace("by", "").strip()
-
-        # Extract comments count
-        comments_count_tag = article_tag.find('span', class_=lambda x: x and x.startswith('ellipsisContainer'))
-        if comments_count_tag:
-            article_json["comments_count"] = comments_count_tag.text.strip()
-
-        # Extract boosts count
-        boosts_count_tag = article_tag.find('button', class_=lambda x: x and x.startswith('boostButton-'))
-        if boosts_count_tag:
-            aria_label = boosts_count_tag.get('aria-label')
-            if aria_label:
-                article_json["boosts_count"] = aria_label.split()[0]
-            else:
-                article_json["boosts_count"] = 0
-        else:
-            article_json["boosts_count"] = 0
-
-        # Extract publication info
-        publication_text = article_tag.find('time', class_=lambda x: x and x.startswith('publication-date-')).text.strip()
-        if publication_text:
-            article_json["is_updated"] = True
-        publication_datetime_tag = article_tag.find('time', class_=lambda x: x and x.startswith('publication-date-'))
-        if publication_datetime_tag:
-            publication_datetime = publication_datetime_tag.get('datetime','')
-            article_json["publication_datetime"] = publication_datetime
-
-        # Extract idea strategy (short or long)
-        ideas_strategy_tag = article_tag.find('span', class_=lambda x: x and x.startswith('idea-strategy-icon-'))
-        if ideas_strategy_tag:
-            article_json["idea_strategy"] = ideas_strategy_tag.get('title', '').strip()
-
-        return article_json
-        
-    def scrape_popular_ideas(self, symbol, page):
+    def scrape_ideas(self, symbol: str, page: int, sort: str):
         """
-        Scrapes popular trading ideas for a specified symbol from TradingView.
-
-        Parameters
-        ----------
-        symbol : str
-            The trading symbol for which to scrape ideas.
-        page : int
-            The page number to scrape.
-
-        Returns
-        -------
-        list
-            A list of dictionaries containing the scraped popular ideas.
-
-        Raises
-        ------
-        Exception
-            If no ideas are found for the specified symbol or page number.
+        Scrapes trading ideas (popular or recent) for a specified symbol and page from TradingView using JSON API.
         """
-        # If no symbol is provided check the front page
-        if symbol:
-            symbol_payload = f"/{symbol}/"
-        else:
-            symbol_payload = "/"
-
+        base_url = "https://www.tradingview.com/symbols/"
+        symbol_payload = f"{symbol}/"
+        
         if page == 1:
-            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/?component-data-only=1&sort=recent"
+            url = f"{base_url}{symbol_payload}ideas/"
         else:
-            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?component-data-only=1&sort=recent"
-
-        response = requests.get(url, headers=self.headers, timeout=5)
-        if response.status_code != 200:
-            return []
-
-        response_json = response.json()
-        items = response_json.get("data", {}).get("ideas", {}).get("data", {}).get("items", [])
+            url = f"{base_url}{symbol_payload}ideas/page-{page}/"
         
-        return [item for item in items if item.pop("symbol", None) is not None]
-
-
-    def scrape_recent_ideas(self, symbol, page):
-        """
-        Scrapes recent trading ideas for a specified symbol from TradingView.
-
-        Parameters
-        ----------
-        symbol : str
-            The trading symbol for which to scrape ideas.
-        page : int
-            The page number to scrape.
-
-        Returns
-        -------
-        list
-            A list of dictionaries containing the scraped recent ideas.
-
-        Raises
-        ------
-        Exception
-            If the symbol is None when trying to scrape recent ideas.
-        """
-        if symbol:
-            symbol_payload = f"/{symbol}/"
-        else:
-            raise ValueError("symbol could not be null when getting recent ideas")
+        params = {"component-data-only": "1"}# to receive json data
+        if sort == "recent":
+            params["sort"] = "recent" # default is popular so only include for recent
+        
+        try:
+            response = requests.get(url, headers=self.headers, params=params, timeout=5)
+            if response.status_code != 200:
+                logging.error(f"HTTP {response.status_code}: Failed to fetch page {page} for {symbol}")
+                return []
+            if r"<title>Captcha Challenge</title>" in response.text:
+                logging.error(f"Captcha Challenge encountered for page {page} of {symbol}. Try updating the TRADINGVIEW_COOKIE in your .env file.")
+                return []
+            data = response.json()
+        
+            ideas_data = data.get('data', {}).get('ideas', {}).get('data', {})
+            items = ideas_data.get('items', [])
             
-        if page == 1:
-            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/?component-data-only=1&sort=recent"
-        else:
-            url = f"https://www.tradingview.com/symbols{symbol_payload}ideas/page-{page}/?sort=recent&component-data-only=1&sort=recent"
-
-        response = requests.get(url, headers=self.headers, timeout=5)
-        if response.status_code != 200:
+            # Transform each item to desired output format
+            ideas = []
+            for item in items:
+                ideas.append({
+                    "title": item.get("name", ""),
+                    "description": item.get("description", ""),
+                    "preview_image": item.get("symbol", {}).get("logo_urls", []),
+                    "chart_url": item.get("chart_url", ""),
+                    "comments_count": item.get("comments_count", 0),
+                    "views_count": item.get("views_count", 0),
+                    "author": item.get("user", {}).get("username", ""),
+                    "likes_count": item.get("likes_count", 0),
+                    "timestamp": item.get("date_timestamp", 0)
+                })
+            return ideas
+            
+        except RequestException as e:
+            logging.error(f"Network request failed for page {page} of {symbol}: {e}")
             return []
-
-        response_json = response.json()
-        items = response_json.get("data", {}).get("ideas", {}).get("data", {}).get("items", [])
         
-        return [item for item in items if item.pop("symbol", None) is not None]
+        except JSONDecodeError as e:
+            logging.error(f"Invalid JSON for page {page} of {symbol}: {e}")
+            return []
+        
+        except Exception as e:
+            logging.error(f"Unexpected error scraping page {page} of {symbol}: {e}")
+            return []
