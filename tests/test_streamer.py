@@ -9,6 +9,7 @@ import pytest
 import json
 import os
 import time
+import base64
 from dotenv import load_dotenv
 from tradingview_scraper.symbols.stream import Streamer
 
@@ -216,6 +217,36 @@ class TestStreamerDataStructure:
         
         # Sleep to avoid forbidden error
         time.sleep(2)
+
+
+class TestStreamerErrorHandling:
+    """Test error handling scenarios"""
+    
+    def test_expired_jwt_token_raises_error(self):
+        """Test that providing an expired JWT token directly raises RuntimeError"""
+        # Create an expired JWT token (exp set to past time)
+        header = {"alg": "HS256", "typ": "JWT"}
+        payload = {"exp": int(time.time()) - 3600}  # Expired 1 hour ago
+        header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip('=')
+        payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip('=')
+        signature = "random_signature_for_testing"  # Random signature since we're not verifying
+        expired_token = f"{header_b64}.{payload_b64}.{signature}"
+        
+        streamer = Streamer(
+            export_result=True,
+            export_type='json',
+            websocket_jwt_token=expired_token
+        )
+        
+        # Should raise RuntimeError for expired token provided directly
+        with pytest.raises(RuntimeError, match="Provided JWT token is expired"):
+            streamer.stream(
+                exchange="BINANCE",
+                symbol="BTCUSDT",
+                indicators=[("STD;RSI", "37.0")],
+                timeframe="1m",
+                numb_price_candles=3
+            )
 
 
 if __name__ == "__main__":

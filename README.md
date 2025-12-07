@@ -146,6 +146,11 @@ To get started with the TradingView Scraper library, follow these simple steps:
    pip install --upgrade --no-cache tradingview-scraper
    ```
 
+4. **Setup environment variables** (for WebSocket streaming with indicators):
+   - Copy `.env.example` to `.env`
+   - Set `TRADINGVIEW_COOKIE` and `TRADINGVIEW_CHART_URL` for automatic JWT token extraction
+   - Or set `TRADINGVIEW_JWT_TOKEN` manually (less recommended)
+
 Here’s a revised version of the Examples section, focusing on clarity, ease of understanding, and providing essential information about default values:
 
 
@@ -372,14 +377,30 @@ data_generator = real_time_data.get_ohlcv(exchange_symbol="BINANCE:BTCUSDT")
 - Streams both OHLC data and indicators
 - Exports historical data in specific timeframe (price candles and indicator history).
 - Specifies the number of OHLCV historical candles to export.
-- Requires JWT token for indicator access.
+- Requires authentication for indicator access (JWT token or cookies).
+
+### Authentication Setup
+
+**Option 1: Cookie-based (Recommended)**
+```bash
+# Set in your .env file
+TRADINGVIEW_COOKIE="your_cookie_here"
+TRADINGVIEW_CHART_URL="https://www.tradingview.com/chart/your_chart_id/"
+```
+
+**Option 2: Manual JWT Token**
+```python
+websocket_jwt_token="Your-Tradingview-Websocket-JWT"
+```
+
 ```python
 from tradingview_scraper.symbols.stream import Streamer
 # Create an instance of the Streamer class
 streamer = Streamer(
     export_result=False,
-    export_type='json',
-    websocket_jwt_token="Your-Tradingview-Websocket-JWT"
+    export_type='json'
+    # JWT token automatically extracted from cookies if available
+    # Or set websocket_jwt_token manually for Option 2
     )
 
 data_generator = streamer.stream(
@@ -387,8 +408,7 @@ data_generator = streamer.stream(
     symbol="BTCUSDT",
     timeframe="4h",
     numb_price_candles=100,
-    indicator_id="STD;RSI",
-    indicator_version="31.0"
+    indicators=[("STD;RSI", "31.0")]
     )
 ```
 #### Important Notes

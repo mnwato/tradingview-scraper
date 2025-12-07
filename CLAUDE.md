@@ -63,6 +63,7 @@ The package is organized into the following key components:
 
 **`tradingview_scraper/symbols/stream/`** - Real-time WebSocket streaming
 - `streamer.py` - Main `Streamer` class for OHLCV and indicator streaming with export capabilities
+- `auth.py` - JWT token extraction and authentication utilities
 - `price.py` - `RealTimeData` class for simple OHLCV and watchlist streaming
 - `stream_handler.py` - Low-level WebSocket connection and message handling
 - `utils.py` - WebSocket utilities, symbol validation, indicator metadata fetching
@@ -95,7 +96,8 @@ The streaming system has two approaches:
 2. **Advanced Streaming** (`Streamer` in `streamer.py`):
    - Supports both OHLC and indicators simultaneously
    - Can export historical data by setting `export_result=True`
-   - Requires JWT token for indicator access via `websocket_jwt_token` parameter
+   - Supports automatic JWT token extraction from TradingView cookies (preferred) or manual JWT token fallback
+   - Uses `TradingViewAuth` class for authentication handling
    - Returns generator for streaming or dict for historical export
 
 #### Session Management Pattern
@@ -136,6 +138,12 @@ User Request → Streamer/RealTimeData
 - Automatic error handling for captcha challenges and network issues
 - Structured output with consistent field mapping from API response
 
+#### Authentication
+- JWT tokens are automatically extracted from TradingView cookies when available (set via `TRADINGVIEW_COOKIE` env var)
+- Fallback to manual JWT token via `websocket_jwt_token` parameter for backward compatibility
+- Token refresh logic implemented to handle expiration during long streaming sessions
+- Cookie-based authentication provides more stable sessions than manual JWT tokens
+
 #### Indicators
 - Timeframe handling: indicators are modified with `|{timeframe}` suffix for non-daily timeframes
 - Scanner API endpoint: `https://scanner.tradingview.com/symbol`
@@ -157,8 +165,9 @@ User Request → Streamer/RealTimeData
 Tests use pytest with both mocking and real API calls. Key patterns:
 - Mocked tests use `@mock.patch('tradingview_scraper.symbols.ideas.requests.get')` for HTTP mocking
 - Real API tests validate end-to-end functionality with live TradingView data
+- WebSocket streaming tests support both cookie-based and manual JWT authentication
 - Threading tests verify concurrent requests don't hit rate limits
-- Test both success cases and error handling (invalid symbols, no data, captcha challenges, etc.)
+- Test both success cases and error handling (invalid symbols, no data, captcha challenges, expired tokens, etc.)
 
 When adding tests:
 - Follow the fixture pattern (see `test_ideas.py:17`)
