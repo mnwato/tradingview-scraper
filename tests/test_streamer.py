@@ -9,16 +9,29 @@ import pytest
 import json
 import os
 import time
+import base64
+from dotenv import load_dotenv
 from tradingview_scraper.symbols.stream import Streamer
 
+load_dotenv()
 
-# Get JWT token from environment variable
-JWT_TOKEN = os.getenv("TRADINGVIEW_JWT_TOKEN", "")
 
-# Skip all tests if JWT token is not set
-pytestmark = pytest.mark.skipif(
-    not JWT_TOKEN,
-    reason="TRADINGVIEW_JWT_TOKEN environment variable not set. Set it to run these tests."
+# Get JWT token from environment variable or auto-extract from cookie
+JWT_TOKEN = os.getenv("TRADINGVIEW_JWT_TOKEN", "unauthorized_user_token")
+if not JWT_TOKEN and os.getenv("TRADINGVIEW_COOKIE"):
+    try:
+        from tradingview_scraper.symbols.stream.auth import TradingViewAuth
+        auth = TradingViewAuth()
+        JWT_TOKEN = auth.get_token()
+    except Exception:
+        JWT_TOKEN = "unauthorized_user_token"
+
+# Skip all tests if neither JWT token nor valid cookie+URL are available
+has_jwt = JWT_TOKEN != "unauthorized_user_token"
+has_cookie_and_url = bool(os.getenv("TRADINGVIEW_COOKIE") and os.getenv("TRADINGVIEW_CHART_URL"))
+skip_if_no_auth = pytest.mark.skipif(
+    not (has_jwt or has_cookie_and_url),
+    reason="TRADINGVIEW_JWT_TOKEN environment variable not set and TRADINGVIEW_COOKIE/TRADINGVIEW_CHART_URL not available for JWT extraction. Set TRADINGVIEW_JWT_TOKEN or both TRADINGVIEW_COOKIE and TRADINGVIEW_CHART_URL to run these tests."
 )
 
 
@@ -49,12 +62,13 @@ class TestStreamerOHLC:
         assert len(result["indicator"]) == 0  # No indicators requested
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
 
 
 class TestStreamerSingleIndicator:
     """Test streaming with a single indicator"""
     
+    @skip_if_no_auth
     def test_stream_with_rsi(self):
         """Test streaming OHLC data with RSI indicator"""
         streamer = Streamer(
@@ -81,12 +95,13 @@ class TestStreamerSingleIndicator:
         assert len(result["indicator"]["STD;RSI"]) > 0
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
 
 
 class TestStreamerMultipleIndicators:
     """Test streaming with multiple indicators"""
     
+    @skip_if_no_auth
     def test_stream_with_rsi_and_macd(self):
         """Test streaming with RSI and MACD indicators"""
         streamer = Streamer(
@@ -116,8 +131,9 @@ class TestStreamerMultipleIndicators:
         assert len(result["indicator"]["STD;MACD"]) > 0
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
     
+    @skip_if_no_auth
     def test_stream_with_three_indicators(self):
         """Test streaming with three indicators: RSI, MACD, and CCI
         
@@ -150,7 +166,7 @@ class TestStreamerMultipleIndicators:
         assert "STD;MACD" in result["indicator"], "MACD should be present"
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
 
 
 class TestStreamerDataStructure:
@@ -178,8 +194,9 @@ class TestStreamerDataStructure:
             assert key in ohlc_candle, f"Missing key: {key}"
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
     
+    @skip_if_no_auth
     def test_indicator_data_structure(self):
         """Test that indicator data has correct structure"""
         streamer = Streamer(
@@ -203,7 +220,55 @@ class TestStreamerDataStructure:
         assert isinstance(rsi_data['timestamp'], (int, float))
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
+
+
+class TestStreamerErrorHandling:
+    """Test error handling scenarios"""
+    
+    def test_expired_jwt_token_raises_error(self):
+        """Test that providing an expired JWT token directly raises RuntimeError"""
+        # Create an expired JWT token (exp set to past time)
+        header = {"alg": "HS256", "typ": "JWT"}
+        payload = {"exp": int(time.time()) - 3600}  # Expired 1 hour ago
+        header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip('=')
+        payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip('=')
+        signature = "random_signature_for_testing"  # Random signature since we're not verifying
+        expired_token = f"{header_b64}.{payload_b64}.{signature}"
+        
+        streamer = Streamer(
+            export_result=True,
+            export_type='json',
+            websocket_jwt_token=expired_token
+        )
+        
+        # Should raise RuntimeError for expired token provided directly
+        with pytest.raises(RuntimeError, match="Provided JWT token is expired"):
+            streamer.stream(
+                exchange="BINANCE",
+                symbol="BTCUSDT",
+                indicators=[("STD;RSI", "37.0")],
+                timeframe="1m",
+                numb_price_candles=3
+            )
+    
+    def test_no_jwt_with_indicators_raises_error(self):
+        """Test that streaming with indicators without valid JWT raises RuntimeError"""
+        streamer = Streamer(
+            export_result=True,
+            export_type='json',
+            websocket_jwt_token="unauthorized_user_token"
+        )
+        
+        # Should raise RuntimeError for indicators without valid JWT
+        with pytest.raises(RuntimeError, match="Indicators require a valid JWT token \\(cookies not set\\)"):
+            streamer.stream(
+                exchange="BINANCE",
+                symbol="BTCUSDT",
+                indicators=[("STD;RSI", "37.0")],
+                timeframe="1m",
+                numb_price_candles=3
+            )
 
 
 if __name__ == "__main__":

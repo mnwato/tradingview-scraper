@@ -34,6 +34,7 @@ class StreamHandler:
             websocket_url (str): The URL of the WebSocket server.
             jwt_token (str, optional): JWT token for authentication. Defaults to "unauthorized_user_token".
         """
+        self.jwt_token = jwt_token 
         self.request_header = {
             "Accept-Encoding": "gzip, deflate, br, zstd",
             "Accept-Language": "en-US,en;q=0.9,fa;q=0.8",
