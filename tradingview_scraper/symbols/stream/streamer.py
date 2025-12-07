@@ -14,6 +14,7 @@ import sys
 import json
 import logging
 import signal
+import os
 from time import sleep
 from typing import Optional, Union, List, Tuple
 
@@ -26,6 +27,8 @@ from tradingview_scraper.symbols.stream.utils import (
 )
 from tradingview_scraper.symbols.utils import save_json_file, save_csv_file
 from tradingview_scraper.symbols.exceptions import DataNotFoundError
+
+from tradingview_scraper.symbols.stream.auth import TradingViewAuth
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG,
@@ -64,6 +67,14 @@ class Streamer:
         """
         self.export_result = export_result
         self.export_type = export_type
+
+        # --- auto-extract if cookies present and token is default ---
+        if (websocket_jwt_token == "unauthorized_user_token" and os.getenv("TRADINGVIEW_COOKIE")):
+            self.auth = TradingViewAuth()
+            websocket_jwt_token = self.auth.get_token()
+        else:
+            self.auth = None
+
         self.study_id_to_name_map = {}  # Maps study IDs (st9, st10) to indicator names
         ws_url = "wss://data.tradingview.com/socket.io/websocket?from=chart%2FVEPYsueI%2F&type=chart"
         self.stream_obj = StreamHandler(websocket_url=ws_url, jwt_token=websocket_jwt_token)
@@ -279,12 +290,23 @@ class Streamer:
 
         ind_flag = indicators is not None and len(indicators) > 0
 
+        # --- token checks ---
+        if indicators and self.stream_obj.jwt_token == "unauthorized_user_token":
+            raise RuntimeError("Indicators require a valid JWT token (cookies not set)")
+
+        if self.stream_obj.jwt_token != "unauthorized_user_token" and TradingViewAuth._is_expired(self.stream_obj.jwt_token):
+            #token expired which is geneated by cookies
+            if self.auth:
+                self.stream_obj.jwt_token = self.auth.refresh()
+                self.stream_obj = StreamHandler(self.stream_obj.ws.url, jwt_token=self.stream_obj.jwt_token)
+            # token is provided directly by user which is expired
+            else :
+                raise RuntimeError("Provided JWT token is expired. Please provide a valid token.")
         self._add_symbol_to_sessions(self.stream_obj.quote_session,
                                      self.stream_obj.chart_session,
                                      exchange_symbol,
                                      timeframe,
                                      numb_price_candles)
-
         if ind_flag:
             self._add_indicators(indicators)
 

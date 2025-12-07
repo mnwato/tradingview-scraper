@@ -9,16 +9,28 @@ import pytest
 import json
 import os
 import time
+from dotenv import load_dotenv
 from tradingview_scraper.symbols.stream import Streamer
 
+load_dotenv()
 
-# Get JWT token from environment variable
-JWT_TOKEN = os.getenv("TRADINGVIEW_JWT_TOKEN", "")
 
-# Skip all tests if JWT token is not set
+# Get JWT token from environment variable or auto-extract from cookie
+JWT_TOKEN = os.getenv("TRADINGVIEW_JWT_TOKEN", "unauthorized_user_token")
+if not JWT_TOKEN and os.getenv("TRADINGVIEW_COOKIE"):
+    try:
+        from tradingview_scraper.symbols.stream.auth import TradingViewAuth
+        auth = TradingViewAuth()
+        JWT_TOKEN = auth.get_token()
+    except Exception:
+        JWT_TOKEN = "unauthorized_user_token"
+
+# Skip all tests if neither JWT token nor valid cookie+URL are available
+has_jwt = bool(JWT_TOKEN)
+has_cookie_and_url = bool(os.getenv("TRADINGVIEW_COOKIE") and os.getenv("TRADINGVIEW_CHART_URL"))
 pytestmark = pytest.mark.skipif(
-    not JWT_TOKEN,
-    reason="TRADINGVIEW_JWT_TOKEN environment variable not set. Set it to run these tests."
+    not (has_jwt or has_cookie_and_url),
+    reason="TRADINGVIEW_JWT_TOKEN environment variable not set and TRADINGVIEW_COOKIE/TRADINGVIEW_CHART_URL not available for JWT extraction. Set TRADINGVIEW_JWT_TOKEN or both TRADINGVIEW_COOKIE and TRADINGVIEW_CHART_URL to run these tests."
 )
 
 
@@ -49,7 +61,7 @@ class TestStreamerOHLC:
         assert len(result["indicator"]) == 0  # No indicators requested
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
 
 
 class TestStreamerSingleIndicator:
@@ -81,7 +93,7 @@ class TestStreamerSingleIndicator:
         assert len(result["indicator"]["STD;RSI"]) > 0
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
 
 
 class TestStreamerMultipleIndicators:
@@ -116,7 +128,7 @@ class TestStreamerMultipleIndicators:
         assert len(result["indicator"]["STD;MACD"]) > 0
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
     
     def test_stream_with_three_indicators(self):
         """Test streaming with three indicators: RSI, MACD, and CCI
@@ -150,7 +162,7 @@ class TestStreamerMultipleIndicators:
         assert "STD;MACD" in result["indicator"], "MACD should be present"
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
 
 
 class TestStreamerDataStructure:
@@ -178,7 +190,7 @@ class TestStreamerDataStructure:
             assert key in ohlc_candle, f"Missing key: {key}"
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
     
     def test_indicator_data_structure(self):
         """Test that indicator data has correct structure"""
@@ -203,7 +215,7 @@ class TestStreamerDataStructure:
         assert isinstance(rsi_data['timestamp'], (int, float))
         
         # Sleep to avoid forbidden error
-        time.sleep(10)
+        time.sleep(2)
 
 
 if __name__ == "__main__":
