@@ -1,16 +1,13 @@
 """Module providing a function to scrape dividend and earnings of a specific market."""
 
-import json
 import datetime
-from typing import TypedDict, Union, Optional, List, Dict
+import json
+from typing import Dict, List, Optional, TypedDict, Union
 
 import requests
-from tradingview_scraper.symbols.utils import (
-    save_csv_file,
-    save_json_file,
-    generate_user_agent,
-    validate_string_array
-)
+
+from tradingview_scraper.symbols.utils import generate_user_agent, save_csv_file, save_json_file, validate_string_array
+
 
 class DividendEvent(TypedDict):
     """
@@ -31,6 +28,7 @@ class DividendEvent(TypedDict):
         fundamental_currency_code (Union[str, None]): The currency code used for the dividends.
         market (Union[str, None]): The market in which the asset is traded.
     """
+
     full_symbol: str
     dividend_ex_date_recent: Union[int, None]
     dividend_ex_date_upcoming: Union[int, None]
@@ -74,6 +72,7 @@ class EarningsEvent(TypedDict):
         revenue_surprise_fq (Union[float, None]): The revenue surprise for the most recent quarter, or None if not available.
         revenue_surprise_percent_fq (Union[float, None]): The percentage surprise for revenue for the most recent quarter, or None if not available.
     """
+
     full_symbol: str
     earnings_release_next_date: Union[int, None]
     logoid: Union[str, None]
@@ -112,9 +111,7 @@ class CalendarScraper:
         self.export_type: str = export_type
         self.headers: Dict[str, str] = {"User-Agent": generate_user_agent()}
 
-    def _export(
-        self, data, symbol: Union[str, None] = None, data_category: Union[str, None] = None
-    ):
+    def _export(self, data, symbol: Union[str, None] = None, data_category: Union[str, None] = None):
         if self.export_result:
             if self.export_type == "json":
                 save_json_file(data, symbol=symbol, data_category=data_category)
@@ -148,18 +145,18 @@ class CalendarScraper:
 
         # Define default values used by the web request (as of 2025 Janurary)
         default_fetch_values = [
-                "dividend_ex_date_recent",
-                "dividend_ex_date_upcoming",
-                "logoid",
-                "name",
-                "description",
-                "dividends_yield",
-                "dividend_payment_date_recent",
-                "dividend_payment_date_upcoming",
-                "dividend_amount_recent",
-                "dividend_amount_upcoming",
-                "fundamental_currency_code",
-                "market",
+            "dividend_ex_date_recent",
+            "dividend_ex_date_upcoming",
+            "logoid",
+            "name",
+            "description",
+            "dividends_yield",
+            "dividend_payment_date_recent",
+            "dividend_payment_date_upcoming",
+            "dividend_amount_recent",
+            "dividend_amount_upcoming",
+            "fundamental_currency_code",
+            "market",
         ]
 
         # Incase "filter" values are provided, validate them
@@ -223,7 +220,7 @@ class CalendarScraper:
                     fundamental_currency_code=event_data[10] or None,
                     market=event_data[11] or None,
                 )
-                dividend_event = {k:v for k,v in dividend_event.items() if v}
+                dividend_event = {k: v for k, v in dividend_event.items() if v}
                 dividend_events.append(dividend_event)
 
             else:
@@ -242,7 +239,7 @@ class CalendarScraper:
                     fundamental_currency_code=None,
                     market=None,
                 )
-                dividend_event = {k:v for k,v in dividend_event.items() if v}
+                dividend_event = {k: v for k, v in dividend_event.items() if v}
 
                 for i, value in enumerate(values):
                     dividend_event[value] = event_data[i]
@@ -253,7 +250,6 @@ class CalendarScraper:
             self._export(dividend_events, "dividends", "calendar")
 
         return dividend_events
-
 
     def scrape_earnings(
         self,
@@ -375,10 +371,10 @@ class CalendarScraper:
                     revenue_surprise_fq=event_data[19] or None,
                     revenue_surprise_percent_fq=event_data[20] or None,
                 )
-                earnings_event = {k:v for k,v in earnings_event.items() if v}
+                earnings_event = {k: v for k, v in earnings_event.items() if v}
 
                 earnings_events.append(earnings_event)
-        
+
             else:
                 earnings_event = EarningsEvent(
                     full_symbol=event_symbol,
@@ -404,7 +400,7 @@ class CalendarScraper:
                     revenue_surprise_fq=None,
                     revenue_surprise_percent_fq=None,
                 )
-                earnings_event = {k:v for k,v in earnings_event.items() if v}
+                earnings_event = {k: v for k, v in earnings_event.items() if v}
 
                 for i, value in enumerate(values):
                     earnings_event[value] = event_data[i]

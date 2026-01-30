@@ -1,13 +1,13 @@
 """Module providing a function to scrape fundamental financial graphs data from TradingView."""
 
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 import requests
 
 from tradingview_scraper.symbols.utils import (
+    generate_user_agent,
     save_csv_file,
     save_json_file,
-    generate_user_agent,
 )
 
 
@@ -30,110 +30,100 @@ class FundamentalGraphs:
     """
 
     # Symbol API endpoint
-    SYMBOL_API_URL = 'https://scanner.tradingview.com/symbol'
+    SYMBOL_API_URL = "https://scanner.tradingview.com/symbol"
 
     # Field categories
     INCOME_STATEMENT_FIELDS = [
-        'total_revenue',
-        'revenue_per_share_ttm',
-        'total_revenue_fy',
-        'gross_profit',
-        'gross_profit_fy',
-        'operating_income',
-        'operating_income_fy',
-        'net_income',
-        'net_income_fy',
-        'EBITDA',
-        'basic_eps_net_income',
-        'earnings_per_share_basic_ttm',
-        'earnings_per_share_diluted_ttm',
+        "total_revenue",
+        "revenue_per_share_ttm",
+        "total_revenue_fy",
+        "gross_profit",
+        "gross_profit_fy",
+        "operating_income",
+        "operating_income_fy",
+        "net_income",
+        "net_income_fy",
+        "EBITDA",
+        "basic_eps_net_income",
+        "earnings_per_share_basic_ttm",
+        "earnings_per_share_diluted_ttm",
     ]
 
     BALANCE_SHEET_FIELDS = [
-        'total_assets',
-        'total_assets_fy',
-        'cash_n_short_term_invest',
-        'cash_n_short_term_invest_fy',
-        'total_debt',
-        'total_debt_fy',
-        'stockholders_equity',
-        'stockholders_equity_fy',
-        'book_value_per_share_fq',
+        "total_assets",
+        "total_assets_fy",
+        "cash_n_short_term_invest",
+        "cash_n_short_term_invest_fy",
+        "total_debt",
+        "total_debt_fy",
+        "stockholders_equity",
+        "stockholders_equity_fy",
+        "book_value_per_share_fq",
     ]
 
     CASH_FLOW_FIELDS = [
-        'cash_f_operating_activities',
-        'cash_f_operating_activities_fy',
-        'cash_f_investing_activities',
-        'cash_f_investing_activities_fy',
-        'cash_f_financing_activities',
-        'cash_f_financing_activities_fy',
-        'free_cash_flow',
+        "cash_f_operating_activities",
+        "cash_f_operating_activities_fy",
+        "cash_f_investing_activities",
+        "cash_f_investing_activities_fy",
+        "cash_f_financing_activities",
+        "cash_f_financing_activities_fy",
+        "free_cash_flow",
     ]
 
     MARGIN_FIELDS = [
-        'gross_margin',
-        'gross_margin_percent_ttm',
-        'operating_margin',
-        'operating_margin_ttm',
-        'pretax_margin_percent_ttm',
-        'net_margin',
-        'net_margin_percent_ttm',
-        'EBITDA_margin',
+        "gross_margin",
+        "gross_margin_percent_ttm",
+        "operating_margin",
+        "operating_margin_ttm",
+        "pretax_margin_percent_ttm",
+        "net_margin",
+        "net_margin_percent_ttm",
+        "EBITDA_margin",
     ]
 
     PROFITABILITY_FIELDS = [
-        'return_on_equity',
-        'return_on_equity_fq',
-        'return_on_assets',
-        'return_on_assets_fq',
-        'return_on_investment_ttm',
+        "return_on_equity",
+        "return_on_equity_fq",
+        "return_on_assets",
+        "return_on_assets_fq",
+        "return_on_investment_ttm",
     ]
 
     LIQUIDITY_FIELDS = [
-        'current_ratio',
-        'current_ratio_fq',
-        'quick_ratio',
-        'quick_ratio_fq',
+        "current_ratio",
+        "current_ratio_fq",
+        "quick_ratio",
+        "quick_ratio_fq",
     ]
 
     LEVERAGE_FIELDS = [
-        'debt_to_equity',
-        'debt_to_equity_fq',
-        'debt_to_assets',
+        "debt_to_equity",
+        "debt_to_equity_fq",
+        "debt_to_assets",
     ]
 
     VALUATION_FIELDS = [
-        'market_cap_basic',
-        'market_cap_calc',
-        'market_cap_diluted_calc',
-        'enterprise_value_fq',
-        'price_earnings_ttm',
-        'price_book_fq',
-        'price_sales_ttm',
-        'price_free_cash_flow_ttm',
+        "market_cap_basic",
+        "market_cap_calc",
+        "market_cap_diluted_calc",
+        "enterprise_value_fq",
+        "price_earnings_ttm",
+        "price_book_fq",
+        "price_sales_ttm",
+        "price_free_cash_flow_ttm",
     ]
 
     DIVIDEND_FIELDS = [
-        'dividends_yield',
-        'dividends_per_share_fq',
-        'dividend_payout_ratio_ttm',
+        "dividends_yield",
+        "dividends_per_share_fq",
+        "dividend_payout_ratio_ttm",
     ]
 
     # All fundamental fields combined
-    ALL_FIELDS = (
-        INCOME_STATEMENT_FIELDS +
-        BALANCE_SHEET_FIELDS +
-        CASH_FLOW_FIELDS +
-        MARGIN_FIELDS +
-        PROFITABILITY_FIELDS +
-        LIQUIDITY_FIELDS +
-        LEVERAGE_FIELDS +
-        VALUATION_FIELDS +
-        DIVIDEND_FIELDS
-    )
+    ALL_FIELDS = INCOME_STATEMENT_FIELDS + BALANCE_SHEET_FIELDS + CASH_FLOW_FIELDS + MARGIN_FIELDS + PROFITABILITY_FIELDS + LIQUIDITY_FIELDS + LEVERAGE_FIELDS + VALUATION_FIELDS + DIVIDEND_FIELDS
 
-    def __init__(self, export_result: bool = False, export_type: str = 'json'):
+    def __init__(self, export_result: bool = False, export_type: str = "json"):
         """
         Initialize the FundamentalGraphs scraper.
 
@@ -164,18 +154,12 @@ class FundamentalGraphs:
         symbol = symbol.strip().upper()
 
         # Add exchange prefix if not present
-        if ':' not in symbol:
-            raise ValueError(
-                "Symbol must include exchange prefix (e.g., 'NASDAQ:AAPL', 'NYSE:JPM')"
-            )
+        if ":" not in symbol:
+            raise ValueError("Symbol must include exchange prefix (e.g., 'NASDAQ:AAPL', 'NYSE:JPM')")
 
         return symbol
 
-    def get_fundamentals(
-        self,
-        symbol: str,
-        fields: Optional[List[str]] = None
-    ) -> Dict:
+    def get_fundamentals(self, symbol: str, fields: Optional[List[str]] = None) -> Dict:
         """
         Get comprehensive fundamental financial data for a symbol.
 
@@ -209,64 +193,34 @@ class FundamentalGraphs:
             field_list = fields if fields else self.ALL_FIELDS
 
             # Build request parameters
-            params = {
-                'symbol': symbol,
-                'fields': ','.join(field_list)
-            }
+            params = {"symbol": symbol, "fields": ",".join(field_list)}
 
             # Make request
-            response = requests.get(
-                self.SYMBOL_API_URL,
-                params=params,
-                headers=self.headers,
-                timeout=10
-            )
+            response = requests.get(self.SYMBOL_API_URL, params=params, headers=self.headers, timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
 
                 if not data:
-                    return {
-                        'status': 'failed',
-                        'error': f'No data found for symbol: {symbol}'
-                    }
+                    return {"status": "failed", "error": f"No data found for symbol: {symbol}"}
 
                 # Add symbol to the data
-                data['symbol'] = symbol
+                data["symbol"] = symbol
 
                 # Export if requested
                 if self.export_result:
-                    self._export(
-                        data=data,
-                        symbol=symbol.replace(':', '_'),
-                        data_category='fundamentals'
-                    )
+                    self._export(data=data, symbol=symbol.replace(":", "_"), data_category="fundamentals")
 
-                return {
-                    'status': 'success',
-                    'data': data
-                }
+                return {"status": "success", "data": data}
             else:
-                return {
-                    'status': 'failed',
-                    'error': f'HTTP {response.status_code}: {response.text}'
-                }
+                return {"status": "failed", "error": f"HTTP {response.status_code}: {response.text}"}
 
         except ValueError as e:
-            return {
-                'status': 'failed',
-                'error': str(e)
-            }
+            return {"status": "failed", "error": str(e)}
         except requests.RequestException as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
 
     def get_income_statement(self, symbol: str) -> Dict:
         """
@@ -376,11 +330,7 @@ class FundamentalGraphs:
         """
         return self.get_fundamentals(symbol=symbol, fields=self.DIVIDEND_FIELDS)
 
-    def compare_fundamentals(
-        self,
-        symbols: List[str],
-        fields: Optional[List[str]] = None
-    ) -> Dict:
+    def compare_fundamentals(self, symbols: List[str], fields: Optional[List[str]] = None) -> Dict:
         """
         Compare fundamental data across multiple symbols.
 
@@ -405,11 +355,7 @@ class FundamentalGraphs:
         try:
             # Use key metrics if no fields specified
             if not fields:
-                fields = [
-                    'total_revenue', 'net_income', 'EBITDA',
-                    'market_cap_basic', 'price_earnings_ttm',
-                    'return_on_equity_fq', 'debt_to_equity_fq'
-                ]
+                fields = ["total_revenue", "net_income", "EBITDA", "market_cap_basic", "price_earnings_ttm", "return_on_equity_fq", "debt_to_equity_fq"]
 
             all_data = []
             comparison = {}
@@ -417,52 +363,29 @@ class FundamentalGraphs:
             # Get data for each symbol
             for symbol in symbols:
                 result = self.get_fundamentals(symbol=symbol, fields=fields)
-                if result['status'] == 'success':
-                    all_data.append(result['data'])
+                if result["status"] == "success":
+                    all_data.append(result["data"])
 
                     # Build comparison dict
                     for field in fields:
                         if field not in comparison:
                             comparison[field] = {}
-                        comparison[field][symbol] = result['data'].get(field)
+                        comparison[field][symbol] = result["data"].get(field)
 
             if not all_data:
-                return {
-                    'status': 'failed',
-                    'error': 'No data retrieved for any symbols'
-                }
+                return {"status": "failed", "error": "No data retrieved for any symbols"}
 
             # Export if requested
             if self.export_result:
-                export_data = {
-                    'symbols': symbols,
-                    'data': all_data,
-                    'comparison': comparison
-                }
-                self._export(
-                    data=export_data,
-                    symbol='comparison',
-                    data_category='fundamentals'
-                )
+                export_data = {"symbols": symbols, "data": all_data, "comparison": comparison}
+                self._export(data=export_data, symbol="comparison", data_category="fundamentals")
 
-            return {
-                'status': 'success',
-                'data': all_data,
-                'comparison': comparison
-            }
+            return {"status": "success", "data": all_data, "comparison": comparison}
 
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Comparison failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Comparison failed: {str(e)}"}
 
-    def _export(
-        self,
-        data: Dict,
-        symbol: Optional[str] = None,
-        data_category: Optional[str] = None
-    ) -> None:
+    def _export(self, data: Dict, symbol: Optional[str] = None, data_category: Optional[str] = None) -> None:
         """
         Export scraped data to file.
 
@@ -474,7 +397,7 @@ class FundamentalGraphs:
         # For CSV export, convert dict to list of dicts
         export_data = [data] if isinstance(data, dict) else data
 
-        if self.export_type == 'json':
+        if self.export_type == "json":
             save_json_file(data=export_data, symbol=symbol, data_category=data_category)
-        elif self.export_type == 'csv':
+        elif self.export_type == "csv":
             save_csv_file(data=export_data, symbol=symbol, data_category=data_category)

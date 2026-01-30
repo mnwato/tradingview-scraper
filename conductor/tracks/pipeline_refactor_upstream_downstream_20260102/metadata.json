@@ -1,0 +1,8 @@
+{
+  "id": "pipeline_refactor_upstream_downstream_20260102",
+  "title": "Pipeline Refactor: Upstream/Downstream Split",
+  "status": "in_progress",
+  "priority": "high",
+  "owner": "jules",
+  "description": "Splitting the monolithic daily-run into Upstream (Discovery & HCA) and Downstream (Selection & Optimization) pipelines to improve modularity and offload intensive backtesting."
+}

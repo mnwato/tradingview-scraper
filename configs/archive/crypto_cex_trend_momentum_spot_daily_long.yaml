@@ -1,0 +1,44 @@
+# Crypto CEX spot daily trend momentum - long
+markets: ["crypto"]
+exchanges: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+columns: ["name", "close", "volume", "Value.Traded", "market_cap_calc", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "ATR"]
+volume:
+  min: 0
+  value_traded_min: 50000000
+volatility:
+  max: 8.0
+  atr_pct_max: 0.12
+  fallback_use_atr_pct: true
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.0
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {change: -0.2, Perf.W: -0.5, Perf.1M: 0.0, Perf.3M: 0.5}
+  confirmation_momentum:
+    enabled: true
+    horizons: {Perf.1M: 0.5, Perf.3M: 1.0}
+sort_by: market_cap_calc
+sort_order: desc
+final_sort_by: Value.Traded
+final_sort_order: desc
+prefilter_limit: 50
+limit: 50
+base_universe_limit: 50
+base_universe_sort_by: Value.Traded
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json
+export_metadata:
+  symbol: crypto_spot_long
+  data_category: universe_selector

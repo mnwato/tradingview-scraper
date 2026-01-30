@@ -1,0 +1,25 @@
+# Layer 2: US Stocks Trend Momentum Strategy
+base_preset: presets/base_us_stocks.yaml
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.1
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    # Aligned with 21d test windows (Perf.1M)
+    horizons: {Perf.W: 0.0, Perf.1M: 0.5, Perf.3M: 1.0}
+  confirmation_momentum:
+    enabled: false
+
+limit: 100
+prefilter_limit: 3000
+export_metadata:
+  symbol: "us_stocks_trend_momentum"
+  data_category: "strategy_selector"

@@ -1,0 +1,21 @@
+# Extinction Events for Darwinian Health Audit
+# Assets must show survival (data presence + liquidity stability) during these windows.
+
+stress_events:
+  - id: "CRISIS_2022_Q2"
+    name: "Terra/Luna Collapse"
+    start: "2022-05-01"
+    end: "2022-06-15"
+    primary_impact: ["CRYPTO", "EQUITIES"]
+  
+  - id: "CRISIS_2023_Q1"
+    name: "Regional Banking Crisis (SVB)"
+    start: "2023-03-01"
+    end: "2023-03-31"
+    primary_impact: ["EQUITIES", "FIXED_INCOME"]
+
+  - id: "CRISIS_2024_AUG"
+    name: "Yen Carry Trade Unwind"
+    start: "2024-08-01"
+    end: "2024-08-10"
+    primary_impact: ["FOREX", "GLOBAL_BETA"]

@@ -1,0 +1,25 @@
+# L1: Institutional Technical & Liquidity Hygiene
+volume:
+  value_traded_min: 10000000  # $10M USD min daily turnover
+trend:
+  adx:
+    enabled: true
+    min: 20
+  recommendation:
+    enabled: true
+    min: 0.1
+columns:
+  - "name"
+  - "description"
+  - "close"
+  - "volume"
+  - "Value.Traded"
+  - "ADX"
+  - "ATR"
+  - "Recommend.All"
+  - "Perf.W"
+  - "Perf.1M"
+  - "Perf.3M"
+  - "Volatility.D"
+  - "volume_change"
+  - "ROC"

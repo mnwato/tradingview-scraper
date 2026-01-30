@@ -1,0 +1,38 @@
+# Base universe: CFDs on multiple exchanges; screener fields are limited
+# Uses screener-only data: change (daily), Recommend.All, volume; sort by volume
+markets: ["cfd"]
+exchanges: ["OANDA", "FOREXCOM", "FXCM", "CAPITALCOM", "PEPPERSTONE", "EIGHTCAP", "SKILLING", "VANTAGE", "SAXO"]
+columns: ["name", "close", "volume", "change", "change_abs", "Recommend.All"]
+volume:
+  min: 0
+volatility:
+  max: null
+  atr_pct_max: null
+  fallback_use_atr_pct: false
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: -0.2
+  adx:
+    enabled: false
+  momentum:
+    enabled: true
+    horizons: {change: -0.1}
+sort_by: volume
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+prefilter_limit: 200
+limit: 50
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json
+export_metadata:
+  symbol: "cfd_trend_momentum_short"
+  data_category: "universe_selector"

@@ -1,0 +1,15 @@
+# Layer 1.1: Bybit Perp Base
+base_preset: base_crypto_perp.yaml
+exchanges: ["BYBIT"]
+
+ensure_symbols:
+- BYBIT:BTCUSDT.P
+- BYBIT:ETHUSDT.P
+- BYBIT:SOLUSDT.P
+- BYBIT:ADAUSDT.P
+- BYBIT:DOGEUSDT.P
+- BYBIT:LINKUSDT.P
+- BYBIT:LTCUSDT.P
+- BYBIT:DOTUSDT.P
+- BYBIT:AVAXUSDT.P
+- BYBIT:TRXUSDT.P

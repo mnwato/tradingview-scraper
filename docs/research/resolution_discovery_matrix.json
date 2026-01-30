@@ -1,0 +1,154 @@
+[
+  {
+    "Display":"1s",
+    "Code":"1S",
+    "Status":"UNSUPPORTED\/EMPTY",
+    "Count":0,
+    "Reach":"N\/A",
+    "Elapsed":"10.98s"
+  },
+  {
+    "Display":"5s",
+    "Code":"5S",
+    "Status":"UNSUPPORTED\/EMPTY",
+    "Count":0,
+    "Reach":"N\/A",
+    "Elapsed":"15.89s"
+  },
+  {
+    "Display":"15s",
+    "Code":"15S",
+    "Status":"UNSUPPORTED\/EMPTY",
+    "Count":0,
+    "Reach":"N\/A",
+    "Elapsed":"10.70s"
+  },
+  {
+    "Display":"30s",
+    "Code":"30S",
+    "Status":"UNSUPPORTED\/EMPTY",
+    "Count":0,
+    "Reach":"N\/A",
+    "Elapsed":"19.97s"
+  },
+  {
+    "Display":"1m",
+    "Code":"1",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-20 22:53 to 2025-12-21 00:32",
+    "Elapsed":"0.39s"
+  },
+  {
+    "Display":"2m",
+    "Code":"2",
+    "Status":"UNSUPPORTED\/EMPTY",
+    "Count":0,
+    "Reach":"N\/A",
+    "Elapsed":"10.70s"
+  },
+  {
+    "Display":"3m",
+    "Code":"3",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-20 19:33 to 2025-12-21 00:30",
+    "Elapsed":"0.39s"
+  },
+  {
+    "Display":"5m",
+    "Code":"5",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-20 16:15 to 2025-12-21 00:30",
+    "Elapsed":"0.38s"
+  },
+  {
+    "Display":"15m",
+    "Code":"15",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-19 23:45 to 2025-12-21 00:30",
+    "Elapsed":"0.35s"
+  },
+  {
+    "Display":"30m",
+    "Code":"30",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-18 23:00 to 2025-12-21 00:30",
+    "Elapsed":"0.39s"
+  },
+  {
+    "Display":"45m",
+    "Code":"45",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-17 22:00 to 2025-12-21 00:15",
+    "Elapsed":"0.38s"
+  },
+  {
+    "Display":"1h",
+    "Code":"60",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-16 21:00 to 2025-12-21 00:00",
+    "Elapsed":"0.39s"
+  },
+  {
+    "Display":"2h",
+    "Code":"120",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-12 17:00 to 2025-12-20 23:00",
+    "Elapsed":"0.40s"
+  },
+  {
+    "Display":"3h",
+    "Code":"180",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-08 13:00 to 2025-12-20 22:00",
+    "Elapsed":"0.39s"
+  },
+  {
+    "Display":"4h",
+    "Code":"240",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-12-04 09:00 to 2025-12-20 21:00",
+    "Elapsed":"0.39s"
+  },
+  {
+    "Display":"12h",
+    "Code":"720",
+    "Status":"UNSUPPORTED\/EMPTY",
+    "Count":0,
+    "Reach":"N\/A",
+    "Elapsed":"20.51s"
+  },
+  {
+    "Display":"1d",
+    "Code":"1D",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2025-09-12 02:00 to 2025-12-20 01:00",
+    "Elapsed":"0.39s"
+  },
+  {
+    "Display":"1w",
+    "Code":"1W",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2024-01-22 01:00 to 2025-12-15 01:00",
+    "Elapsed":"0.40s"
+  },
+  {
+    "Display":"1M",
+    "Code":"1M",
+    "Status":"SUPPORTED",
+    "Count":100,
+    "Reach":"2017-09-01 02:00 to 2025-12-01 01:00",
+    "Elapsed":"0.40s"
+  }
+]

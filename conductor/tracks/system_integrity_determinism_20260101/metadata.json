@@ -1,0 +1,8 @@
+{
+  "track_id": "system_integrity_determinism_20260101",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-02T00:30:00Z",
+  "updated_at": "2026-01-02T00:30:00Z",
+  "description": "Improve traceability, replayability, auditability, and determinism by implementing discovery snapshotting, remote artifact persistence, and solver bit-identicality."
+}

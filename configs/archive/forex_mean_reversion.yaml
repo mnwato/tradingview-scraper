@@ -1,0 +1,34 @@
+# Forex Mean Reversion (Long)
+# Target: Liquid pairs at support/oversold
+base_preset: presets/forex_liquid.yaml
+
+limit: 50
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  # Fundamental uptrend or neutral
+  recommendation:
+    enabled: true
+    min: 0.0
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Stage 3: Oversold Screen
+trend_screen:
+  timeframe: "daily"
+  direction: "short"
+  logic: "AND"
+  osc:
+    enabled: true
+    horizons: {RSI: 30, Stoch.K: 20} # Deep oversold for Forex
+  momentum:
+    enabled: true
+    horizons: {Perf.W: -1.0} # Drop of > 1% in a week
+
+export_metadata:
+  symbol: "forex_mean_reversion"
+  data_category: "universe_selector"

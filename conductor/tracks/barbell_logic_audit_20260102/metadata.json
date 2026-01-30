@@ -1,0 +1,8 @@
+{
+  "id": "barbell_logic_audit_20260102",
+  "title": "Barbell Optimizer Logic Audit",
+  "status": "completed",
+  "priority": "high",
+  "owner": "jules",
+  "description": "Investigating why the BARBELL profile is failing the unique cluster constraint in the logic audit. Focus on aggressor selection and cluster overlap logic."
+}

@@ -1,0 +1,74 @@
+# CFD MTF: weekly trend -> daily confirm -> daily execute
+markets: ["cfd"]
+exchanges: []
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "ATR", "RSI", "Stoch.K"]
+volume:
+  min: 0
+volatility:
+  max: 8.0
+  atr_pct_max: 0.1
+  fallback_use_atr_pct: true
+trend:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.15
+  adx:
+    enabled: true
+    min: 12
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.3, Perf.1M: 0.5, Perf.3M: 0.8}
+  confirmation_momentum:
+    enabled: false
+trend_screen:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.15
+  adx:
+    enabled: true
+    min: 12
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.3, Perf.1M: 0.5, Perf.3M: 0.8}
+confirm_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.1, Perf.1M: 0.3}
+  osc:
+    enabled: false
+execute_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  momentum:
+    enabled: true
+    horizons: {change: 0.0, Perf.W: 0.0}
+  osc:
+    enabled: true
+    horizons: {RSI: 65, Stoch.K: 80}
+  volatility:
+    enabled: true
+    horizons: {Volatility.D: 8.0}
+sort_by: volume
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

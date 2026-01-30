@@ -1,0 +1,74 @@
+# Futures MTF: monthly trend -> weekly confirm -> daily execute
+markets: ["futures"]
+exchanges: ["COMEX", "NYMEX", "CME", "CBOT", "ICEUS", "EUREX"]
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "ATR", "RSI"]
+volume:
+  min: 2000
+volatility:
+  max: 8.0
+  atr_pct_max: 0.1
+  fallback_use_atr_pct: true
+trend:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.2
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    horizons: {Perf.1M: 1.0, Perf.3M: 2.0, Perf.6M: 3.0}
+  confirmation_momentum:
+    enabled: false
+trend_screen:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.2
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    horizons: {Perf.1M: 1.0, Perf.3M: 2.0, Perf.6M: 3.0}
+confirm_screen:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 12
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.2, Perf.1M: 0.5}
+  osc:
+    enabled: false
+execute_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  momentum:
+    enabled: true
+    horizons: {change: 0.0, Perf.W: 0.0}
+  osc:
+    enabled: true
+    horizons: {RSI: 65}
+  volatility:
+    enabled: true
+    horizons: {Volatility.D: 8.0}
+sort_by: volume
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

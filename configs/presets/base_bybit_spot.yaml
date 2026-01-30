@@ -1,0 +1,15 @@
+# Layer 1.1: Bybit Spot Base
+base_preset: base_crypto_spot.yaml
+exchanges: ["BYBIT"]
+
+ensure_symbols:
+- BYBIT:BTCUSDT
+- BYBIT:ETHUSDT
+- BYBIT:SOLUSDT
+- BYBIT:ADAUSDT
+- BYBIT:DOGEUSDT
+- BYBIT:LINKUSDT
+- BYBIT:LTCUSDT
+- BYBIT:DOTUSDT
+- BYBIT:AVAXUSDT
+- BYBIT:TRXUSDT

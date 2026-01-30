@@ -1,0 +1,9 @@
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+include_symbol_files: ["../data/index/nasdaq100_symbols.txt"]
+sort_by: "market_cap_basic"
+sort_order: "desc"
+limit: 100
+export_metadata:
+  symbol: nasdaq100_universe
+  data_category: universe_foundation

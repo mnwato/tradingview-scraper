@@ -1,0 +1,23 @@
+# Layer 2: OKX Perp Trend Short
+base_preset: presets/base_okx_perp.yaml
+
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.0
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: -0.5, Perf.3M: -1.0}
+  confirmation_momentum:
+    enabled: true
+    horizons: {Perf.1M: -1.0, Perf.3M: -2.0}
+
+export_metadata:
+  symbol: okx_perp_short
+  data_category: strategy_selector

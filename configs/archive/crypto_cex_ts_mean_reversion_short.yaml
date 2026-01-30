@@ -1,0 +1,35 @@
+# Base universe: Binance/OKX/Bybit/Bitget perps only, top 100 by market cap then volume
+markets: ["crypto"]
+exchanges: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+columns: ["name", "close", "volume", "Value.Traded", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "ATR"]
+volume:
+  min: 30000000
+volatility:
+  max: 6.0
+  atr_pct_max: 0.08
+  fallback_use_atr_pct: true
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0
+  adx:
+    enabled: true
+    min: 0
+    max: 25
+  momentum:
+    enabled: true
+    horizons: {change: -0.3, Perf.W: -1.0, Perf.1M: -6.0}
+sort_by: market_cap_calc
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

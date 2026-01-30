@@ -1,0 +1,45 @@
+# L4: Equity ETF Momentum Aggressors
+base_preset: ../../base/universes/dynamic_etf_discovery.yaml
+filters:
+  - left: "category"
+    operation: "in_range"
+    right: ["26", "27", "44"]
+columns:
+  - "name"
+  - "description"
+  - "close"
+  - "volume"
+  - "Value.Traded"
+  - "category"
+  - "aum"
+  - "expense_ratio"
+  - "brand"
+  - "issuer"
+  - "ADX"
+  - "ATR"
+  - "Volatility.D"
+  - "Perf.W"
+  - "Perf.1M"
+  - "Perf.3M"
+  - "Perf.Y"
+  - "Perf.YTD"
+  - "Volatility.M"
+  - "change_abs"
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: true, min: 20}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: 1.5}
+# Primary Sort: Liquidity
+sort_by: "Value.Traded"
+sort_order: "desc"
+prefilter_limit: 300
+# Final Sort: Alpha
+final_sort_by: "Perf.1M"
+final_sort_order: "desc"
+limit: 20
+export_metadata:
+  symbol: etf_equity_momentum
+  data_category: strategy_alpha

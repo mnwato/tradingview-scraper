@@ -1,0 +1,42 @@
+# US Stocks Trend Momentum (Short) - Institutional Base
+base_preset: us_stocks_base_universe.yaml
+
+limit: 50
+prefilter_limit: 3000
+pagination_size: 200
+sort_by: market_cap_basic
+final_sort_by: volume
+
+# Institutional Base Universe: S&P 500 (via symbol list)
+include_symbol_files:
+  - ../data/index/sp500_symbols.txt
+
+filters:
+  - left: "type"
+    operation: "in_range"
+    right: ["stock", "dr"]
+  - left: "market_cap_basic"
+    operation: "greater"
+    right: 15000000000 # $15B floor
+
+volume:
+  min: 1000000
+  value_traded_min: 50000000 # $50M floor
+
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    max: -0.1
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    horizons: {change: 0.0, Perf.W: -0.5, Perf.1M: -2.0}
+
+export_metadata:
+  symbol: "us_stocks_trend_momentum_short"
+  data_category: "universe_selector"

@@ -1,0 +1,34 @@
+# Futures Mean Reversion (Short)
+# Target: Liquid futures in a downtrend that are overbought (Sell Rips)
+base_preset: presets/futures_us_liquid.yaml
+
+limit: 50
+
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  # Fundamental downtrend or neutral
+  recommendation:
+    enabled: true
+    min: -0.1 
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Stage 3: Overbought Screen
+trend_screen:
+  timeframe: "daily"
+  direction: "long" # "Long" direction = find High values (Overbought)
+  logic: "AND"
+  osc:
+    enabled: true
+    horizons: {RSI: 60, Stoch.K: 70}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 2.0} # Rally of > 2% in a week
+
+export_metadata:
+  symbol: "futures_mean_reversion_short"
+  data_category: "universe_selector"

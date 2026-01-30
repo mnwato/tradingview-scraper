@@ -1,0 +1,45 @@
+# L4: Bond ETF Yield/Duration Rotators
+base_preset: ../../base/universes/dynamic_etf_discovery.yaml
+filters:
+  - left: "category"
+    operation: "in_range"
+    right: ["61", "70", "68", "59", "58", "63", "62", "69", "64", "56", "57"]
+columns:
+  - "name"
+  - "description"
+  - "close"
+  - "volume"
+  - "Value.Traded"
+  - "category"
+  - "aum"
+  - "expense_ratio"
+  - "brand"
+  - "issuer"
+  - "ADX"
+  - "ATR"
+  - "Volatility.D"
+  - "Perf.W"
+  - "Perf.1M"
+  - "Perf.3M"
+  - "Perf.Y"
+  - "Perf.YTD"
+  - "Volatility.M"
+  - "change_abs"
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: true, min: 15} # Lowered for bonds as they are less trendy
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0}
+# Primary Sort: Liquidity
+sort_by: "Value.Traded"
+sort_order: "desc"
+prefilter_limit: 300
+# Final Sort: Trend Strength
+final_sort_by: "ADX"
+final_sort_order: "desc"
+limit: 15
+export_metadata:
+  symbol: etf_bond_yield_trend
+  data_category: strategy_alpha

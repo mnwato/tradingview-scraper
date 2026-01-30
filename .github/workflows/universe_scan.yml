@@ -1,0 +1,218 @@
+name: Universe Trend Scan
+
+on:
+  schedule:
+    # Run every 4 hours on weekdays
+    - cron: '0 */4 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'INFO'
+      exportType:
+        description: 'Export format (json/csv)'
+        required: true
+        default: 'json'
+
+jobs:
+  lint-configs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          cache-suffix: "3.12"
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Lint universe configs
+        run: uv run scripts/lint_universe_configs.py --strict
+
+  scan-futures:
+    needs: lint-configs
+    runs-on: ubuntu-latest
+    env:
+      TV_EXPORT_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          cache-suffix: "3.12"
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run Futures Trend Scan (Long)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/futures_trend_momentum.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Run Futures Trend Scan (Short)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/futures_trend_momentum_short.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: futures-trend-results
+          path: export/
+
+  scan-metals:
+    needs: lint-configs
+    runs-on: ubuntu-latest
+    env:
+      TV_EXPORT_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          cache-suffix: "3.12"
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run Futures Metals Trend Scan (Long)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/futures_metals_trend_momentum.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Run Futures Metals Trend Scan (Short)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/futures_metals_trend_momentum_short.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: futures-metals-trend-results
+          path: export/
+
+  scan-cfd:
+    needs: lint-configs
+    runs-on: ubuntu-latest
+    env:
+      TV_EXPORT_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          cache-suffix: "3.12"
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run CFD Trend Scan (Long)
+        run: |
+          uv run -m tradingview_scraper.cfd_universe_selector \
+            --config configs/cfd_trend_momentum.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Run CFD Trend Scan (Short)
+        run: |
+          uv run -m tradingview_scraper.cfd_universe_selector \
+            --config configs/cfd_trend_momentum_short.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cfd-trend-results
+          path: export/
+
+  scan-forex:
+    needs: lint-configs
+    runs-on: ubuntu-latest
+    env:
+      TV_EXPORT_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          cache-suffix: "3.12"
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run Forex Trend Scan (Long)
+        run: |
+          uv run -m tradingview_scraper.cfd_universe_selector \
+            --config configs/forex_trend_momentum.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Run Forex Trend Scan (Short)
+        run: |
+          uv run -m tradingview_scraper.cfd_universe_selector \
+            --config configs/forex_trend_momentum_short.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: forex-trend-results
+          path: export/
+
+  scan-etf:
+    needs: lint-configs
+    runs-on: ubuntu-latest
+    env:
+      TV_EXPORT_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          cache-suffix: "3.12"
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run US ETF Trend Scan (Long)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/us_etf_trend_momentum.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Run US ETF Trend Scan (Short)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/us_etf_trend_momentum_short.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: us-etf-trend-results
+          path: export/
+
+  scan-stocks:
+    needs: lint-configs
+    runs-on: ubuntu-latest
+    env:
+      TV_EXPORT_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          cache-suffix: "3.12"
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run US Stocks Trend Scan (Long)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/us_stocks_trend_momentum.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Run US Stocks Trend Scan (Short)
+        run: |
+          uv run -m tradingview_scraper.futures_universe_selector \
+            --config configs/us_stocks_trend_momentum_short.yaml \
+            --export ${{ inputs.exportType || 'json' }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: us-stocks-trend-results
+          path: export/

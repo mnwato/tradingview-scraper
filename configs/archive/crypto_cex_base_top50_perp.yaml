@@ -1,0 +1,14 @@
+# Layer 2: Multi-Exchange Top 50 Perp Base
+base_preset: presets/base_crypto_perp.yaml
+exchanges: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+
+ensure_symbols:
+- BINANCE:BTCUSDT.P
+- OKX:BTCUSDT.P
+- BYBIT:BTCUSDT.P
+- BITGET:BTCUSDT.P
+
+limit: 50
+export_metadata:
+  symbol: crypto_cex_base_top50_perp
+  data_category: universe_selector

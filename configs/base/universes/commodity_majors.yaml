@@ -1,0 +1,18 @@
+# L0: Major Commodity Futures (Liquid Majors)
+base_preset: ../templates/futures.yaml
+markets: ["futures"]
+ensure_symbols:
+  - "COMEX:GC1!"  # Gold
+  - "COMEX:SI1!"  # Silver
+  - "COMEX:HG1!"  # Copper
+  - "NYMEX:CL1!"  # Crude Oil
+  - "NYMEX:NG1!"  # Natural Gas
+  - "CBOT:ZC1!"   # Corn
+  - "CBOT:ZW1!"   # Wheat
+  - "CBOT:ZS1!"   # Soybeans
+  - "CME:6E1!"    # Euro
+  - "CME:6J1!"    # Yen
+limit: 20
+export_metadata:
+  symbol: commodity_majors
+  data_category: universe_foundation

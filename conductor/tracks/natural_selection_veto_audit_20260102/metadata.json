@@ -1,0 +1,8 @@
+{
+  "id": "natural_selection_veto_audit_20260102",
+  "title": "Natural Selection Veto & ECI Scaling Audit",
+  "status": "completed",
+  "priority": "high",
+  "owner": "jules",
+  "description": "Investigating why Natural Selection (v3) is vetoing all non-equity assets. Focus on ECI scaling, Value.Traded unit discrepancies in Futures/Forex, and condition number impacts."
+}

@@ -1,0 +1,562 @@
+[
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "11.72",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "252",
+    "profile": "min_variance",
+    "sharpe": "10.17",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "292",
+    "profile": "min_variance",
+    "sharpe": "10.86",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "15.27",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "hrp",
+    "sharpe": "11.32",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "min_variance",
+    "sharpe": "13.70",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.48",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "max_sharpe",
+    "sharpe": "10.28",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "14.12",
+    "ann_ret": "0.00"
+  },
+  {
+    "sleeve": "long_ma",
+    "window": "302",
+    "profile": "market",
+    "sharpe": "13.11",
+    "ann_ret": "0.00"
+  }
+]

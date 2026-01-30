@@ -1,0 +1,33 @@
+# US Stocks Mean Reversion (Short)
+# Target: Liquid stocks in a downtrend that are overbought (Sell Rips)
+base_preset: presets/stocks_us_liquid.yaml
+
+limit: 50
+
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: -0.1
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Stage 3: Overbought Screen
+trend_screen:
+  timeframe: "daily"
+  direction: "long" # "Long" direction = find High values
+  logic: "AND"
+  osc:
+    enabled: true
+    horizons: {RSI: 65, Stoch.K: 75}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 3.0} # Rally of > 3% in a week
+
+export_metadata:
+  symbol: "us_stocks_mean_reversion_short"
+  data_category: "universe_selector"

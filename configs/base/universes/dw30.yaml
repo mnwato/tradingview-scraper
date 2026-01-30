@@ -1,0 +1,9 @@
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+include_symbol_files: ["../data/index/dw30_symbols.txt"]
+sort_by: "market_cap_basic"
+sort_order: "desc"
+limit: 30
+export_metadata:
+  symbol: dw30_universe
+  data_category: universe_foundation

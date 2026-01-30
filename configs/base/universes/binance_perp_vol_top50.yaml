@@ -1,0 +1,17 @@
+# L1: Binance Perp Top 50 (Pure Volume Funnel) - EXPERIMENT A
+base_preset: ../templates/crypto_perp.yaml
+exchanges: ["BINANCE"]
+
+# Stage 1: Broadest Volume Funnel (Replacing Mcap)
+prefilter_limit: 200
+sort_by: Value.Traded
+sort_order: desc
+
+# Stage 2: Final Selection
+limit: 50
+final_sort_by: Value.Traded
+final_sort_order: desc
+
+export_metadata:
+  symbol: binance_perp_vol_top50
+  data_category: universe_base

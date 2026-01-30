@@ -1,0 +1,31 @@
+# L0: Commodity Proxy ETFs (Canonical Basket, ETF-first)
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+
+# Static universe emitter: emit the canonical proxy basket even when the
+# TradingView screener endpoint is unavailable.
+static_mode: true
+static_symbols:
+  # NOTE: In this repo’s TradingView history fetcher, US ETFs are typically
+  # resolved under the `AMEX:` namespace (TradingView uses AMEX as the ETF
+  # exchange alias for many NYSE Arca listings).
+  - "AMEX:DBC"  # Broad commodities (basket proxy)
+  - "AMEX:GLD"  # Gold
+  - "AMEX:SLV"  # Silver
+  - "AMEX:USO"  # Oil (WTI proxy)
+  - "AMEX:DBB"  # Industrial metals basket
+  - "AMEX:CPER" # Copper proxy
+  - "AMEX:DBA"  # Agriculture basket (optional diversifier)
+
+filters:
+  - left: "type"
+    operation: "equal"
+    right: "etf"
+
+sort_by: "volume"
+sort_order: "desc"
+limit: 25
+
+export_metadata:
+  symbol: commodity_proxy_etf_universe
+  data_category: universe_foundation

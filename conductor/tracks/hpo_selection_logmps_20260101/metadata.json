@@ -1,0 +1,8 @@
+{
+  "track_id": "hpo_selection_logmps_20260101",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-02T00:45:00Z",
+  "updated_at": "2026-01-02T00:45:00Z",
+  "description": "Optimize asset selection parameters for the Log-MPS 3.2 engine using Optuna, ensuring feature flag isolation and backward compatibility with v3.1 performance."
+}

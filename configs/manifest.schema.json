@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TradingView Scraper Workflow Manifest",
+  "type": "object",
+  "properties": {
+    "default_profile": {
+      "type": "string",
+      "default": "production"
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/profile"
+      }
+    }
+  },
+  "required": ["profiles"],
+  "definitions": {
+    "profile": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "lookback_days": { "type": "integer", "minimum": 1 },
+            "batch_size": { "type": "integer", "minimum": 1 },
+            "backfill": { "type": "boolean" },
+            "gapfill": { "type": "boolean" },
+            "max_symbols": { "type": "integer", "minimum": 1 },
+            "strict_health": { "type": "boolean" },
+            "min_days_floor": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "selection": {
+          "type": "object",
+          "properties": {
+            "top_n": { "type": "integer", "minimum": 1 },
+            "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+            "min_momentum_score": { "type": "number" }
+          }
+        },
+        "risk": {
+          "type": "object",
+          "properties": {
+            "cluster_cap": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "backtest": {
+          "type": "object",
+          "properties": {
+            "train_window": { "type": "integer", "minimum": 1 },
+            "test_window": { "type": "integer", "minimum": 1 },
+            "step_size": { "type": "integer", "minimum": 1 },
+            "backtest_simulator": { "type": "string", "enum": ["custom", "cvxportfolio", "vectorbt"] },
+            "backtest_slippage": { "type": "number", "minimum": 0 },
+            "backtest_commission": { "type": "number", "minimum": 0 },
+            "backtest_cash_asset": { "type": "string" },
+            "benchmark_symbols": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+            "report_mode": { "type": "string", "enum": ["basic", "full"] },
+            "dynamic_universe": { "type": "boolean" }
+          }
+        },
+        "tournament": {
+          "type": "object",
+          "properties": {
+            "engines": { "type": "string" },
+            "profiles": { "type": "string" },
+            "simulators": { "type": "string" }
+          }
+        },
+        "discovery": {
+          "type": "object",
+          "properties": {
+            "enabled_markets": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["futures", "crypto", "cfd", "forex", "bonds", "etf", "america"] }
+            },
+            "pipelines": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "scanners": { "type": "array", "items": { "type": "string" } },
+                  "interval": { "type": "string", "enum": ["1m", "5m", "15m", "1h", "4h", "1d", "1w", "1M"] },
+                  "ingestion_depth": { "type": "integer", "minimum": 1 },
+                  "strict_health": { "type": "boolean" }
+                }
+              }
+            }
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "enabled": { "type": "boolean" },
+              "base_preset": { "type": "string" },
+              "limit": { "type": "integer" },
+              "exchanges": { "type": "array", "items": { "type": "string" } }
+            },
+            "additionalProperties": true
+          }
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "features": {
+          "type": "object",
+          "properties": {
+            "feat_partial_rebalance": { "type": "boolean" },
+            "feat_turnover_penalty": { "type": "boolean" },
+            "feat_xs_momentum": { "type": "boolean" },
+            "feat_spectral_regimes": { "type": "boolean" },
+            "feat_decay_audit": { "type": "boolean" },
+            "feat_audit_ledger": { "type": "boolean" },
+            "feat_pit_fidelity": { "type": "boolean" },
+            "feat_rebalance_mode": { "type": "string", "enum": ["daily", "window"] },
+            "feat_rebalance_tolerance": { "type": "boolean" },
+            "rebalance_drift_limit": { "type": "number", "minimum": 0, "maximum": 1 },
+            "feat_short_costs": { "type": "boolean" },
+            "short_borrow_cost": { "type": "number" },
+            "feat_dynamic_selection": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+}

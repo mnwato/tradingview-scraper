@@ -1,0 +1,69 @@
+# Forex MTF: weekly trend -> daily confirm -> daily execute (layered on base universe)
+base_preset: forex_base_universe.yaml
+
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "ATR", "RSI", "Stoch.K"]
+
+trend:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.05
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.1, Perf.1M: 0.2, Perf.3M: 0.3}
+  confirmation_momentum:
+    enabled: false
+
+trend_screen:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.05
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.1, Perf.1M: 0.2, Perf.3M: 0.3}
+
+confirm_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 8
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: 0.1}
+  osc:
+    enabled: false
+
+execute_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  momentum:
+    enabled: true
+    horizons: {change: -0.2, Perf.W: -0.1}
+  osc:
+    enabled: false
+  volatility:
+    enabled: false
+
+limit: 150
+prefilter_limit: 2000
+pagination_size: 200
+sort_by: volume
+final_sort_by: volume
+
+export:
+  enabled: false
+  type: json

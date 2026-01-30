@@ -1,0 +1,18 @@
+# L0: Liquid Bond ETFs
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+static_mode: true
+static_symbols:
+  - "AMEX:AGG"
+  - "NASDAQ:BND"
+  - "NASDAQ:TLT"
+  - "AMEX:LQD"
+  - "AMEX:HYG"
+  - "NASDAQ:IEF"
+  - "NASDAQ:SHY"
+  - "AMEX:TIP"
+  - "AMEX:MBB"
+  - "AMEX:BIV"
+export_metadata:
+  symbol: bond_etf_universe
+  data_category: universe_foundation

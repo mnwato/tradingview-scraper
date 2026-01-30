@@ -1,0 +1,39 @@
+# Crypto CEX TS Mean Reversion (Long) - Refactored
+# Target: Liquid perps that are oversold (Dip Buy)
+base_preset: presets/crypto_cex_preset_binance_top50_perp.yaml # Use robust base
+
+# Override base limit
+limit: 50
+
+# Stage 2: Broad Trend Context (Optional)
+# We want assets that aren't completely dead (neutral to bullish long term)
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: -0.1 # Allow slight sell rating, but avoid strong sell
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Stage 3: Oversold Screen (The actual Mean Reversion logic)
+# Use 'short' direction to find values BELOW thresholds
+trend_screen:
+  timeframe: "daily"
+  direction: "short" 
+  logic: "AND"
+  osc:
+    enabled: true
+    # Find assets with RSI < 40 OR Stoch.K < 30
+    # Logic is AND by default for fields, but let's try to find deep oversold
+    horizons: {RSI: 40, Stoch.K: 30}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: -5.0} # Drop of > 5% in a week
+
+export_metadata:
+  symbol: "crypto_mean_reversion"
+  data_category: "universe_selector"

@@ -1,0 +1,10 @@
+# L0: S&P 500 Foundation
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+include_symbol_files: ["../data/index/sp500_symbols.txt"]
+sort_by: "market_cap_basic"
+sort_order: "desc"
+limit: 500
+export_metadata:
+  symbol: sp500_universe
+  data_category: universe_foundation

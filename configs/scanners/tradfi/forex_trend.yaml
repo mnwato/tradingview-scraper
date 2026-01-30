@@ -1,0 +1,13 @@
+# L4: Global Forex Trend
+base_preset: ../../base/templates/forex_base.yaml
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: true, min: 20}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.5, Perf.1M: 1.0}
+limit: 50
+export_metadata:
+  symbol: global_forex_trend
+  data_category: strategy_alpha

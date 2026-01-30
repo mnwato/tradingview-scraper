@@ -1,0 +1,8 @@
+{
+  "id": "workflow_audit_ledger_20260102",
+  "title": "E2E Workflow & Audit Ledger Integration",
+  "status": "in_progress",
+  "priority": "high",
+  "owner": "jules",
+  "description": "Reviewing end-to-end workflows (Scanner -> Prep -> Audit -> Selection) and ensuring consistent integration of the cryptographically chained AuditLedger for data provenance."
+}

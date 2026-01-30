@@ -8,75 +8,83 @@ TradingView Scraper is a Python library for scraping trading data, ideas, news, 
 
 ## Development Commands
 
-### Installation and Setup
+### Installation and Setup (UV Native)
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Prepare environment with all core and optional backends
+uv sync --all-extras
 
-# Install the package in development mode
-pip install -e .
+# Update lockfile after pyproject.toml changes
+uv lock
+
+# Export requirements for non-uv environments (compatibility)
+uv export --no-dev --format requirements-txt > requirements.txt
+uv export --extra dev --format requirements-txt > dev-requirements.txt
 ```
 
 ### Testing
 ```bash
 # Run all tests
-pytest
+uv run pytest
 
 # Run specific test file
-pytest tests/test_ideas.py
-pytest tests/test_indicators.py
-pytest tests/test_realtime_price.py
-
-# Run tests with verbose output
-pytest -v
+uv run pytest tests/test_ideas.py
 ```
 
 ### Code Quality
 ```bash
-# Lint with flake8 (used in CI)
-flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+# Lint with ruff
+uv run ruff check .
 
-# Run pylint (used in CI)
-pylint $(git ls-files '*.py')
+# Format with ruff
+uv run ruff format .
+
+# Type checking
+uv run ty
 ```
 
-### Building Documentation
+### Portfolio Backtesting (Tournament Matrix)
 ```bash
-cd docs
-make html
+# Run the multi-engine, multi-profile tournament
+uv run scripts/backtest_engine.py --tournament
+
+# Generate unified quantitative reports
+TV_RUN_ID=<id> uv run scripts/generate_reports.py
+```
+
+### Analytical Reports
+```bash
+# Generate final prettified dashboard
+make report
+
+# Deeper cluster hierarchy analysis (Selected or Raw universe)
+uv run scripts/analyze_clusters.py --mode raw
 ```
 
 ## Architecture
 
 ### Core Module Structure
+- `regime.py` - Advanced multi-factor detector (Entropy, DWT, Vol Clustering).
+- `risk.py` - Barbell optimizer and tail risk (CVaR) auditing.
+- `pipeline.py` - Unified orchestrator for Discovery -> Alpha -> Risk flow.
+- `bond_universe_selector.py` - Wrapper for US-listed Bond ETF discovery.
 
-The package is organized into the following key components:
+**`scripts/`** - Production Pipeline Stages
+- `select_top_universe.py` - Aggregates raw pool with canonical venue merging.
+- `natural_selection.py` - Statistical pruning via hierarchical clustering.
+- `optimize_clustered_v2.py` - Unified factor-based optimizer with fragility penalties.
+- `generate_portfolio_report.py` - Prettified Markdown dashboard with visual bars.
+- `display_portfolio_dashboard.py` - Interactive Rich terminal Implementation Dashboard.
+- `monitor_cluster_drift.py` - Temporal stability tracking for risk buckets.
+- `detect_hedge_anchors.py` - Automated discovery of insurance/diversification assets.
 
-**`tradingview_scraper/symbols/`** - Main data scraping modules
-- `ideas.py` - Scrapes trading ideas from TradingView symbol pages
-- `technicals.py` - Fetches technical indicators via TradingView scanner API
-- `news.py` - Scrapes news headlines and content for symbols
-- `cal.py` - Scrapes calendar events (earnings, dividends)
-- `utils.py` - Shared utilities for file export, user agent generation, validation
-- `exceptions.py` - Custom exception classes
+### Deployment & Maintenance
+- **Data Integrity**: Uses a tiered self-healing cycle (`Pass 1: 60d` -> `Natural Selection` -> `Pass 2: 200d`).
+- **Risk Control**: Cluster-aware allocation with strictly enforced 25% caps and CVaR-penalized objectives.
+- **Alpha Alignment**: Hybrid internal distribution using a blend of Momentum and Stability.
+- **Decision Trail**: Persistent logging of every selection decision in `selection_audit.json`.
 
-**`tradingview_scraper/symbols/stream/`** - Real-time WebSocket streaming
-- `streamer.py` - Main `Streamer` class for OHLCV and indicator streaming with export capabilities
-- `price.py` - `RealTimeData` class for simple OHLCV and watchlist streaming
-- `stream_handler.py` - Low-level WebSocket connection and message handling
-- `utils.py` - WebSocket utilities, symbol validation, indicator metadata fetching
+## Key Design Patterns
 
-**`tradingview_scraper/utils/`** - Shared utilities
-- Currently empty, reserved for future shared utilities
-
-**`tradingview_scraper/data/`** - Static configuration files
-- `indicators.txt` - List of supported indicator names
-- `exchanges.txt` - List of supported exchanges
-- `timeframes.json` - Timeframe mappings
-- `languages.json`, `areas.json`, `news_providers.txt` - News scraping configurations
-
-### Key Design Patterns
 
 #### Export Pattern
 All main scraper classes follow a consistent pattern:
@@ -174,7 +182,7 @@ When adding tests:
 ## CI/CD
 
 GitHub Actions workflows:
-- **python-app.yml**: Runs on push/PR to main, executes flake8 linting and pytest
+- **python-app.yml**: Runs on push/PR to main, executes ruff linting and pytest
 - **pylint.yml**: Runs pylint on all Python files for Python 3.8 and 3.9
 - **release.yml**: Handles PyPI releases
 - **docs.yml**: Builds and publishes documentation

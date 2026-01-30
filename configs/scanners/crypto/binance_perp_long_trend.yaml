@@ -1,0 +1,14 @@
+# L4: Binance Perp Alpha Trend (Top500 Mcap -> Top50 Vol)
+base_preset: ../../base/universes/binance_perp_top100.yaml
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: true, min: 10}
+  recommendation: {enabled: true, min: 0.0}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0}
+limit: 50
+export_metadata:
+  symbol: binance_perp_long_trend
+  data_category: strategy_alpha

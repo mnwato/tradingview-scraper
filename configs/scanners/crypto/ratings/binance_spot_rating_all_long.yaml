@@ -1,0 +1,15 @@
+# Binance Spot - All Rating - LONG
+base_preset: ../../../base/universes/binance_spot_base.yaml
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: { enabled: false }
+  recommendation: { enabled: false }
+filters:
+  - { left: "Recommend.All", operation: "greater", right: 0 }
+sort_by: Recommend.All
+sort_order: desc
+limit: 100
+export_metadata:
+  symbol: spot_rating_all_long
+  data_category: strategy_alpha

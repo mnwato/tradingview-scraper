@@ -1,0 +1,15 @@
+# Binance Perp - All Rating - SHORT
+base_preset: ../../../base/universes/binance_perp_base.yaml
+trend:
+  direction: "short"
+  logic: "AND"
+  adx: { enabled: false }
+  recommendation: { enabled: false }
+filters:
+  - { left: "Recommend.All", operation: "less", right: 0 }
+sort_by: Recommend.All
+sort_order: asc
+limit: 100
+export_metadata:
+  symbol: perp_rating_all_short
+  data_category: strategy_alpha

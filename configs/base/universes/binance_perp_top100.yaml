@@ -1,0 +1,43 @@
+# L1: Binance Perp Top 50 Liquid / Top 100 Mcap
+base_preset: ../templates/crypto_perp.yaml
+exchanges: ["BINANCE"]
+
+# Override volume floor for Perp ($1M)
+
+# Disable trend gates for pure universe selection
+trend:
+  logic: "OR"
+  adx: {enabled: false}
+  recommendation: {enabled: false}
+  momentum: {enabled: false}
+
+# Stage 1: Liquidity Pool (Broad fetch)
+prefilter_limit: 5000
+sort_by: Value.Traded
+sort_order: desc
+exclude_symbols: ["BINANCE:PAXGUSDT.P"]
+
+# Explicitly clear the inherited $10M filter.
+# Relaxed name match to capture all Perps before filtering.
+filters:
+  - {left: "Value.Traded", operation: "greater", right: 1000000}
+  - {left: "name", operation: "match", right: ".P$"}
+
+# Force inclusion of key alpha anchors (prevents loss if Mcap is unverified)
+ensure_symbols:
+  - "BINANCE:PIPPINUSDT.P"
+  - "BINANCE:MYXUSDT.P"
+  - "BINANCE:PIEVERSEUSDT.P"
+
+# Stage 2: Base Universe Constraint (Top 100 unique bases by Liquidity)
+base_universe_limit: 100
+base_universe_sort_by: Value.Traded
+
+# Stage 3: Final Liquidity Selection
+final_sort_by: Value.Traded
+final_sort_order: desc
+limit: 50
+
+export_metadata:
+  symbol: binance_perp_top100
+  data_category: universe_base

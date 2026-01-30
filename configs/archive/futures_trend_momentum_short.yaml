@@ -1,0 +1,41 @@
+# Futures/commodities trend momentum short (High Quality - Relaxed)
+# Base: market=futures, top 100 by volume (after type filter), sort volume, limited to US exchanges
+markets: ["futures"]
+exchanges: ["CME", "CBOT", "COMEX", "NYMEX"]
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Perf.W", "Perf.1M", "Perf.3M", "ATR"]
+volume:
+  min: 5000
+volatility:
+  max: 8.0
+  atr_pct_max: 0.1
+  fallback_use_atr_pct: true
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: -0.2
+  adx:
+    enabled: true
+    min: 20
+  momentum:
+    enabled: true
+    horizons: {change: 0.0, Perf.W: -0.5, Perf.1M: -1.0}
+  confirmation_momentum:
+    enabled: true
+    horizons: {Perf.3M: -3.0}
+sort_by: volume
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json
+export_metadata:
+  symbol: "futures_trend_momentum_short"
+  data_category: "universe_selector"

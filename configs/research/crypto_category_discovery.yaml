@@ -1,0 +1,9 @@
+# Temp config for crypto category discovery
+markets: ["crypto"]
+exchanges: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+limit: 1000
+sort_by: Value.Traded
+columns: ["name", "description", "market_cap_calc", "type", "subtype", "Value.Traded"]
+export_metadata:
+  symbol: crypto_category_discovery
+  data_category: research

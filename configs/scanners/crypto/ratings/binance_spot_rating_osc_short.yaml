@@ -1,0 +1,14 @@
+# Binance Spot - Oscillator Rating - SHORT
+base_preset: ../../../base/universes/binance_spot_base.yaml
+trend:
+  direction: "short"
+  logic: "AND"
+  adx: { enabled: false }
+filters:
+  - { left: "Recommend.Other", operation: "less", right: 0 }
+sort_by: Recommend.Other
+sort_order: asc
+limit: 100
+export_metadata:
+  symbol: spot_rating_osc_short
+  data_category: strategy_alpha

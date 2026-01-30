@@ -1,0 +1,23 @@
+# L0: Institutional Commodity ETFs
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+static_mode: true
+static_symbols:
+  - "AMEX:DBC"  # Broad Commodity
+  - "AMEX:GSG"  # Broad Commodity (iShares)
+  - "AMEX:GLD"  # Gold
+  - "AMEX:IAU"  # Gold (iShares)
+  - "AMEX:SLV"  # Silver
+  - "AMEX:USO"  # WTI Crude Oil
+  - "AMEX:BNO"  # Brent Crude Oil
+  - "AMEX:UNG"  # Natural Gas
+  - "AMEX:DBB"  # Base Metals
+  - "AMEX:CPER" # Copper
+  - "AMEX:DBA"  # Agriculture
+  - "AMEX:PALL" # Palladium
+  - "AMEX:PPLT" # Platinum
+  - "AMEX:URA"  # Uranium
+  - "AMEX:LIT"  # Lithium
+export_metadata:
+  symbol: commodity_etf_universe
+  data_category: universe_foundation

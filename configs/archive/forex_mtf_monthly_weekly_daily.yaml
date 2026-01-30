@@ -1,0 +1,71 @@
+# Forex MTF: monthly trend -> weekly confirm -> daily execute
+# Focused on G8 Majors (USD, EUR, JPY, GBP, AUD, CAD, CHF, NZD)
+base_preset: forex_base_universe.yaml
+
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "ATR", "RSI", "SMA20"]
+
+# Secular Trend (Monthly Anchor)
+trend:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.1
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    horizons: {Perf.3M: 0.5, Perf.6M: 1.0}
+
+# Monthly Filter
+trend_screen:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    horizons: {Perf.3M: 0.5, Perf.6M: 1.0}
+
+# Weekly Confirmation
+confirm_screen:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 12
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.1, Perf.1M: 0.2}
+
+# Daily Execution
+execute_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  momentum:
+    enabled: true
+    horizons: {change: -0.5, Perf.W: 0.0}
+  osc:
+    enabled: false
+  volatility:
+    enabled: true
+    horizons: {Volatility.D: 6.0}
+
+limit: 50
+pagination_size: 100
+sort_by: volume
+sort_order: desc
+
+export:
+  enabled: true
+  type: json
+
+export_metadata:
+  symbol: forex_mtf_monthly_weekly_daily
+  data_category: universe_selector

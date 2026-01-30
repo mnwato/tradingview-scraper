@@ -1,0 +1,29 @@
+name: settings-precedence
+
+on:
+  push:
+    paths:
+      - "tradingview_scraper/settings.py"
+      - "tests/test_settings_precedence.py"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/settings-precedence.yml"
+  pull_request:
+    paths:
+      - "tradingview_scraper/settings.py"
+      - "tests/test_settings_precedence.py"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/settings-precedence.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync --frozen
+      - run: uv run pytest tests/test_settings_precedence.py

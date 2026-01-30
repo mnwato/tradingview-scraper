@@ -1,0 +1,343 @@
+[
+  {
+    "session_id": "0.15053.3961_har1-charts-free-3-tvbs-r8wi1-4",
+    "timestamp": 1766268728,
+    "timestampMs": 1766268728405,
+    "release": "release_208-91",
+    "studies_metadata_hash": "9553d1ff336e1221067bebaa93c8b7a96b6f2153",
+    "auth_scheme_vsn": 2,
+    "protocol": "json",
+    "via": "5.79.111.210:443",
+    "javastudies": [
+      "3.66"
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "FX_IDC:EURUSD",
+        "s": "ok",
+        "v": {
+          "volume": 1,
+          "update_mode": "streaming",
+          "type": "forex",
+          "short_name": "EURUSD",
+          "rtc": null,
+          "rchp": null,
+          "pro_name": "FX_IDC:EURUSD",
+          "pricescale": 100000,
+          "original_name": "FX_IDC:EURUSD",
+          "minmove2": 10,
+          "minmov": 1,
+          "lp_time": 1766186430,
+          "lp": 1.17104,
+          "local_description": "EURO / U.S. DOLLAR",
+          "is_tradable": true,
+          "fractional": false,
+          "exchange": "ICE",
+          "description": "EURO / U.S. DOLLAR",
+          "current_session": "out_of_session",
+          "currency_code": "USD",
+          "chp": -0.09,
+          "ch": -0.001
+        }
+      }
+    ]
+  },
+  {
+    "m": "quote_completed",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      "FX_IDC:EURUSD"
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4837.88792,
+          "update_mode": "streaming",
+          "type": "spot",
+          "short_name": "BTCUSDT",
+          "rtc": null,
+          "rchp": null,
+          "pro_name": "BINANCE:BTCUSDT",
+          "pricescale": 100,
+          "original_name": "BINANCE:BTCUSDT",
+          "minmove2": 0,
+          "minmov": 1,
+          "lp_time": 1766268727,
+          "lp": 88211.13,
+          "is_tradable": true,
+          "fractional": false,
+          "exchange": "Binance",
+          "description": "Bitcoin / TetherUS",
+          "current_session": "market",
+          "currency_code": "USDT",
+          "chp": 0.08,
+          "ch": 74.19
+        }
+      }
+    ]
+  },
+  {
+    "m": "quote_completed",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      "BINANCE:BTCUSDT"
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "={\"adjustment\":\"splits\",\"currency-id\":\"USD\",\"session\":\"regular\",\"symbol\":\"BINANCE:BTCUSDT\"}",
+        "s": "ok",
+        "v": {
+          "volume": 4837.8874,
+          "update_mode": "streaming",
+          "type": "spot",
+          "short_name": "BTCUSDT",
+          "pro_name": "BINANCE:BTCUSDT",
+          "pricescale": 100,
+          "original_name": "BINANCE:BTCUSDT",
+          "minmove2": 0,
+          "minmov": 1,
+          "lp": 88167.01444,
+          "is_tradable": false,
+          "fractional": false,
+          "exchange": "Binance",
+          "description": "Bitcoin / TetherUS",
+          "current_session": "market",
+          "currency_code": "USD",
+          "chp": 0.07,
+          "ch": 63.57
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4837.89128,
+          "lp_time": 1766268728
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "lp_time": 1766268729,
+          "lp": 88211.12,
+          "ch": 74.18
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4837.89177,
+          "lp_time": 1766268731
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "lp_time": 1766268733,
+          "lp": 88211.13,
+          "ch": 74.19
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4837.89683,
+          "lp_time": 1766268734,
+          "lp": 88211.12,
+          "ch": 74.18
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "lp_time": 1766268736
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "lp_time": 1766268740
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "FX_IDC:EURUSD",
+        "s": "ok",
+        "v": {
+          "update_mode": "streaming",
+          "type": "forex",
+          "short_name": "EURUSD",
+          "pro_name": "FX_IDC:EURUSD",
+          "pricescale": 100000,
+          "original_name": "FX_IDC:EURUSD",
+          "minmove2": 10,
+          "minmov": 1,
+          "local_description": "EURO / U.S. DOLLAR",
+          "is_tradable": true,
+          "fractional": false,
+          "exchange": "ICE",
+          "description": "EURO / U.S. DOLLAR",
+          "currency_code": "USD"
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4837.9034,
+          "lp_time": 1766268743,
+          "lp": 88211.13,
+          "ch": 74.19
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4837.90566,
+          "lp_time": 1766268745
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4840.59233,
+          "lp_time": 1766268749,
+          "lp": 88211.13,
+          "ch": 74.19
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "lp_time": 1766268750,
+          "lp": 88211.12,
+          "ch": 74.18
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4840.6015,
+          "lp_time": 1766268753,
+          "lp": 88211.13,
+          "ch": 74.19
+        }
+      }
+    ]
+  },
+  {
+    "m": "qsd",
+    "p": [
+      "qs_ghawpkpyhwuj",
+      {
+        "n": "BINANCE:BTCUSDT",
+        "s": "ok",
+        "v": {
+          "volume": 4840.60381,
+          "lp_time": 1766268755
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,140 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tradingview-scraper"
+version = "0.4.20"
+description = "Tradingview scraper tool"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = {text = "MIT"}
+authors = [
+    {name = "Mostafa Najmi", email = "m.n.irib@gmail.com"}
+]
+keywords = ["tradingview", "scraper", "python", "crawler", "financial"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "setuptools",
+    "requests==2.32.4",
+    "pandas>=2.0.3",
+    "beautifulsoup4>=4.12.3",
+    "pydantic>=2.8.2",
+    "pydantic-settings>=2.0.0",
+    "websockets>=13.1",
+    "websocket-client>=1.8.0",
+    "python-dotenv>=1.0.1",
+    "tenacity>=8.3.0",
+    "pyarrow>=14.0.1",
+    "aiohttp>=3.9.0",
+    "scikit-learn>=1.3.0",
+    "scipy>=1.10.0",
+    "PyWavelets>=1.4.1",
+    "PyYAML>=6.0.1",
+    "rich>=13.7.0",
+    "seaborn>=0.12.2",
+    "matplotlib>=3.7.1",
+    "hmmlearn>=0.3.0",
+    "statsmodels>=0.14.0",
+    "exchange-calendars>=4.11.3",
+    "ccxt>=4.1.0",
+    "tabulate>=0.9.0",
+    "cvxpy>=1.7.5",
+    "cvxportfolio>=1.5.1",
+    "filelock>=3.20.1",
+    "tqdm>=4.67.1",
+    "ray>=2.53.0",
+    "opentelemetry-api>=1.39.1",
+    "opentelemetry-sdk>=1.39.1",
+    "opentelemetry-semantic-conventions>=0.60b1",
+    "opentelemetry-exporter-prometheus>=0.60b1",
+    "opentelemetry-exporter-otlp>=1.39.1",
+    "opentelemetry-instrumentation-logging>=0.60b1",
+    "pandera>=0.28.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/mnwato/tradingview-scraper"
+Download = "https://github.com/mnwato/tradingview-scraper/archive/refs/tags/0.4.9.zip"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-mock",
+    "ruff",
+    "pre-commit",
+    "ty",
+    "pytest-benchmark",
+    "locust",
+    "optuna",
+]
+
+# Optional optimization backends (benchmarking only).
+engines = [
+    "skfolio",
+    "riskfolio-lib",
+    "pyportfolioopt",
+    "clarabel",
+]
+
+# Advanced analytics and tear-sheets.
+analytics = [
+    "quantstats>=0.0.62",
+    "vectorbt>=0.26.2",
+    "nautilus_trader>=1.195.0",
+]
+
+# NOTE: `cvxportfolio` is GPL-3.0; keep isolated.
+engines-gpl = [
+    "cvxportfolio",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+tradingview_scraper = [
+    "data/areas.json",
+    "data/exchanges.txt",
+    "data/indicators.txt",
+    "data/languages.json",
+    "data/news_providers.txt",
+    "data/timeframes.json",
+]
+
+[tool.ruff]
+# Same as .pylintrc max-line-length
+line-length = 200
+target-version = "py310"
+
+[tool.ruff.lint]
+# Enable Pyflakes (F), pycodestyle (E, W), and isort (I)
+select = ["F", "E", "W", "I"]
+
+# Ignore rules to match .pylintrc permissive style
+ignore = [
+    "E501",  # Line too long (letting line-length setting handle soft limits, but strictly ignoring noise)
+    "F841",  # Unused variable
+    "E741",  # Ambiguous variable name (part of invalid-name)
+    "E712",  # Comparison to True should be 'if cond is True' (often ignored in permissive codebases)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*.py" = ["E402"]
+
+[tool.uv.sources]
+pandas-ta-classic = { git = "https://github.com/xgboosted/pandas-ta-classic.git" }
+
+[dependency-groups]
+analytics = [
+    "pandas-ta-classic",
+]

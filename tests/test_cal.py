@@ -1,9 +1,10 @@
 import os
 import sys
 import time
-import pytest
 from datetime import datetime, timedelta
 from unittest import mock
+
+import pytest
 
 # Add the current working directory to the system path
 path = str(os.getcwd())
@@ -24,9 +25,7 @@ class TestCalendar:
         time.sleep(3)
 
         # Scrape earnings from all markets
-        result = calendar_scraper.scrape_earnings(
-            values=["logoid", "name", "earnings_per_share_fq"]
-        )
+        result = calendar_scraper.scrape_earnings(values=["logoid", "name", "earnings_per_share_fq"])
 
         # Assertions
         assert result is not None
@@ -34,7 +33,7 @@ class TestCalendar:
 
         # If it returns a dict with status
         if isinstance(result, dict):
-            assert 'status' in result or len(result) > 0
+            assert "status" in result or len(result) > 0
 
     def test_scrape_earnings_specific_market(self, calendar_scraper):
         """Test scraping earnings from specific market (America)."""
@@ -45,12 +44,7 @@ class TestCalendar:
         timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
 
         # Scrape earnings from American market
-        result = calendar_scraper.scrape_earnings(
-            timestamp_now,
-            timestamp_in_7_days,
-            ["america"],
-            values=["logoid", "name", "earnings_per_share_fq"]
-        )
+        result = calendar_scraper.scrape_earnings(timestamp_now, timestamp_in_7_days, ["america"], values=["logoid", "name", "earnings_per_share_fq"])
 
         # Assertions
         assert result is not None
@@ -61,9 +55,7 @@ class TestCalendar:
         time.sleep(3)
 
         # Scrape earnings with specific fields
-        result = calendar_scraper.scrape_earnings(
-            values=["logoid", "name", "earnings_per_share_fq", "market_cap_basic"]
-        )
+        result = calendar_scraper.scrape_earnings(values=["logoid", "name", "earnings_per_share_fq", "market_cap_basic"])
 
         # Assertions
         assert result is not None
@@ -73,9 +65,7 @@ class TestCalendar:
         time.sleep(3)
 
         # Scrape dividends from all markets
-        result = calendar_scraper.scrape_dividends(
-            values=["logoid", "name", "dividends_yield"]
-        )
+        result = calendar_scraper.scrape_dividends(values=["logoid", "name", "dividends_yield"])
 
         # Assertions
         assert result is not None
@@ -83,7 +73,7 @@ class TestCalendar:
 
         # If it returns a dict with status
         if isinstance(result, dict):
-            assert 'status' in result or len(result) > 0
+            assert "status" in result or len(result) > 0
 
     def test_scrape_dividends_specific_market(self, calendar_scraper):
         """Test scraping dividends from specific market (America)."""
@@ -94,12 +84,7 @@ class TestCalendar:
         timestamp_in_7_days = (datetime.now() + timedelta(days=7)).timestamp()
 
         # Scrape dividends from American market
-        result = calendar_scraper.scrape_dividends(
-            timestamp_now,
-            timestamp_in_7_days,
-            ["america"],
-            values=["logoid", "name", "dividends_yield"]
-        )
+        result = calendar_scraper.scrape_dividends(timestamp_now, timestamp_in_7_days, ["america"], values=["logoid", "name", "dividends_yield"])
 
         # Assertions
         assert result is not None
@@ -110,9 +95,7 @@ class TestCalendar:
         time.sleep(3)
 
         # Scrape dividends with specific fields
-        result = calendar_scraper.scrape_dividends(
-            values=["logoid", "name", "dividends_yield"]
-        )
+        result = calendar_scraper.scrape_dividends(values=["logoid", "name", "dividends_yield"])
 
         # Assertions
         assert result is not None
@@ -126,27 +109,21 @@ class TestCalendar:
         timestamp_now = datetime.now().timestamp()
 
         # Scrape earnings in date range
-        result = calendar_scraper.scrape_earnings(
-            timestamp_30_days_ago,
-            timestamp_now,
-            values=["logoid", "name"]
-        )
+        result = calendar_scraper.scrape_earnings(timestamp_30_days_ago, timestamp_now, values=["logoid", "name"])
 
         # Assertions
         assert result is not None
 
-    @mock.patch('tradingview_scraper.symbols.cal.requests.post')
+    @mock.patch("tradingview_scraper.symbols.cal.requests.post")
     def test_scrape_earnings_no_data(self, mock_post, calendar_scraper):
         """Test handling of no earnings data."""
         # Mock response for no data
         mock_response = mock.Mock()
-        mock_response.json.return_value = {'data': []}
+        mock_response.json.return_value = {"data": []}
         mock_post.return_value = mock_response
 
         time.sleep(3)
-        result = calendar_scraper.scrape_earnings(
-            values=["logoid"]
-        )
+        result = calendar_scraper.scrape_earnings(values=["logoid"])
 
         # Check that result is returned
         assert result is not None
@@ -160,12 +137,7 @@ class TestCalendar:
         timestamp_in_30_days = (datetime.now() + timedelta(days=30)).timestamp()
 
         # Scrape dividends from multiple markets
-        result = calendar_scraper.scrape_dividends(
-            timestamp_now,
-            timestamp_in_30_days,
-            ["america", "uk"],
-            values=["logoid", "name", "dividends_yield"]
-        )
+        result = calendar_scraper.scrape_dividends(timestamp_now, timestamp_in_30_days, ["america", "uk"], values=["logoid", "name", "dividends_yield"])
 
         # Assertions
         assert result is not None

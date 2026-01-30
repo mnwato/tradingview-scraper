@@ -1,0 +1,34 @@
+# US Stocks Mean Reversion (Long)
+# Target: Liquid stocks that are oversold in a longer term uptrend or chop
+base_preset: presets/stocks_us_liquid.yaml
+
+limit: 50
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  # Fundamental uptrend or neutral
+  recommendation:
+    enabled: true
+    min: 0.0 # Neutral or better
+  adx:
+    enabled: false # Don't care about strong trend, chop is fine
+  momentum:
+    enabled: false # Don't filter on price change yet
+
+# Stage 3: Oversold Screen
+trend_screen:
+  timeframe: "daily"
+  direction: "short" # Hack: 'short' direction means "value < threshold"
+  logic: "AND"
+  osc:
+    enabled: true
+    horizons: {RSI: 35, Stoch.K: 30} # Find RSI < 35 AND Stoch < 30
+  momentum:
+    enabled: true
+    horizons: {Perf.W: -5.0} # Drop of > 5% in a week (value < -5)
+
+export_metadata:
+  symbol: "us_stocks_mean_reversion"
+  data_category: "universe_selector"

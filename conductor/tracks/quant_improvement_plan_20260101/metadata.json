@@ -1,0 +1,8 @@
+{
+  "track_id": "quant_improvement_plan_20260101",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-01-01T23:59:59Z",
+  "updated_at": "2026-01-01T23:59:59Z",
+  "description": "Perform a strategic post-mortem of the Grand Validation Tournament results to evolve Selection Alpha and standardize optimizer reliability."
+}

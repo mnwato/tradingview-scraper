@@ -1,0 +1,12 @@
+# L4: US Sector ETF Alpha (SPDR Foundation)
+base_preset: ../../base/universes/sector_etfs.yaml
+volume:
+  value_traded_min: 0
+trend:
+  adx: {enabled: false}
+  recommendation: {enabled: false}
+  momentum: {enabled: false}
+limit: 15
+export_metadata:
+  symbol: sector_etf_alpha_trend
+  data_category: strategy_alpha

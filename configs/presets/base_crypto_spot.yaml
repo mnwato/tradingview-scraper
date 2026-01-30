@@ -1,0 +1,38 @@
+# Layer 1: Base Crypto Spot Universe (Institutional Tradability)
+markets: ["crypto"]
+
+# Liquidity Guard: Matches the $10M Baseline for Discovery
+volume:
+  min: 0
+  value_traded_min: 10000000
+
+# Volatility Guard: Prevent extreme outliers from entering the funnel
+volatility:
+  max: 35.0
+  atr_pct_max: 0.3
+  fallback_use_atr_pct: true
+
+# Metadata Scope
+market_cap_file: market_caps_crypto.json
+market_cap_rank_limit: 200
+market_cap_floor: 5000000.0
+
+# Base Sorting
+sort_by: Value.Traded
+sort_order: desc
+base_universe_sort_by: Value.Traded
+
+# Disable discovery-stage trend filtering in base universe
+trend:
+  recommendation:
+    enabled: false
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+pagination_size: 100
+prefilter_limit: 1000
+retries: 2
+timeout: 10
+
+columns: ["name", "close", "volume", "Value.Traded", "market_cap_calc", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "Perf.Y", "Perf.YTD", "ATR"]

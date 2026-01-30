@@ -1,0 +1,13 @@
+# L3: Aggressive Trend Block
+trend:
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 25
+  recommendation:
+    enabled: true
+    min: 0.5
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 1.0, Perf.1M: 3.0, Perf.3M: 5.0}

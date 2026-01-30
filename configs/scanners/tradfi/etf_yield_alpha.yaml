@@ -1,0 +1,45 @@
+# L4: High Yield & Income ETF Alpha
+base_preset: ../../base/universes/dynamic_etf_discovery_niche.yaml
+filters:
+  - left: "category"
+    operation: "in_range"
+    right: ["44", "68", "69", "59", "61", "70"]
+columns:
+  - "name"
+  - "description"
+  - "close"
+  - "volume"
+  - "Value.Traded"
+  - "category"
+  - "dividend_yield_recent"
+  - "aum"
+  - "expense_ratio"
+  - "ADX"
+  - "ATR"
+  - "Volatility.D"
+  - "Perf.W"
+  - "Perf.1M"
+  - "Perf.3M"
+  - "Perf.Y"
+  - "Perf.YTD"
+  - "Volatility.M"
+  - "change_abs"
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: true, min: 10}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: -1.0}
+# Primary Sort: Liquidity (Get the big ones first)
+sort_by: "Value.Traded"
+sort_order: "desc"
+# Fetch more candidates to ensure we find ones that pass trend gates
+prefilter_limit: 300
+# Final Sort: Alpha/Trend (Rank the big ones by 3M stability)
+final_sort_by: "Perf.3M"
+final_sort_order: "desc"
+limit: 20
+export_metadata:
+  symbol: etf_yield_alpha
+  data_category: strategy_alpha

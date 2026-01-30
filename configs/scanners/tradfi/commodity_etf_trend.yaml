@@ -1,0 +1,12 @@
+# L4: Commodity ETF Alpha
+base_preset: ../../base/universes/commodity_etfs.yaml
+volume:
+  value_traded_min: 0
+trend:
+  adx: {enabled: false}
+  recommendation: {enabled: false}
+  momentum: {enabled: false}
+limit: 25
+export_metadata:
+  symbol: commodity_etf_alpha_trend
+  data_category: strategy_alpha

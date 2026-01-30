@@ -1,0 +1,50 @@
+# Forex base universe (G7/G8 majors only) used by strategy layers
+base_preset: presets/forex_liquid.yaml
+
+include_stable_bases: true
+
+# Keep alternates per pair for audit/implementation
+group_duplicates: true
+
+# Disable strategy filters at the base layer
+trend:
+  recommendation:
+    enabled: false
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Keep moderate volatility guard focused on majors
+volatility:
+  max: 6.0
+  atr_pct_max: 0.05
+  fallback_use_atr_pct: true
+
+# Basic liquidity floor (exclude dead feeds)
+volume:
+  min: 1
+
+# Recent performance / data completeness gate (non-directional)
+recent_perf:
+  enabled: true
+  required_fields: ["change", "Perf.W", "Perf.1M", "Perf.3M"]
+  abs_max:
+    change: 5.0
+    "Perf.W": 15.0
+    "Perf.1M": 30.0
+    "Perf.3M": 60.0
+
+# Capacity and paging
+limit: 300
+base_universe_limit: 300
+prefilter_limit: 2000
+pagination_size: 200
+
+sort_by: volume
+final_sort_by: volume
+base_universe_sort_by: volume
+
+export_metadata:
+  symbol: forex_base_universe
+  data_category: universe_selector

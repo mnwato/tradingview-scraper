@@ -1,0 +1,28 @@
+# Forex Trend Momentum (Short) layered on base universe
+base_preset: forex_base_universe.yaml
+
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: -0.1
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    horizons: {change: -0.1, Perf.W: -0.2, Perf.1M: -0.5, Perf.3M: -1.0}
+  confirmation_momentum:
+    enabled: false
+
+limit: 100
+prefilter_limit: 2000
+pagination_size: 200
+sort_by: volume
+final_sort_by: volume
+
+export_metadata:
+  symbol: "forex_trend_momentum_short"
+  data_category: "universe_selector"

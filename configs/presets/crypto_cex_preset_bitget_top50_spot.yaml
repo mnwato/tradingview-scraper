@@ -1,0 +1,76 @@
+exchanges:
+- BITGET
+markets:
+- crypto
+- USDT
+- USDC
+- USD
+- DAI
+- BUSD
+- FDUSD
+volume:
+  min: 0
+  value_traded_min: 250000
+volatility:
+  max: 35.0
+  atr_pct_max: 0.3
+  fallback_use_atr_pct: true
+columns:
+- name
+- close
+- volume
+- Value.Traded
+- market_cap_calc
+- change
+- Recommend.All
+- ADX
+- Volatility.D
+- Volatility.W
+- Volatility.M
+- Perf.W
+- Perf.1M
+- Perf.3M
+- ATR
+sort_by: Value.Traded
+sort_order: desc
+final_sort_by: Value.Traded
+final_sort_order: desc
+dedupe_by_symbol: true
+group_duplicates: true
+prefilter_limit: 1500
+limit: 50
+base_universe_limit: 50
+base_universe_sort_by: Value.Traded
+pagination_size: 50
+ensure_symbols:
+- BITGET:BTCUSDT
+- BITGET:ETHUSDT
+- BITGET:SOLUSDT
+- BITGET:ADAUSDT
+- BITGET:DOGEUSDT
+- BITGET:LINKUSDT
+- BITGET:LTCUSDT
+- BITGET:DOTUSDT
+- BITGET:AVAXUSDT
+- BITGET:TRXUSDT
+exclude_stable_bases: true
+perp_exchange_priority:
+- BINANCE
+- OKX
+- BYBIT
+- BITGET
+market_cap_file: market_caps_crypto.json
+market_cap_limit: null
+market_cap_rank_limit: 200
+market_cap_floor: 5000000.0
+market_cap_require_hit: false
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json
+
+filters:
+- left: Perf.Y
+  operation: egreater
+  right: -1000000

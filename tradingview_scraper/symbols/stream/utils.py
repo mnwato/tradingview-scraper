@@ -10,8 +10,82 @@ This module contains functions to:
 """
 
 import logging
+import os
+import threading
 import time
+from typing import Any, Dict, List
+
 import requests
+
+from tradingview_scraper.symbols.utils import get_session
+
+SESSION_TIMEOUT = float(os.getenv("STREAMER_HTTP_TIMEOUT", "5"))
+VALIDATE_CONCURRENCY = int(os.getenv("STREAMER_VALIDATE_CONCURRENCY", "2"))
+_validate_session = get_session()
+_validate_lock = threading.Lock()
+_validated_symbols_cache = set()
+_validate_semaphore = threading.Semaphore(max(1, VALIDATE_CONCURRENCY))
+
+
+def serialize_ohlc(raw_data: dict) -> List[Dict[str, Any]]:
+    """
+    Serializes OHLC data from a raw TradingView packet.
+    """
+    p_data = raw_data.get("p", [{}, {}, {}])
+    if not isinstance(p_data, list) or len(p_data) < 2:
+        return []
+
+    # Handle both timescale_update and du formats
+    sds_data = p_data[1].get("sds_1", {})
+    ohlc_data = sds_data.get("s", [])
+
+    json_data = []
+    for entry in ohlc_data:
+        json_entry = {
+            "index": entry["i"],
+            "timestamp": entry["v"][0],
+            "open": entry["v"][1],
+            "high": entry["v"][2],
+            "low": entry["v"][3],
+            "close": entry["v"][4],
+        }
+        if len(entry["v"]) > 5:
+            json_entry["volume"] = entry["v"][5]
+        json_data.append(json_entry)
+    return json_data
+
+
+def extract_ohlc_from_stream(pkt: dict) -> List[Dict[str, Any]]:
+    """
+    Extracts OHLC data from a TradingView packet if it's a timescale update.
+    """
+    if pkt.get("m") == "timescale_update":
+        return serialize_ohlc(pkt)
+    return []
+
+
+def extract_indicator_from_stream(pkt: dict, study_id_map: Dict[str, str]) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Extracts indicator data from a TradingView packet.
+    """
+    indicator_data = {}
+    if pkt.get("m") == "du":
+        p_data = pkt.get("p")
+        if isinstance(p_data, list) and len(p_data) > 1:
+            study_data = p_data[1]
+            if isinstance(study_data, dict):
+                for k, v in study_data.items():
+                    if k.startswith("st") and k in study_id_map:
+                        if isinstance(v, dict) and "st" in v and len(v["st"]) > 10:
+                            indicator_name = study_id_map[k]
+                            json_data = []
+                            for val in v["st"]:
+                                tmp = {"index": val["i"], "timestamp": val["v"][0]}
+                                tmp.update({str(idx): v for idx, v in enumerate(val["v"][1:])})
+                                json_data.append(tmp)
+
+                            indicator_data[indicator_name] = json_data
+    return indicator_data
 
 
 def validate_symbols(exchange_symbol):
@@ -32,10 +106,7 @@ def validate_symbols(exchange_symbol):
     Returns:
         bool: True if all provided symbols are valid.
     """
-    validate_url = (
-        "https://scanner.tradingview.com/symbol?"
-        "symbol={exchange}%3A{symbol}&fields=market&no_404=false"
-    )
+    validate_url = "https://scanner.tradingview.com/symbol?symbol={exchange}%3A{symbol}&fields=market&no_404=false"
 
     if not exchange_symbol:
         raise ValueError("exchange_symbol cannot be empty")
@@ -46,25 +117,27 @@ def validate_symbols(exchange_symbol):
     for item in exchange_symbol:
         parts = item.split(":")
         if len(parts) != 2:
-            raise ValueError(
-                f"Invalid symbol format '{item}'. Must be like 'BINANCE:BTCUSDT'"
-            )
+            raise ValueError(f"Invalid symbol format '{item}'. Must be like 'BINANCE:BTCUSDT'")
 
         exchange, symbol = parts
         retries = 3
 
+        with _validate_lock:
+            if item in _validated_symbols_cache:
+                continue
+
         for attempt in range(retries):
             try:
-                res = requests.get(
-                    validate_url.format(exchange=exchange, symbol=symbol), timeout=5
-                )
+                with _validate_semaphore:
+                    res = _validate_session.get(
+                        validate_url.format(exchange=exchange, symbol=symbol),
+                        timeout=(SESSION_TIMEOUT, SESSION_TIMEOUT),
+                    )
                 res.raise_for_status()
             except requests.RequestException as exc:
                 status = getattr(exc.response, "status_code", None)
                 if status == 404:
-                    raise ValueError(
-                        f"Invalid exchange:symbol '{item}' after {retries} attempts"
-                    ) from exc
+                    raise ValueError(f"Invalid exchange:symbol '{item}' after {retries} attempts") from exc
 
                 logging.warning(
                     "Attempt %d failed to validate exchange:symbol '%s': %s",
@@ -74,12 +147,12 @@ def validate_symbols(exchange_symbol):
                 )
 
                 if attempt < retries - 1:
-                    time.sleep(1)  # Wait briefly before retrying
+                    time.sleep(0.5)  # Wait briefly before retrying
                 else:
-                    raise ValueError(
-                        f"Invalid exchange:symbol '{item}' after {retries} attempts"
-                    ) from exc
+                    raise ValueError(f"Invalid exchange:symbol '{item}' after {retries} attempts") from exc
             else:
+                with _validate_lock:
+                    _validated_symbols_cache.add(item)
                 break  # Successful request; exit retry loop
 
     return True
@@ -109,7 +182,7 @@ def fetch_tradingview_indicators(query: str):
     url = "https://www.tradingview.com/pubscripts-suggest-json/?search=" + query
 
     try:
-        response = requests.get(url, timeout=5)
+        response = _validate_session.get(url)
         response.raise_for_status()
         json_data = response.json()
 
@@ -117,10 +190,7 @@ def fetch_tradingview_indicators(query: str):
         filtered_results = []
 
         for indicator in results:
-            if (
-                query.lower() in indicator["scriptName"].lower()
-                or query.lower() in indicator["author"]["username"].lower()
-            ):
+            if query.lower() in indicator["scriptName"].lower() or query.lower() in indicator["author"]["username"].lower():
                 filtered_results.append(
                     {
                         "scriptName": indicator["scriptName"],
@@ -172,9 +242,7 @@ def display_and_select_indicator(indicators):
 
     if 0 <= selected_index < len(indicators):
         selected_indicator = indicators[selected_index]
-        print(
-            f"You selected: {selected_indicator['scriptName']} by {selected_indicator['author']}"
-        )
+        print(f"You selected: {selected_indicator['scriptName']} by {selected_indicator['author']}")
         return (
             selected_indicator.get("scriptIdPart"),
             selected_indicator.get("version"),
@@ -204,7 +272,7 @@ def fetch_indicator_metadata(script_id: str, script_version: str, chart_session:
     url = f"https://pine-facade.tradingview.com/pine-facade/translate/{script_id}/{script_version}"
 
     try:
-        response = requests.get(url, timeout=5)
+        response = _validate_session.get(url)
         response.raise_for_status()
         json_data = response.json()
 
@@ -247,29 +315,17 @@ def prepare_indicator_metadata(script_id: str, metainfo: dict, chart_session: st
                 "text": metainfo["inputs"][0]["defval"],
                 "pineId": script_id,
                 "pineVersion": metainfo.get("pine", {}).get("version", "1.0"),
-                "pineFeatures": {
-                    "v": "{\"indicator\":1,\"plot\":1,\"ta\":1}",
-                    "f": True,
-                    "t": "text"
-                },
-                "__profile": {
-                    "v": False,
-                    "f": True,
-                    "t": "bool"
-                }
-            }
-        ]
+                "pineFeatures": {"v": '{"indicator":1,"plot":1,"ta":1}', "f": True, "t": "text"},
+                "__profile": {"v": False, "f": True, "t": "bool"},
+            },
+        ],
     }
 
     # Collect additional input values that start with 'in_'
     in_x = {}
     for input_item in metainfo.get("inputs", []):
         if input_item["id"].startswith("in_"):
-            in_x[input_item["id"]] = {
-                "v": input_item["defval"],
-                "f": True,
-                "t": input_item["type"]
-            }
+            in_x[input_item["id"]] = {"v": input_item["defval"], "f": True, "t": input_item["type"]}
 
     # Update the dictionary inside output_data with additional inputs
     for item in output_data["p"]:

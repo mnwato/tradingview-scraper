@@ -1,0 +1,26 @@
+# L4: Binance Perp MTF Trend (Short - Daily + Weekly Confirmation)
+base_preset: ../../base/universes/binance_perp_top100.yaml
+
+# Primary trend gate (daily)
+trend:
+  direction: "short"
+  logic: "AND"
+  recommendation: {enabled: true, min: 0.0}
+  adx: {enabled: true, min: 10}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0}
+
+# MTF confirmation screen (weekly)
+confirm_screen:
+  timeframe: "weekly"
+  direction: "short"
+  logic: "AND"
+  recommendation: {enabled: true, min: 0.0}
+  adx: {enabled: true, min: 10}
+  momentum: {enabled: true, horizons: {Perf.1M: 0.0}}
+
+limit: 50
+export_metadata:
+  symbol: binance_perp_short_mtf
+  data_category: strategy_alpha

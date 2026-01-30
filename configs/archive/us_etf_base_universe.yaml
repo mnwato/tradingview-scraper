@@ -1,0 +1,42 @@
+# US ETF base universe for layered strategies (fund/structured)
+markets: ["america"]
+filters:
+  - left: "type"
+    operation: "in_range"
+    right: ["fund", "structured"]
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "ATR", "market_cap_basic"]
+
+volume:
+  min: 100000
+  value_traded_min: 5000000
+
+volatility:
+  max: 6.0
+  atr_pct_max: 0.08
+  fallback_use_atr_pct: true
+
+trend:
+  recommendation:
+    enabled: false
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Optional index overlays (e.g., sector/industry lists) via symbol files
+include_symbol_files:
+  - ../data/index/sp500_symbols.txt
+  - ../data/index/nasdaq100_symbols.txt
+  # add custom ETF lists if desired
+
+limit: 300
+base_universe_limit: 300
+prefilter_limit: 3000
+pagination_size: 200
+sort_by: market_cap_basic
+final_sort_by: market_cap_basic
+base_universe_sort_by: market_cap_basic
+
+export_metadata:
+  symbol: us_etf_base_universe
+  data_category: universe_selector

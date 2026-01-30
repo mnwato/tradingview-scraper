@@ -1,0 +1,17 @@
+# L0: Dynamic Institutional ETF Discovery Base
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+static_mode: false # Open-ended search
+filters:
+  - left: "type"
+    operation: "equal"
+    right: "fund"
+  - left: "Value.Traded"
+    operation: "greater"
+    right: 10000000 # Institutional $10M floor
+sort_by: "Value.Traded"
+sort_order: "desc"
+limit: 100
+export_metadata:
+  symbol: dynamic_etf_base
+  data_category: universe_foundation

@@ -1,0 +1,15 @@
+# L0: Broad Equity Index ETFs
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+static_mode: true
+static_symbols:
+  - "AMEX:SPY" # S&P 500
+  - "NASDAQ:QQQ" # Nasdaq 100
+  - "AMEX:IWM" # Russell 2000
+  - "AMEX:DIA" # Dow Jones
+  - "AMEX:VTI" # Total Stock Market
+  - "AMEX:VEU" # All-World ex-US
+  - "AMEX:EEM" # Emerging Markets
+export_metadata:
+  symbol: index_etf_universe
+  data_category: universe_foundation

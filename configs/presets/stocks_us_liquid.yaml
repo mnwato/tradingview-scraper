@@ -1,0 +1,39 @@
+# Preset: Liquid US Stocks (Large/Mid Cap)
+# Proxy for S&P 500 / Nasdaq 100 universe
+# Filters for high-liquidity, high-cap investable assets
+
+markets: ["america"]
+# Filter for Stocks and DR (ADRs)
+filters:
+  - left: "type"
+    operation: "in_range"
+    right: ["stock", "dr"]
+  # $5B floor to focus on Mid to Large Cap (S&P 500 / Nasdaq 100 style)
+  - left: "market_cap_basic"
+    operation: "greater"
+    right: 5000000000
+
+# Columns
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Perf.W", "Perf.1M", "Perf.3M", "ATR", "market_cap_basic", "price_earnings_ttm", "earnings_per_share_basic_ttm", "sector", "industry"]
+
+# Liquidity Filter (Institutional Grade)
+volume:
+  min: 1000000        # 1M daily volume
+  value_traded_min: 50000000 # $50M daily value traded
+
+# Volatility Guard
+volatility:
+  max: 6.0  # Stricter volatility for large caps
+  atr_pct_max: 0.05
+  fallback_use_atr_pct: true
+
+# Base Sort
+sort_by: market_cap_basic
+sort_order: desc
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

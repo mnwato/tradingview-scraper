@@ -1,0 +1,7 @@
+{
+  "name": "End-to-End Pipeline Factor Audit",
+  "description": "Review and audit technical factor consistency between Discovery (Scanners), Natural Selection, and Optimizer stages to ensure mathematical alignment and prevent premature pruning.",
+  "status": "in_progress",
+  "priority": "high",
+  "owner": "quant-agent"
+}

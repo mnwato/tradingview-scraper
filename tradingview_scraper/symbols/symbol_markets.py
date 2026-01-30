@@ -1,13 +1,13 @@
 """Module providing a function to scrape markets/exchanges where a symbol is traded."""
 
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 import requests
 
 from tradingview_scraper.symbols.utils import (
+    generate_user_agent,
     save_csv_file,
     save_json_file,
-    generate_user_agent,
 )
 
 
@@ -31,28 +31,28 @@ class SymbolMarkets:
 
     # Scanner endpoints for different regions
     SCANNER_ENDPOINTS = {
-        'global': 'https://scanner.tradingview.com/global/scan',
-        'america': 'https://scanner.tradingview.com/america/scan',
-        'crypto': 'https://scanner.tradingview.com/crypto/scan',
-        'forex': 'https://scanner.tradingview.com/forex/scan',
-        'cfd': 'https://scanner.tradingview.com/cfd/scan',
+        "global": "https://scanner.tradingview.com/global/scan",
+        "america": "https://scanner.tradingview.com/america/scan",
+        "crypto": "https://scanner.tradingview.com/crypto/scan",
+        "forex": "https://scanner.tradingview.com/forex/scan",
+        "cfd": "https://scanner.tradingview.com/cfd/scan",
     }
 
     # Default columns to fetch
     DEFAULT_COLUMNS = [
-        'name',
-        'close',
-        'change',
-        'change_abs',
-        'volume',
-        'exchange',
-        'type',
-        'description',
-        'currency',
-        'market_cap_basic',
+        "name",
+        "close",
+        "change",
+        "change_abs",
+        "volume",
+        "exchange",
+        "type",
+        "description",
+        "currency",
+        "market_cap_basic",
     ]
 
-    def __init__(self, export_result: bool = False, export_type: str = 'json'):
+    def __init__(self, export_result: bool = False, export_type: str = "json"):
         """
         Initialize the SymbolMarkets scraper.
 
@@ -64,12 +64,7 @@ class SymbolMarkets:
         self.export_type = export_type
         self.headers = {"User-Agent": generate_user_agent()}
 
-    def _build_payload(
-        self,
-        symbol: str,
-        columns: Optional[List[str]] = None,
-        limit: int = 150
-    ) -> Dict:
+    def _build_payload(self, symbol: str, columns: Optional[List[str]] = None, limit: int = 150) -> Dict:
         """
         Build the payload for the scanner API.
 
@@ -84,26 +79,11 @@ class SymbolMarkets:
         if columns is None:
             columns = self.DEFAULT_COLUMNS
 
-        payload = {
-            "filter": [
-                {"left": "name", "operation": "match", "right": symbol}
-            ],
-            "columns": columns,
-            "options": {
-                "lang": "en"
-            },
-            "range": [0, limit]
-        }
+        payload = {"filter": [{"left": "name", "operation": "match", "right": symbol}], "columns": columns, "options": {"lang": "en"}, "range": [0, limit]}
 
         return payload
 
-    def scrape(
-        self,
-        symbol: str,
-        columns: Optional[List[str]] = None,
-        scanner: str = 'global',
-        limit: int = 150
-    ) -> Dict:
+    def scrape(self, symbol: str, columns: Optional[List[str]] = None, scanner: str = "global", limit: int = 150) -> Dict:
         """
         Scrape all markets/exchanges where a symbol is traded.
 
@@ -139,11 +119,7 @@ class SymbolMarkets:
         """
         # Validate scanner
         if scanner not in self.SCANNER_ENDPOINTS:
-            return {
-                'status': 'failed',
-                'error': f"Unsupported scanner: {scanner}. "
-                         f"Supported scanners: {', '.join(self.SCANNER_ENDPOINTS.keys())}"
-            }
+            return {"status": "failed", "error": f"Unsupported scanner: {scanner}. Supported scanners: {', '.join(self.SCANNER_ENDPOINTS.keys())}"}
 
         # Build payload
         payload = self._build_payload(symbol=symbol, columns=columns, limit=limit)
@@ -153,33 +129,25 @@ class SymbolMarkets:
 
         try:
             # Make request
-            response = requests.post(
-                url,
-                json=payload,
-                headers=self.headers,
-                timeout=10
-            )
+            response = requests.post(url, json=payload, headers=self.headers, timeout=10)
 
             if response.status_code == 200:
                 json_response = response.json()
 
                 # Extract data
-                data = json_response.get('data', [])
+                data = json_response.get("data", [])
 
                 if not data:
-                    return {
-                        'status': 'failed',
-                        'error': f'No markets found for symbol: {symbol}'
-                    }
+                    return {"status": "failed", "error": f"No markets found for symbol: {symbol}"}
 
                 # Format the data
                 formatted_data = []
                 for item in data:
-                    symbol_data = item.get('d', [])
+                    symbol_data = item.get("d", [])
                     if len(symbol_data) > 0:
                         # Map data to field names
                         formatted_item = {
-                            'symbol': item.get('s', ''),
+                            "symbol": item.get("s", ""),
                         }
 
                         # Map each field value
@@ -192,41 +160,18 @@ class SymbolMarkets:
 
                 # Export if requested
                 if self.export_result:
-                    self._export(
-                        data=formatted_data,
-                        symbol=symbol,
-                        data_category='markets'
-                    )
+                    self._export(data=formatted_data, symbol=symbol, data_category="markets")
 
-                return {
-                    'status': 'success',
-                    'data': formatted_data,
-                    'total': len(formatted_data),
-                    'totalCount': json_response.get('totalCount', len(formatted_data))
-                }
+                return {"status": "success", "data": formatted_data, "total": len(formatted_data), "totalCount": json_response.get("totalCount", len(formatted_data))}
             else:
-                return {
-                    'status': 'failed',
-                    'error': f'HTTP {response.status_code}: {response.text}'
-                }
+                return {"status": "failed", "error": f"HTTP {response.status_code}: {response.text}"}
 
         except requests.RequestException as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
 
-    def _export(
-        self,
-        data: List[Dict],
-        symbol: Optional[str] = None,
-        data_category: Optional[str] = None
-    ) -> None:
+    def _export(self, data: List[Dict], symbol: Optional[str] = None, data_category: Optional[str] = None) -> None:
         """
         Export scraped data to file.
 
@@ -235,7 +180,7 @@ class SymbolMarkets:
             symbol (str, optional): Symbol identifier for the filename.
             data_category (str, optional): Data category for the filename.
         """
-        if self.export_type == 'json':
+        if self.export_type == "json":
             save_json_file(data=data, symbol=symbol, data_category=data_category)
-        elif self.export_type == 'csv':
+        elif self.export_type == "csv":
             save_csv_file(data=data, symbol=symbol, data_category=data_category)

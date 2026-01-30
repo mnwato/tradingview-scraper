@@ -1,0 +1,18 @@
+# L1: Binance Spot Pure Liquidity Baseline
+base_preset: binance_liquid_base.yaml
+filters:
+  - { left: "Value.Traded", operation: "greater", right: 5000000 }
+  - { left: "type", operation: "equal", right: "spot" }
+  - { left: "name", operation: "match", right: "USDT$|USDC$|FDUSD$|DAI$|USD$" }
+  - { left: "name", operation: "nmatch", right: ".P$" }
+  # Exclude Gold Pegged Assets (Commodity Risk)
+  - { left: "name", operation: "nmatch", right: "^PAXG|^XAUT" }
+  # Exclude Stablecoin Pairs (Pairs Trading Universe)
+  - { left: "name", operation: "nmatch", right: "^XUSD|^USD1|^AEUR|^EUR|^GBP|^JPY" }
+sort_by: name
+sort_order: asc
+base_universe_sort_by: name
+limit: 500
+export_metadata:
+  symbol: binance_spot_base
+  data_category: universe_base

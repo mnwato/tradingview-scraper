@@ -1,0 +1,23 @@
+# L4: Binance Acceleration Discovery - EXPERIMENT C
+base_preset: ../../base/universes/binance_perp_top50.yaml
+
+# Acceleration Logic: Today's change significantly outperforms weekly average
+filters:
+  - left: "change"
+    operation: "greater"
+    right: 2.0  # At least 2% up today
+  # Note: complex arithmetic like change > Perf.W / 7 is not supported directly in TV filters.
+  # We use a static high-bar for 'change' combined with positive week.
+  - left: "Perf.W"
+    operation: "greater"
+    right: 0.0
+
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: true, min: 10}
+  recommendation: {enabled: true, min: 0.0}
+
+export_metadata:
+  symbol: binance_acceleration_trend
+  data_category: strategy_alpha

@@ -25,9 +25,13 @@ tradingview_scraper.egg-info/*
 
 # Pytest
 .cache
+.pytest_cache/
+.benchmarks/
 
 # Coverage
+.coverage
 coverage.xml
+htmlcov/
 *.cover
 *.py,cover
 
@@ -47,19 +51,24 @@ pylint-output.txt
 *.log
 *.pot
 *.pyc
-/export/*.json
+/export/
+outputs/
+artifacts/
+data/
+.temp_gist_*
+.gemini/
 
-# Ignore test script
-*test.py
+# Conductor local state
+conductor/setup_state.json
 
-# Ignore running script
-run.py
+# Hypothesis
+.hypothesis/
 
 # Docs
 .DS_Store
 docs/_build/
 docs/_static/
 docs/_templates
-
-# Environment variables file
-.env
+# Only ignore generated JSON in research, keep .md reports
+docs/research/*.json
+summaries/

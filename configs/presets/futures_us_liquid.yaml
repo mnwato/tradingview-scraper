@@ -1,0 +1,31 @@
+# Preset: Liquid US Futures (CME Group)
+# High liquidity contracts for robust strategy testing
+
+markets: ["futures"]
+exchanges: ["CME", "CBOT", "COMEX", "NYMEX"]
+
+# Columns required for most strategies
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Perf.W", "Perf.1M", "Perf.3M", "ATR"]
+
+# Liquidity Filter (Strict)
+# 10k contracts is a solid floor for tradable futures
+volume:
+  min: 10000
+
+# Volatility Guard (Exclude extreme volatility)
+volatility:
+  max: 10.0
+  atr_pct_max: 0.10
+  fallback_use_atr_pct: true
+
+# Base Sort
+# Sorting by volume (contract count) is standard for futures discovery
+sort_by: volume
+sort_order: desc
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

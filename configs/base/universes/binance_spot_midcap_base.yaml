@@ -1,0 +1,14 @@
+# L1: Binance Spot Mid-Cap Liquidity Baseline
+base_preset: binance_liquid_base.yaml
+filters:
+  - { left: "Value.Traded", operation: "greater", right: 10000000 }
+  - { left: "type", operation: "equal", right: "spot" }
+  - { left: "name", operation: "match", right: "USDT$|USDC$|FDUSD$|DAI$|USD$" }
+  - { left: "name", operation: "nmatch", right: ".P$" }
+sort_by: name
+sort_order: asc
+base_universe_sort_by: name
+limit: 500
+export_metadata:
+  symbol: binance_spot_midcap_base
+  data_category: universe_base

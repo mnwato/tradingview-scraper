@@ -1,0 +1,15 @@
+# L4: Binance Perp Secular Short (Structural Weakness)
+# Targets assets in persistent downtrends (Falling Knives)
+base_preset: ../../base/universes/binance_perp_top100.yaml
+trend:
+  direction: "short"
+  logic: "AND"
+  adx: {enabled: true, min: 15}
+  recommendation: {enabled: true, max: -0.1}
+  momentum:
+    enabled: true
+    horizons: {Perf.1M: 0.0} # Must be down on the month
+limit: 50
+export_metadata:
+  symbol: binance_perp_secular_short
+  data_category: strategy_alpha

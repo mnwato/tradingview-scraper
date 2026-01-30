@@ -1,0 +1,15 @@
+# Layer 1.1: OKX Perp Base
+base_preset: base_crypto_perp.yaml
+exchanges: ["OKX"]
+
+ensure_symbols:
+- OKX:BTCUSDT.P
+- OKX:ETHUSDT.P
+- OKX:SOLUSDT.P
+- OKX:ADAUSDT.P
+- OKX:DOGEUSDT.P
+- OKX:LINKUSDT.P
+- OKX:LTCUSDT.P
+- OKX:DOTUSDT.P
+- OKX:AVAXUSDT.P
+- OKX:TRXUSDT.P

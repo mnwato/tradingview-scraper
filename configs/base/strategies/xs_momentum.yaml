@@ -1,0 +1,12 @@
+# L3: Cross-Sectional Momentum Block
+trend:
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.5
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 2.0, Perf.1M: 5.0, Perf.3M: 10.0} # Aggressive relative strength
+sort_by: "Perf.1M"
+sort_order: "desc"

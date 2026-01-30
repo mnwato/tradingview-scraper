@@ -1,0 +1,30 @@
+# Preset: Liquid Forex Majors (G8)
+# Restricted to combinations of the 8 major currencies
+
+markets: ["forex"]
+exchanges: [] 
+
+columns: ["name", "close", "volume", "Value.Traded", "change", "Recommend.All", "ADX", "Volatility.D", "Perf.W", "Perf.1M", "Perf.3M", "ATR"]
+
+# G8 Currencies
+
+# Volume > 0 to ensure active feed
+volume:
+  min: 0
+
+# Volatility Guard
+volatility:
+  max: 3.0 # Forex is naturally less volatile
+  atr_pct_max: 0.03
+  fallback_use_atr_pct: true
+
+# Base Sort
+sort_by: volume
+sort_order: desc
+limit: 50
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

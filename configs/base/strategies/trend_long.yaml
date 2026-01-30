@@ -1,0 +1,10 @@
+# L3: Trend Following Strategy Block
+trend:
+  direction: "long"
+  logic: "AND"
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: 0.5, Perf.3M: 1.0}
+  confirmation_momentum:
+    enabled: true
+    horizons: {Perf.1M: 1.0}

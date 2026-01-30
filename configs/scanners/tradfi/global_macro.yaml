@@ -1,0 +1,15 @@
+# L4: Global Macro Strategy
+base_preset: ../../base/universes/commodity_majors.yaml
+# Compose with XS Momentum
+trend:
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.5
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 1.0, Perf.1M: 3.0}
+export_metadata:
+  symbol: global_macro_alpha
+  data_category: strategy_alpha

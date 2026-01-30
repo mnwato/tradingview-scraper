@@ -1,0 +1,8 @@
+{
+  "id": "crypto_factor_alignment_20260102",
+  "title": "Crypto Discovery-Selection Factor Alignment",
+  "status": "completed",
+  "priority": "high",
+  "owner": "jules",
+  "description": "Standardized 27+ crypto scanner configurations to align with Log-MPS 3.2 Natural Selection. Standardized liquidity floors to $10M and synchronized momentum horizons to Perf.1M/Perf.3M."
+}

@@ -1,0 +1,40 @@
+# L0: Truly Agnostic Binance Liquid Root
+# Base preset is minimal institutional hygiene
+base_preset: ../hygiene/institutional_crypto.yaml
+
+exchanges: ["BINANCE"]
+markets: ["crypto"]
+
+# Disable all L2-L4 custom filters to ensure pure liquidity discovery
+exclude_stable_bases: false
+
+# Institutional Volume Floor (Broad $1M recruitment)
+filters:
+  - { left: "Value.Traded", operation: "greater", right: 1000000 }
+
+# Zero technical trend gates
+trend:
+  logic: "OR"
+  adx: {enabled: false}
+  recommendation: {enabled: false}
+  momentum: {enabled: false}
+  osc: {enabled: false}
+  volatility: {enabled: false}
+
+# Stage 1: Liquidity Pool (Neutral sorting by name to avoid bias)
+prefilter_limit: 1000
+sort_by: name
+sort_order: asc
+
+# Global Blacklist
+exclude_symbols: ["BINANCE:PAXGUSDT.P"]
+
+# Stage 2: Base Universe Constraint
+base_universe_limit: 500
+base_universe_sort_by: Value.Traded
+
+# Stage 3: Final Selection
+limit: 500
+
+export_metadata:
+  data_category: universe_base

@@ -1,13 +1,69 @@
-import os
 import json
+import logging
+import os
 import random
+import threading
 from datetime import datetime
 from typing import List
 
 import pandas as pd
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+from tradingview_scraper.settings import get_settings
+
+logger = logging.getLogger(__name__)
 
 
-def ensure_export_directory(path='/export'):
+class RequestSession:
+    """
+    A thread-safe requests session with built-in retries and timeouts.
+    """
+
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        with cls._lock:
+            if cls._instance is None:
+                cls._instance = super(RequestSession, cls).__new__(cls)
+                cls._instance._initialize()
+            return cls._instance
+
+    def _initialize(self):
+        self.session = requests.Session()
+        self.timeout = float(os.getenv("TV_HTTP_TIMEOUT", "10.0"))
+        retries = int(os.getenv("TV_HTTP_RETRIES", "3"))
+        backoff = float(os.getenv("TV_HTTP_BACKOFF", "1.0"))
+
+        retry_strategy = Retry(
+            total=retries,
+            backoff_factor=backoff,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["GET", "POST"],
+        )
+        adapter = HTTPAdapter(pool_connections=20, pool_maxsize=100, max_retries=retry_strategy)
+        self.session.mount("https://", adapter)
+        self.session.mount("http://", adapter)
+
+    def get(self, url, **kwargs):
+        if "timeout" not in kwargs:
+            kwargs["timeout"] = self.timeout
+        return self.session.get(url, **kwargs)
+
+    def post(self, url, **kwargs):
+        if "timeout" not in kwargs:
+            kwargs["timeout"] = self.timeout
+        return self.session.post(url, **kwargs)
+
+
+def get_session():
+    """Returns a global RequestSession instance."""
+    return RequestSession()
+
+
+def ensure_export_directory(path="/export"):
     """Check if the export directory exists, and create it if it does not.
 
     Parameters
@@ -27,35 +83,37 @@ def ensure_export_directory(path='/export'):
         except Exception as e:
             print(f"[ERROR] Error creating directory {path}: {e}")
 
-def generate_export_filepath(symbol, data_category, timeframe, file_extension):
-    """Generate a file path for exporting data, including the current timestamp.
 
-    This function constructs a file path based on the provided symbol, data category,
-    and file extension. The generated path will include a timestamp to ensure uniqueness.
+def _sanitize_export_run_id(run_id: str) -> str:
+    run_id = (run_id or "").strip()
+    if not run_id:
+        return ""
+    cleaned = "".join(ch if (ch.isalnum() or ch in {"-", "_", ".", "="}) else "_" for ch in run_id)
+    cleaned = cleaned.strip("._-")
+    return cleaned[:80]
 
-    Parameters
-    ----------
-    symbol : str
-        The symbol to include in the file name, formatted in lowercase.
-    data_category : str
-        The category of data being exported, which will be prefixed in the file name.
-    file_extension : str
-        The file extension for the export file (e.g., '.json', '.csv').
-    timeframe: str
-        Timeframe of report like (e.g., '1M', '1W').
 
-    Returns
-    -------
-    str
-        The generated file path, structured as:
-        "<current_directory>/export/<data_category>_<symbol>_<timestamp><file_extension>".
-    """
+def generate_export_filepath(symbol, data_category, timeframe, file_extension, run_id=None, root_path=None):
+    """Generate a file path for exporting data, including the current timestamp."""
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    symbol_lower = f'{symbol.lower()}_' if symbol else ''
-    timeframe = f'{timeframe}_' if timeframe else ''
-    root_path = os.getcwd()
-    path = os.path.join(root_path, "export", f"{data_category}_{symbol_lower}{timeframe}{timestamp}{file_extension}")
-    return path
+    data_category = str(data_category or "export")
+    symbol_lower = f"{str(symbol or '').lower()}_" if symbol else ""
+    timeframe = f"{timeframe}_" if timeframe else ""
+
+    settings = get_settings()
+    # Use settings.export_dir as the base
+    # If root_path is provided, we respect it, but generally we want to use the configured export_dir
+    if root_path:
+        export_dir = os.path.join(root_path, "export")
+    else:
+        export_dir = str(settings.export_dir)
+
+    run_id_clean = _sanitize_export_run_id(str(run_id)) if run_id else ""
+    if run_id_clean:
+        export_dir = os.path.join(export_dir, run_id_clean)
+
+    return os.path.join(export_dir, f"{data_category}_{symbol_lower}{timeframe}{timestamp}{file_extension}")
+
 
 def save_json_file(data, **kwargs):
     """
@@ -85,14 +143,16 @@ def save_json_file(data, **kwargs):
     Exception
         For any unexpected errors that may occur during file writing.
     """
-    symbol = kwargs.get('symbol')
-    data_category = kwargs.get('data_category')
-    timeframe = kwargs.get('timeframe', '')
-    
-    output_path = generate_export_filepath(symbol, data_category, timeframe, '.json')
+    symbol = kwargs.get("symbol")
+    data_category = kwargs.get("data_category")
+    timeframe = kwargs.get("timeframe", "")
+    run_id = kwargs.get("run_id") or os.getenv("TV_EXPORT_RUN_ID")
+    root_path = kwargs.get("root_path")
+
+    output_path = generate_export_filepath(symbol, data_category, timeframe, ".json", run_id=run_id, root_path=root_path)
     ensure_export_directory(os.path.dirname(output_path))  # Ensure the directory exists
     try:
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         print(f"[INFO] JSON file saved at: {output_path}")
     except FileNotFoundError:
@@ -103,6 +163,9 @@ def save_json_file(data, **kwargs):
         print(f"[ERROR] Error: The data provided is not serializable. {e}")
     except Exception as e:
         print(f"[ERROR] An unexpected error occurred: {e}")
+
+    return output_path
+
 
 def save_csv_file(data, **kwargs):
     """
@@ -132,11 +195,13 @@ def save_csv_file(data, **kwargs):
     Exception
         For any unexpected errors that may occur during file writing.
     """
-    symbol = kwargs.get('symbol')
-    data_category = kwargs.get('data_category')
-    timeframe = kwargs.get('timeframe', '')
+    symbol = kwargs.get("symbol")
+    data_category = kwargs.get("data_category")
+    timeframe = kwargs.get("timeframe", "")
+    run_id = kwargs.get("run_id") or os.getenv("TV_EXPORT_RUN_ID")
+    root_path = kwargs.get("root_path")
 
-    output_path = generate_export_filepath(symbol, data_category, timeframe, '.csv')
+    output_path = generate_export_filepath(symbol, data_category, timeframe, ".csv", run_id=run_id, root_path=root_path)
     ensure_export_directory(os.path.dirname(output_path))  # Ensure the directory exists
     try:
         df = pd.DataFrame.from_dict(data)
@@ -150,6 +215,9 @@ def save_csv_file(data, **kwargs):
         print(f"[ERROR] Error: Permission denied when trying to write to {output_path}.")
     except Exception as e:
         print(f"[ERROR] An unexpected error occurred: {e}")
+
+    return output_path
+
 
 def generate_user_agent():
     """
@@ -166,10 +234,11 @@ def generate_user_agent():
         "Mozilla/5.0 (compatible; Googlebot-News; +http://www.google.com/bot.html)",
         "Mozilla/5.0 (compatible; Googlebot-Video/1.0; +http://www.google.com/bot.html)",
         "Mozilla/5.0 (compatible; Googlebot-AdsBot/1.0; +http://www.google.com/bot.html)",
-        "Mozilla/5.0 (compatible; Google-Site-Verification/1.0; +http://www.google.com/bot.html)"
+        "Mozilla/5.0 (compatible; Google-Site-Verification/1.0; +http://www.google.com/bot.html)",
     ]
-    
+
     return random.choice(user_agents)
+
 
 def validate_string_array(data: List[str], valid_values: List[str]) -> bool:
     """
@@ -190,12 +259,12 @@ def validate_string_array(data: List[str], valid_values: List[str]) -> bool:
     bool
         True if all items in the data list are valid, False otherwise.
     """
-    
+
     if not data:
         return False
 
     for item in data:
         if item not in valid_values:
             return False
-    
+
     return True

@@ -1,0 +1,11 @@
+# Layer 2: OKX Top 50 Perp Base
+base_preset: presets/base_okx_perp.yaml
+
+limit: 50
+base_universe_limit: 100
+prefilter_limit: 2000
+pagination_size: 200
+
+export_metadata:
+  symbol: okx_top50_perp_base
+  data_category: universe_selector

@@ -1,0 +1,12 @@
+# Layer 2: Multi-Exchange Top 50 Dated Base
+base_preset: presets/base_crypto_spot.yaml
+exchanges: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+
+# Dated futures are often illiquid, but we keep the $5M floor for institutional safety
+volume:
+  value_traded_min: 5000000
+
+limit: 50
+export_metadata:
+  symbol: crypto_cex_base_top50_dated
+  data_category: universe_selector

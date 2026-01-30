@@ -1,13 +1,13 @@
 """Module providing a function to scrape symbol overview data from TradingView."""
 
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 import requests
 
 from tradingview_scraper.symbols.utils import (
+    generate_user_agent,
     save_csv_file,
     save_json_file,
-    generate_user_agent,
 )
 
 
@@ -31,116 +31,124 @@ class Overview:
     """
 
     # Symbol API endpoint
-    SYMBOL_API_URL = 'https://scanner.tradingview.com/symbol'
+    SYMBOL_API_URL = "https://scanner.tradingview.com/symbol"
 
     # Field categories
     BASIC_FIELDS = [
-        'name',
-        'description',
-        'type',
-        'subtype',
-        'exchange',
-        'country',
-        'sector',
-        'industry',
+        "name",
+        "description",
+        "type",
+        "subtype",
+        "exchange",
+        "country",
+        "sector",
+        "industry",
     ]
 
     PRICE_FIELDS = [
-        'close',
-        'change',
-        'change_abs',
-        'change_from_open',
-        'high',
-        'low',
-        'open',
-        'volume',
-        'Value.Traded',
-        'price_52_week_high',
-        'price_52_week_low',
+        "close",
+        "change",
+        "change_abs",
+        "change_from_open",
+        "high",
+        "low",
+        "open",
+        "volume",
+        "Value.Traded",
+        "price_52_week_high",
+        "price_52_week_low",
     ]
 
     MARKET_FIELDS = [
-        'market_cap_basic',
-        'market_cap_calc',
-        'market_cap_diluted_calc',
-        'shares_outstanding',
-        'shares_float',
-        'shares_diluted',
+        "market_cap_basic",
+        "market_cap_calc",
+        "market_cap_diluted_calc",
+        "shares_outstanding",
+        "shares_float",
+        "shares_diluted",
     ]
 
     VALUATION_FIELDS = [
-        'price_earnings_ttm',
-        'price_book_fq',
-        'price_sales_ttm',
-        'price_free_cash_flow_ttm',
-        'earnings_per_share_basic_ttm',
-        'earnings_per_share_diluted_ttm',
-        'book_value_per_share_fq',
+        "price_earnings_ttm",
+        "price_book_fq",
+        "price_sales_ttm",
+        "price_free_cash_flow_ttm",
+        "earnings_per_share_basic_ttm",
+        "earnings_per_share_diluted_ttm",
+        "book_value_per_share_fq",
     ]
 
     DIVIDEND_FIELDS = [
-        'dividends_yield',
-        'dividends_per_share_fq',
-        'dividend_payout_ratio_ttm',
+        "dividends_yield",
+        "dividends_per_share_fq",
+        "dividend_payout_ratio_ttm",
     ]
 
     FINANCIAL_FIELDS = [
-        'total_revenue',
-        'revenue_per_share_ttm',
-        'net_income_fy',
-        'gross_margin_percent_ttm',
-        'operating_margin_ttm',
-        'net_margin_percent_ttm',
-        'return_on_equity_fq',
-        'return_on_assets_fq',
-        'return_on_investment_ttm',
-        'debt_to_equity_fq',
-        'current_ratio_fq',
-        'quick_ratio_fq',
-        'EBITDA',
-        'employees',
+        "total_revenue",
+        "revenue_per_share_ttm",
+        "net_income_fy",
+        "gross_margin_percent_ttm",
+        "operating_margin_ttm",
+        "net_margin_percent_ttm",
+        "return_on_equity_fq",
+        "return_on_assets_fq",
+        "return_on_investment_ttm",
+        "debt_to_equity_fq",
+        "current_ratio_fq",
+        "quick_ratio_fq",
+        "EBITDA",
+        "employees",
     ]
 
     PERFORMANCE_FIELDS = [
-        'Perf.W',
-        'Perf.1M',
-        'Perf.3M',
-        'Perf.6M',
-        'Perf.Y',
-        'Perf.YTD',
+        "Perf.W",
+        "Perf.1M",
+        "Perf.3M",
+        "Perf.6M",
+        "Perf.Y",
+        "Perf.3Y",
+        "Perf.5Y",
+        "Perf.All",
+        "Perf.YTD",
     ]
 
     VOLATILITY_FIELDS = [
-        'Volatility.D',
-        'Volatility.W',
-        'Volatility.M',
-        'beta_1_year',
+        "Volatility.D",
+        "Volatility.W",
+        "Volatility.M",
+        "beta_1_year",
     ]
 
     TECHNICAL_FIELDS = [
-        'Recommend.All',
-        'RSI',
-        'CCI20',
-        'ADX',
-        'MACD.macd',
-        'Stoch.K',
-        'ATR',
+        "Recommend.All",
+        "RSI",
+        "CCI20",
+        "ADX",
+        "MACD.macd",
+        "Stoch.K",
+        "ATR",
+    ]
+
+    STRUCTURAL_FIELDS = [
+        "pricescale",
+        "minmov",
+        "minmove2",
+        "currency",
+        "base_currency",
+        "root",
+        "timezone",
+        "session",
+        "expiration",
+        "contract_type",
+        "pointvalue",
+        "fractional",
     ]
 
     # All fields combined
-    ALL_FIELDS = (
-        BASIC_FIELDS +
-        PRICE_FIELDS +
-        MARKET_FIELDS +
-        VALUATION_FIELDS +
-        DIVIDEND_FIELDS +
-        FINANCIAL_FIELDS +
-        PERFORMANCE_FIELDS +
-        VOLATILITY_FIELDS +
-        TECHNICAL_FIELDS
-    )
+    ALL_FIELDS = BASIC_FIELDS + PRICE_FIELDS + MARKET_FIELDS + VALUATION_FIELDS + DIVIDEND_FIELDS + FINANCIAL_FIELDS + PERFORMANCE_FIELDS + VOLATILITY_FIELDS + TECHNICAL_FIELDS + STRUCTURAL_FIELDS
 
-    def __init__(self, export_result: bool = False, export_type: str = 'json'):
+    def __init__(self, export_result: bool = False, export_type: str = "json"):
         """
         Initialize the Overview scraper.
 
@@ -151,6 +159,7 @@ class Overview:
         self.export_result = export_result
         self.export_type = export_type
         self.headers = {"User-Agent": generate_user_agent()}
+        self.session = requests
 
     def _validate_symbol(self, symbol: str) -> str:
         """
@@ -171,18 +180,12 @@ class Overview:
         symbol = symbol.strip().upper()
 
         # Add exchange prefix if not present
-        if ':' not in symbol:
-            raise ValueError(
-                "Symbol must include exchange prefix (e.g., 'NASDAQ:AAPL', 'BITSTAMP:BTCUSD')"
-            )
+        if ":" not in symbol:
+            raise ValueError("Symbol must include exchange prefix (e.g., 'NASDAQ:AAPL', 'BITSTAMP:BTCUSD')")
 
         return symbol
 
-    def get_symbol_overview(
-        self,
-        symbol: str,
-        fields: Optional[List[str]] = None
-    ) -> Dict:
+    def get_symbol_overview(self, symbol: str, fields: Optional[List[str]] = None) -> Dict:
         """
         Get comprehensive overview data for a symbol.
 
@@ -216,64 +219,34 @@ class Overview:
             field_list = fields if fields else self.ALL_FIELDS
 
             # Build request parameters
-            params = {
-                'symbol': symbol,
-                'fields': ','.join(field_list)
-            }
+            params = {"symbol": symbol, "fields": ",".join(field_list)}
 
             # Make request
-            response = requests.get(
-                self.SYMBOL_API_URL,
-                params=params,
-                headers=self.headers,
-                timeout=10
-            )
+            response = self.session.get(self.SYMBOL_API_URL, params=params, headers=self.headers)
 
             if response.status_code == 200:
                 data = response.json()
 
                 if not data:
-                    return {
-                        'status': 'failed',
-                        'error': f'No data found for symbol: {symbol}'
-                    }
+                    return {"status": "failed", "error": f"No data found for symbol: {symbol}"}
 
                 # Add symbol to the data
-                data['symbol'] = symbol
+                data["symbol"] = symbol
 
                 # Export if requested
                 if self.export_result:
-                    self._export(
-                        data=data,
-                        symbol=symbol.replace(':', '_'),
-                        data_category='overview'
-                    )
+                    self._export(data=data, symbol=symbol.replace(":", "_"), data_category="overview")
 
-                return {
-                    'status': 'success',
-                    'data': data
-                }
+                return {"status": "success", "data": data}
             else:
-                return {
-                    'status': 'failed',
-                    'error': f'HTTP {response.status_code}: {response.text}'
-                }
+                return {"status": "failed", "error": f"HTTP {response.status_code}: {response.text}"}
 
         except ValueError as e:
-            return {
-                'status': 'failed',
-                'error': str(e)
-            }
+            return {"status": "failed", "error": str(e)}
         except requests.RequestException as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
 
     def get_profile(self, symbol: str) -> Dict:
         """
@@ -337,12 +310,7 @@ class Overview:
         fields = self.TECHNICAL_FIELDS + self.VOLATILITY_FIELDS
         return self.get_symbol_overview(symbol=symbol, fields=fields)
 
-    def _export(
-        self,
-        data: Dict,
-        symbol: Optional[str] = None,
-        data_category: Optional[str] = None
-    ) -> None:
+    def _export(self, data: Dict, symbol: Optional[str] = None, data_category: Optional[str] = None) -> None:
         """
         Export scraped data to file.
 
@@ -354,7 +322,7 @@ class Overview:
         # For CSV export, convert dict to list of dicts
         export_data = [data] if isinstance(data, dict) else data
 
-        if self.export_type == 'json':
+        if self.export_type == "json":
             save_json_file(data=export_data, symbol=symbol, data_category=data_category)
-        elif self.export_type == 'csv':
+        elif self.export_type == "csv":
             save_csv_file(data=export_data, symbol=symbol, data_category=data_category)

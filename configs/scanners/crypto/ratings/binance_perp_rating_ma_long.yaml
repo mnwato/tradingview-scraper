@@ -1,0 +1,14 @@
+# Binance Perp - MA Rating - LONG
+base_preset: ../../../base/universes/binance_perp_base.yaml
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: { enabled: false }
+filters:
+  - { left: "Recommend.MA", operation: "greater", right: 0 }
+sort_by: Recommend.MA
+sort_order: desc
+limit: 100
+export_metadata:
+  symbol: perp_rating_ma_long
+  data_category: strategy_alpha

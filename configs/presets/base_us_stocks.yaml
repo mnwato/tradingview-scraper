@@ -1,0 +1,25 @@
+# Layer 1: Base US Stocks Universe (Institutional Tradability)
+markets: ["america"]
+exchanges: ["NASDAQ", "NYSE"]
+
+# Liquidity Guard: $500M ADV baseline for large-cap equities
+volume:
+  min: 1000000
+  value_traded_min: 500000000
+
+# Volatility Guard
+volatility:
+  max: 30.0
+  atr_pct_max: 0.2
+  fallback_use_atr_pct: true
+
+# Base Sorting
+sort_by: market_cap_basic
+sort_order: desc
+base_universe_sort_by: volume
+pagination_size: 100
+prefilter_limit: 1000
+retries: 2
+timeout: 10
+
+columns: ["name", "close", "volume", "Value.Traded", "market_cap_basic", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "Perf.Y", "Perf.YTD", "ATR"]

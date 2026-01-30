@@ -1,0 +1,34 @@
+# Futures Mean Reversion (Long)
+# Target: Liquid futures (Gold, Oil, Indices) that are oversold
+base_preset: presets/futures_us_liquid.yaml
+
+limit: 50
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  # Fundamental uptrend or neutral
+  recommendation:
+    enabled: true
+    min: 0.0 # Neutral or better
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Stage 3: Oversold Screen
+trend_screen:
+  timeframe: "daily"
+  direction: "short" # "Short" direction = find Low values
+  logic: "AND"
+  osc:
+    enabled: true
+    horizons: {RSI: 35, Stoch.K: 30}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: -3.0} # Drop of > 3% in a week
+
+export_metadata:
+  symbol: "futures_mean_reversion"
+  data_category: "universe_selector"

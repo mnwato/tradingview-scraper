@@ -1,0 +1,23 @@
+# Layer 2: Bitget Spot Trend Long
+base_preset: presets/base_bitget_spot.yaml
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.0
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: 0.5, Perf.3M: 1.0}
+  confirmation_momentum:
+    enabled: true
+    horizons: {Perf.1M: 1.0, Perf.3M: 2.0}
+
+export_metadata:
+  symbol: bitget_spot_long
+  data_category: strategy_selector

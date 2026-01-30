@@ -1,0 +1,33 @@
+# Forex Mean Reversion (Short)
+# Target: Liquid pairs in downtrend at resistance/overbought
+base_preset: presets/forex_liquid.yaml
+
+limit: 50
+
+trend:
+  direction: "short"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: -0.1
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+
+# Stage 3: Overbought Screen
+trend_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  osc:
+    enabled: true
+    horizons: {RSI: 65, Stoch.K: 75}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 1.0} # Rally of > 1% in a week
+
+export_metadata:
+  symbol: "forex_mean_reversion_short"
+  data_category: "universe_selector"

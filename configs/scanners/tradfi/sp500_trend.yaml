@@ -1,0 +1,12 @@
+# L4: US Equity Trend (S&P 500 Foundation)
+base_preset: ../../base/universes/sp500.yaml
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: false}
+  recommendation: {enabled: false}
+  momentum: {enabled: false}
+limit: 50
+export_metadata:
+  symbol: sp500_alpha_trend
+  data_category: strategy_alpha

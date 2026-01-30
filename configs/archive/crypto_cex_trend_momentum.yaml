@@ -1,0 +1,26 @@
+# Layer 2: Crypto Trend Momentum Strategy
+base_preset: presets/base_binance_spot.yaml
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.0
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    # Aligned with 21d test windows (Perf.1M) while preserving secular 3M trend
+    horizons: {Perf.W: 0.0, Perf.1M: 0.5, Perf.3M: 1.0}
+  confirmation_momentum:
+    enabled: true
+    horizons: {Perf.1M: 1.0, Perf.3M: 2.0}
+
+limit: 50
+prefilter_limit: 50
+export_metadata:
+  symbol: crypto_trend_momentum
+  data_category: strategy_selector

@@ -1,0 +1,19 @@
+# L0: US Sector ETFs (SPDR Select)
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+static_mode: true
+static_symbols:
+  - "AMEX:XLK" # Technology
+  - "AMEX:XLF" # Financials
+  - "AMEX:XLV" # Health Care
+  - "AMEX:XLY" # Consumer Discretionary
+  - "AMEX:XLI" # Industrials
+  - "AMEX:XLP" # Consumer Staples
+  - "AMEX:XLE" # Energy
+  - "AMEX:XLU" # Utilities
+  - "AMEX:XLB" # Materials
+  - "AMEX:XLRE" # Real Estate
+  - "AMEX:XLC" # Communication Services
+export_metadata:
+  symbol: sector_etf_universe
+  data_category: universe_foundation

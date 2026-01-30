@@ -1,0 +1,39 @@
+# Bond futures trend momentum with confirmation
+# Universe: major sovereign bond futures
+markets: ["futures"]
+exchanges: ["CBOT", "EUREX"]
+include_symbols: []
+columns: ["name", "close", "volume", "change", "Recommend.All", "ADX", "Volatility.D", "Perf.W", "Perf.1M", "Perf.3M", "ATR"]
+volume:
+  min: 1000
+volatility:
+  max: 5.0
+  atr_pct_max: 0.05
+  fallback_use_atr_pct: true
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.1
+  adx:
+    enabled: true
+    min: 12
+  momentum:
+    enabled: true
+    horizons: {change: 0.0, Perf.W: 0.0, Perf.1M: 0.5, Perf.3M: 1.0}
+  confirmation_momentum:
+    enabled: true
+    horizons: {Perf.1M: 0.5, Perf.3M: 1.0}
+sort_by: volume
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+limit: 50
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

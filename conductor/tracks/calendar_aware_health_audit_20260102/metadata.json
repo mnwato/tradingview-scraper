@@ -1,0 +1,8 @@
+{
+  "id": "calendar_aware_health_audit_20260102",
+  "title": "Calendar-Aware Data Health Audit",
+  "status": "in_progress",
+  "priority": "high",
+  "owner": "jules",
+  "description": "Implemented exchange-calendar awareness in gap detection and health reporting to prevent false positives for non-crypto assets during weekends and holidays."
+}

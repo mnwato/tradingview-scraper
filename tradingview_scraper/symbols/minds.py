@@ -1,14 +1,14 @@
 """Module providing a function to scrape Minds community discussions from TradingView."""
 
-from typing import Optional, Dict, List
 from datetime import datetime
+from typing import Dict, List, Optional
 
 import requests
 
 from tradingview_scraper.symbols.utils import (
+    generate_user_agent,
     save_csv_file,
     save_json_file,
-    generate_user_agent,
 )
 
 
@@ -31,16 +31,16 @@ class Minds:
     """
 
     # Minds API endpoint
-    MINDS_API_URL = 'https://www.tradingview.com/api/v1/minds/'
+    MINDS_API_URL = "https://www.tradingview.com/api/v1/minds/"
 
     # Sort options
     SORT_OPTIONS = {
-        'recent': 'recent',
-        'popular': 'popular',
-        'trending': 'trending',
+        "recent": "recent",
+        "popular": "popular",
+        "trending": "trending",
     }
 
-    def __init__(self, export_result: bool = False, export_type: str = 'json'):
+    def __init__(self, export_result: bool = False, export_type: str = "json"):
         """
         Initialize the Minds scraper.
 
@@ -71,10 +71,8 @@ class Minds:
         symbol = symbol.strip().upper()
 
         # Add exchange prefix if not present
-        if ':' not in symbol:
-            raise ValueError(
-                "Symbol must include exchange prefix (e.g., 'NASDAQ:AAPL', 'BITSTAMP:BTCUSD')"
-            )
+        if ":" not in symbol:
+            raise ValueError("Symbol must include exchange prefix (e.g., 'NASDAQ:AAPL', 'BITSTAMP:BTCUSD')")
 
         return symbol
 
@@ -92,10 +90,7 @@ class Minds:
             ValueError: If sort option is invalid.
         """
         if sort not in self.SORT_OPTIONS:
-            raise ValueError(
-                f"Unsupported sort option: {sort}. "
-                f"Supported options: {', '.join(self.SORT_OPTIONS.keys())}"
-            )
+            raise ValueError(f"Unsupported sort option: {sort}. Supported options: {', '.join(self.SORT_OPTIONS.keys())}")
         return self.SORT_OPTIONS[sort]
 
     def _parse_mind(self, item: Dict) -> Dict:
@@ -109,49 +104,42 @@ class Minds:
             Dict: Parsed mind data.
         """
         # Parse author info
-        author = item.get('author', {})
+        author = item.get("author", {})
         author_data = {
-            'username': author.get('username'),
-            'profile_url': f"https://www.tradingview.com{author.get('uri', '')}",
-            'is_broker': author.get('is_broker', False),
+            "username": author.get("username"),
+            "profile_url": f"https://www.tradingview.com{author.get('uri', '')}",
+            "is_broker": author.get("is_broker", False),
         }
 
         # Parse created date
-        created = item.get('created', '')
+        created = item.get("created", "")
         try:
-            created_datetime = datetime.fromisoformat(
-                created.replace('Z', '+00:00')
-            )
-            created_formatted = created_datetime.strftime('%Y-%m-%d %H:%M:%S')
+            created_datetime = datetime.fromisoformat(created.replace("Z", "+00:00"))
+            created_formatted = created_datetime.strftime("%Y-%m-%d %H:%M:%S")
         except (ValueError, AttributeError):
             created_formatted = created
 
         # Parse symbols mentioned
-        symbols = item.get('symbols', {})
+        symbols = item.get("symbols", {})
         symbols_list = list(symbols.values()) if symbols else []
 
         # Build parsed data
         parsed = {
-            'uid': item.get('uid'),
-            'text': item.get('text', ''),
-            'url': item.get('url', ''),
-            'author': author_data,
-            'created': created_formatted,
-            'symbols': symbols_list,
-            'total_likes': item.get('total_likes', 0),
-            'total_comments': item.get('total_comments', 0),
-            'modified': item.get('modified', False),
-            'hidden': item.get('hidden', False),
+            "uid": item.get("uid"),
+            "text": item.get("text", ""),
+            "url": item.get("url", ""),
+            "author": author_data,
+            "created": created_formatted,
+            "symbols": symbols_list,
+            "total_likes": item.get("total_likes", 0),
+            "total_comments": item.get("total_comments", 0),
+            "modified": item.get("modified", False),
+            "hidden": item.get("hidden", False),
         }
 
         return parsed
 
-    def get_minds(
-        self,
-        symbol: str,
-        sort: str = 'recent',
-        limit: int = 50
-    ) -> Dict:
+    def get_minds(self, symbol: str, sort: str = "recent", limit: int = 50) -> Dict:
         """
         Get Minds discussions for a symbol.
 
@@ -188,84 +176,49 @@ class Minds:
 
             # Build request parameters
             params = {
-                'symbol': symbol,
-                'limit': limit,
-                'sort': sort_option,
+                "symbol": symbol,
+                "limit": limit,
+                "sort": sort_option,
             }
 
             # Make request
-            response = requests.get(
-                self.MINDS_API_URL,
-                params=params,
-                headers=self.headers,
-                timeout=10
-            )
+            response = requests.get(self.MINDS_API_URL, params=params, headers=self.headers, timeout=10)
 
             if response.status_code == 200:
                 json_response = response.json()
 
                 # Extract data
-                results = json_response.get('results', [])
+                results = json_response.get("results", [])
 
                 if not results:
-                    return {
-                        'status': 'failed',
-                        'error': f'No discussions found for symbol: {symbol}'
-                    }
+                    return {"status": "failed", "error": f"No discussions found for symbol: {symbol}"}
 
                 # Parse each mind
                 parsed_data = [self._parse_mind(item) for item in results]
 
                 # Extract metadata
-                meta = json_response.get('meta', {})
-                symbol_info = meta.get('symbols_info', {}).get(symbol, {})
+                meta = json_response.get("meta", {})
+                symbol_info = meta.get("symbols_info", {}).get(symbol, {})
 
                 # Extract next cursor for pagination
-                next_cursor = json_response.get('next', '')
+                next_cursor = json_response.get("next", "")
 
                 # Export if requested
                 if self.export_result:
-                    self._export(
-                        data=parsed_data,
-                        symbol=symbol.replace(':', '_'),
-                        data_category='minds'
-                    )
+                    self._export(data=parsed_data, symbol=symbol.replace(":", "_"), data_category="minds")
 
-                return {
-                    'status': 'success',
-                    'data': parsed_data,
-                    'total': len(parsed_data),
-                    'symbol_info': symbol_info,
-                    'next_cursor': next_cursor
-                }
+                return {"status": "success", "data": parsed_data, "total": len(parsed_data), "symbol_info": symbol_info, "next_cursor": next_cursor}
             else:
-                return {
-                    'status': 'failed',
-                    'error': f'HTTP {response.status_code}: {response.text}'
-                }
+                return {"status": "failed", "error": f"HTTP {response.status_code}: {response.text}"}
 
         except ValueError as e:
-            return {
-                'status': 'failed',
-                'error': str(e)
-            }
+            return {"status": "failed", "error": str(e)}
         except requests.RequestException as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
 
-    def get_all_minds(
-        self,
-        symbol: str,
-        sort: str = 'recent',
-        max_results: int = 200
-    ) -> Dict:
+    def get_all_minds(self, symbol: str, sort: str = "recent", max_results: int = 200) -> Dict:
         """
         Get all available Minds discussions for a symbol with pagination.
 
@@ -297,28 +250,23 @@ class Minds:
             while len(all_data) < max_results:
                 # Build parameters
                 params = {
-                    'symbol': symbol,
-                    'limit': min(50, max_results - len(all_data)),
-                    'sort': sort_option,
+                    "symbol": symbol,
+                    "limit": min(50, max_results - len(all_data)),
+                    "sort": sort_option,
                 }
 
                 # Add cursor if not first page
                 if next_cursor:
-                    params['c'] = next_cursor
+                    params["c"] = next_cursor
 
                 # Make request
-                response = requests.get(
-                    self.MINDS_API_URL,
-                    params=params,
-                    headers=self.headers,
-                    timeout=10
-                )
+                response = requests.get(self.MINDS_API_URL, params=params, headers=self.headers, timeout=10)
 
                 if response.status_code != 200:
                     break
 
                 json_response = response.json()
-                results = json_response.get('results', [])
+                results = json_response.get("results", [])
 
                 if not results:
                     break
@@ -328,49 +276,31 @@ class Minds:
                 all_data.extend(parsed_data)
 
                 # Check for next page
-                next_url = json_response.get('next', '')
-                if not next_url or '?c=' not in next_url:
+                next_url = json_response.get("next", "")
+                if not next_url or "?c=" not in next_url:
                     break
 
                 # Extract cursor from next URL
-                next_cursor = next_url.split('?c=')[1].split('&')[0]
+                next_cursor = next_url.split("?c=")[1].split("&")[0]
                 page += 1
 
             # Get symbol info from first page
             symbol_info = {}
             if all_data:
                 first_result = self.get_minds(symbol=symbol, sort=sort, limit=1)
-                if first_result['status'] == 'success':
-                    symbol_info = first_result.get('symbol_info', {})
+                if first_result["status"] == "success":
+                    symbol_info = first_result.get("symbol_info", {})
 
             # Export if requested
             if self.export_result and all_data:
-                self._export(
-                    data=all_data,
-                    symbol=symbol.replace(':', '_'),
-                    data_category='minds_all'
-                )
+                self._export(data=all_data, symbol=symbol.replace(":", "_"), data_category="minds_all")
 
-            return {
-                'status': 'success',
-                'data': all_data,
-                'total': len(all_data),
-                'pages': page,
-                'symbol_info': symbol_info
-            }
+            return {"status": "success", "data": all_data, "total": len(all_data), "pages": page, "symbol_info": symbol_info}
 
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
 
-    def _export(
-        self,
-        data: List[Dict],
-        symbol: Optional[str] = None,
-        data_category: Optional[str] = None
-    ) -> None:
+    def _export(self, data: List[Dict], symbol: Optional[str] = None, data_category: Optional[str] = None) -> None:
         """
         Export scraped data to file.
 
@@ -379,7 +309,7 @@ class Minds:
             symbol (str, optional): Symbol identifier for the filename.
             data_category (str, optional): Data category for the filename.
         """
-        if self.export_type == 'json':
+        if self.export_type == "json":
             save_json_file(data=data, symbol=symbol, data_category=data_category)
-        elif self.export_type == 'csv':
+        elif self.export_type == "csv":
             save_csv_file(data=data, symbol=symbol, data_category=data_category)

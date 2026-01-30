@@ -1,13 +1,14 @@
 """Module providing a function to screen stocks, crypto, forex, and other markets with custom filters."""
 
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 
 import requests
+from tenacity import retry, retry_if_exception_type, retry_if_result, stop_after_attempt, wait_exponential_jitter
 
 from tradingview_scraper.symbols.utils import (
+    generate_user_agent,
     save_csv_file,
     save_json_file,
-    generate_user_agent,
 )
 
 
@@ -35,79 +36,79 @@ class Screener:
 
     # Supported markets
     SUPPORTED_MARKETS = {
-        'america': 'https://scanner.tradingview.com/america/scan',
-        'australia': 'https://scanner.tradingview.com/australia/scan',
-        'canada': 'https://scanner.tradingview.com/canada/scan',
-        'germany': 'https://scanner.tradingview.com/germany/scan',
-        'india': 'https://scanner.tradingview.com/india/scan',
-        'israel': 'https://scanner.tradingview.com/israel/scan',
-        'italy': 'https://scanner.tradingview.com/italy/scan',
-        'luxembourg': 'https://scanner.tradingview.com/luxembourg/scan',
-        'mexico': 'https://scanner.tradingview.com/mexico/scan',
-        'spain': 'https://scanner.tradingview.com/spain/scan',
-        'turkey': 'https://scanner.tradingview.com/turkey/scan',
-        'uk': 'https://scanner.tradingview.com/uk/scan',
-        'crypto': 'https://scanner.tradingview.com/crypto/scan',
-        'forex': 'https://scanner.tradingview.com/forex/scan',
-        'cfd': 'https://scanner.tradingview.com/cfd/scan',
-        'futures': 'https://scanner.tradingview.com/futures/scan',
-        'bonds': 'https://scanner.tradingview.com/bonds/scan',
-        'global': 'https://scanner.tradingview.com/global/scan',
+        "america": "https://scanner.tradingview.com/america/scan",
+        "australia": "https://scanner.tradingview.com/australia/scan",
+        "canada": "https://scanner.tradingview.com/canada/scan",
+        "germany": "https://scanner.tradingview.com/germany/scan",
+        "india": "https://scanner.tradingview.com/india/scan",
+        "israel": "https://scanner.tradingview.com/israel/scan",
+        "italy": "https://scanner.tradingview.com/italy/scan",
+        "luxembourg": "https://scanner.tradingview.com/luxembourg/scan",
+        "mexico": "https://scanner.tradingview.com/mexico/scan",
+        "spain": "https://scanner.tradingview.com/spain/scan",
+        "turkey": "https://scanner.tradingview.com/turkey/scan",
+        "uk": "https://scanner.tradingview.com/uk/scan",
+        "crypto": "https://scanner.tradingview.com/crypto/scan",
+        "forex": "https://scanner.tradingview.com/forex/scan",
+        "cfd": "https://scanner.tradingview.com/cfd/scan",
+        "futures": "https://scanner.tradingview.com/futures/scan",
+        "bonds": "https://scanner.tradingview.com/bonds/scan",
+        "global": "https://scanner.tradingview.com/global/scan",
     }
 
     # Common filter operations
     OPERATIONS = [
-        'greater',
-        'less',
-        'egreater',  # equal or greater
-        'eless',     # equal or less
-        'equal',
-        'nequal',    # not equal
-        'in_range',
-        'not_in_range',
-        'above',
-        'below',
-        'crosses',
-        'crosses_above',
-        'crosses_below',
-        'has',
-        'has_none_of',
+        "greater",
+        "less",
+        "egreater",  # equal or greater
+        "eless",  # equal or less
+        "equal",
+        "nequal",  # not equal
+        "in_range",
+        "not_in_range",
+        "above",
+        "below",
+        "crosses",
+        "crosses_above",
+        "crosses_below",
+        "has",
+        "has_none_of",
     ]
 
     # Default columns for stock screener
     DEFAULT_STOCK_COLUMNS = [
-        'name',
-        'close',
-        'change',
-        'change_abs',
-        'volume',
-        'Recommend.All',
-        'market_cap_basic',
-        'price_earnings_ttm',
-        'earnings_per_share_basic_ttm',
+        "name",
+        "close",
+        "change",
+        "change_abs",
+        "volume",
+        "Recommend.All",
+        "market_cap_basic",
+        "price_earnings_ttm",
+        "earnings_per_share_basic_ttm",
     ]
 
     # Default columns for crypto screener
     DEFAULT_CRYPTO_COLUMNS = [
-        'name',
-        'close',
-        'change',
-        'change_abs',
-        'volume',
-        'market_cap_calc',
-        'Recommend.All',
+        "name",
+        "close",
+        "change",
+        "change_abs",
+        "volume",
+        "market_cap_calc",
+        "Recommend.All",
     ]
 
     # Default columns for forex screener
     DEFAULT_FOREX_COLUMNS = [
-        'name',
-        'close',
-        'change',
-        'change_abs',
-        'Recommend.All',
+        "name",
+        "close",
+        "change",
+        "change_abs",
+        "Recommend.All",
     ]
 
-    def __init__(self, export_result: bool = False, export_type: str = 'json'):
+    def __init__(self, export_result: bool = False, export_type: str = "json"):
         """
         Initialize the Screener.
 
@@ -130,10 +131,7 @@ class Screener:
             ValueError: If the market is not supported.
         """
         if market not in self.SUPPORTED_MARKETS:
-            raise ValueError(
-                f"Unsupported market: {market}. "
-                f"Supported markets: {', '.join(self.SUPPORTED_MARKETS.keys())}"
-            )
+            raise ValueError(f"Unsupported market: {market}. Supported markets: {', '.join(self.SUPPORTED_MARKETS.keys())}")
 
     def _get_default_columns(self, market: str) -> List[str]:
         """
@@ -145,9 +143,9 @@ class Screener:
         Returns:
             List[str]: Default columns for the market.
         """
-        if market == 'crypto':
+        if market == "crypto":
             return self.DEFAULT_CRYPTO_COLUMNS
-        elif market == 'forex':
+        elif market == "forex":
             return self.DEFAULT_FOREX_COLUMNS
         else:
             return self.DEFAULT_STOCK_COLUMNS
@@ -156,9 +154,9 @@ class Screener:
         self,
         filters: Optional[List[Dict[str, Any]]] = None,
         columns: Optional[List[str]] = None,
-        market: str = 'america',
+        market: str = "america",
         sort: Optional[Dict[str, str]] = None,
-        range_limit: tuple = (0, 50)
+        range_limit: tuple = (0, 50),
     ) -> Dict:
         """
         Build the payload for the scanner API.
@@ -178,10 +176,8 @@ class Screener:
 
         payload = {
             "columns": columns,
-            "options": {
-                "lang": "en"
-            },
-            "range": list(range_limit)
+            "options": {"lang": "en"},
+            "range": list(range_limit),
         }
 
         if filters:
@@ -192,14 +188,21 @@ class Screener:
 
         return payload
 
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_exponential_jitter(initial=1, max=30),
+        retry=(retry_if_exception_type(requests.RequestException) | retry_if_result(lambda res: res.get("status") == "failed" and "HTTP 429" in res.get("error", ""))),
+        reraise=True,
+    )
     def screen(
         self,
-        market: str = 'america',
+        market: str = "america",
         filters: Optional[List[Dict[str, Any]]] = None,
         columns: Optional[List[str]] = None,
         sort_by: Optional[str] = None,
-        sort_order: str = 'desc',
-        limit: int = 50
+        sort_order: str = "desc",
+        limit: int = 50,
+        range_start: int = 0,
     ) -> Dict:
         """
         Screen financial instruments based on custom filters.
@@ -214,6 +217,7 @@ class Screener:
             sort_by (str, optional): Field to sort by.
             sort_order (str): Sort order ('asc' or 'desc'). Defaults to 'desc'.
             limit (int): Maximum number of results. Defaults to 50.
+            range_start (int): Starting offset for pagination. Defaults to 0.
 
         Returns:
             dict: A dictionary containing:
@@ -261,10 +265,7 @@ class Screener:
         # Build sort configuration
         sort_config = None
         if sort_by:
-            sort_config = {
-                "sortBy": sort_by,
-                "sortOrder": sort_order
-            }
+            sort_config = {"sortBy": sort_by, "sortOrder": sort_order}
 
         # Build payload
         payload = self._build_payload(
@@ -272,7 +273,7 @@ class Screener:
             columns=columns,
             market=market,
             sort=sort_config,
-            range_limit=(0, limit)
+            range_limit=(range_start, range_start + limit),
         )
 
         # Get scanner URL
@@ -280,27 +281,26 @@ class Screener:
 
         try:
             # Make request
-            response = requests.post(
-                url,
-                json=payload,
-                headers=self.headers,
-                timeout=10
-            )
+            response = requests.post(url, json=payload, headers=self.headers, timeout=10)
 
             if response.status_code == 200:
                 json_response = response.json()
 
                 # Extract data
-                data = json_response.get('data', [])
+                data = json_response.get("data", [])
+                if data is None:
+                    data = []
 
                 # Format the data
                 formatted_data = []
                 for item in data:
-                    symbol_data = item.get('d', [])
-                    if len(symbol_data) > 0:
+                    if not item or not isinstance(item, dict):
+                        continue
+                    symbol_data = item.get("d", [])
+                    if symbol_data and len(symbol_data) > 0:
                         # Map data to field names
                         formatted_item = {
-                            'symbol': item.get('s', ''),
+                            "symbol": item.get("s", ""),
                         }
 
                         # Map each field value
@@ -316,37 +316,42 @@ class Screener:
                     self._export(
                         data=formatted_data,
                         symbol=f"{market}_screener",
-                        data_category='screener'
+                        data_category="screener",
                     )
 
                 return {
-                    'status': 'success',
-                    'data': formatted_data,
-                    'total': len(formatted_data),
-                    'totalCount': json_response.get('totalCount', len(formatted_data))
+                    "status": "success",
+                    "data": formatted_data,
+                    "payload": payload,
                 }
             else:
                 return {
-                    'status': 'failed',
-                    'error': f'HTTP {response.status_code}: {response.text}'
+                    "status": "failed",
+                    "error": f"HTTP {response.status_code}: {response.text}",
                 }
 
         except requests.RequestException as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
+
+    def scrape(self, market: str = "crypto", **kwargs) -> Dict:
+        """Convenience wrapper to run a screener scan.
+
+        Args:
+            market (str): market name (e.g., "crypto", "america", "forex").
+            **kwargs: passed through to ``screen`` (filters, columns, sort_by, sort_order, limit, range_start).
+
+        Returns:
+            dict: same structure as ``screen``.
+        """
+        return self.screen(market=market, **kwargs)
 
     def _export(
         self,
         data: List[Dict],
         symbol: Optional[str] = None,
-        data_category: Optional[str] = None
+        data_category: Optional[str] = None,
     ) -> None:
         """
         Export screened data to file.
@@ -356,7 +361,7 @@ class Screener:
             symbol (str, optional): Symbol identifier for the filename.
             data_category (str, optional): Data category for the filename.
         """
-        if self.export_type == 'json':
+        if self.export_type == "json":
             save_json_file(data=data, symbol=symbol, data_category=data_category)
-        elif self.export_type == 'csv':
+        elif self.export_type == "csv":
             save_csv_file(data=data, symbol=symbol, data_category=data_category)

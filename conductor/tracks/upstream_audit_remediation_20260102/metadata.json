@@ -1,0 +1,9 @@
+{
+  "id": "upstream_audit_remediation_20260102",
+  "title": "Upstream Pipeline Audit & Remediation",
+  "status": "in_progress",
+  "priority": "high",
+  "description": "Resolving brittle heuristics, profile resolution inconsistencies, and logic gaps identified during the 2026-01-02 Upstream Audit.",
+  "created_at": "2026-01-02",
+  "tags": ["audit", "remediation", "pipeline"]
+}

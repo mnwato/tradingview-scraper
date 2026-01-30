@@ -1,0 +1,12 @@
+# L3: Volatility Breakout Block (ATR-based)
+volatility:
+  min_d: 0.03 # At least 3% daily volatility
+columns:
+  - "ATR"
+  - "Volatility.D"
+  - "high"
+  - "low"
+filters:
+  - left: "change"
+    operation: "greater"
+    right: 2.0 # 2% daily move

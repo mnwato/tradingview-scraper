@@ -1,0 +1,5 @@
+# L2: Forex Template (24/5 aware)
+base_preset: ../hygiene/institutional.yaml
+markets: ["forex"]
+export_metadata:
+  data_category: forex_liquid

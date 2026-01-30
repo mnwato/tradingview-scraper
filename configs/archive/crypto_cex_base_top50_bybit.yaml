@@ -1,0 +1,11 @@
+# Layer 2: Bybit Top 50 Spot Base
+base_preset: presets/base_bybit_spot.yaml
+
+limit: 50
+base_universe_limit: 100
+prefilter_limit: 2000
+pagination_size: 200
+
+export_metadata:
+  symbol: bybit_top50_spot_base
+  data_category: universe_selector

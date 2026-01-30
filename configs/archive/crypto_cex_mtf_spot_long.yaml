@@ -1,0 +1,62 @@
+# Crypto CEX MTF (spot, long): monthly trend -> weekly confirm; execution handled downstream
+markets: ["crypto"]
+exchanges: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+columns: ["name", "close", "volume", "Value.Traded", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "Perf.Y", "Perf.YTD", "ATR", "RSI", "Stoch.K"]
+volume:
+  min: 20000000
+volatility:
+  max: 8.0
+  atr_pct_max: 0.1
+  fallback_use_atr_pct: true
+trend:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.05
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.1M: 0.2, Perf.3M: 0.5, Perf.6M: 1.0}
+  confirmation_momentum:
+    enabled: false
+trend_screen:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.05
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.1M: 0.2, Perf.3M: 0.5, Perf.6M: 1.0}
+confirm_screen:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 8
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.05, Perf.1M: 0.2}
+  osc:
+    enabled: false
+sort_by: market_cap_calc
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+dedupe_by_symbol: true
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

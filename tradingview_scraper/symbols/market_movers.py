@@ -1,13 +1,13 @@
 """Module providing a function to scrape market movers data (gainers, losers, penny stocks, etc.)."""
 
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 import requests
 
 from tradingview_scraper.symbols.utils import (
+    generate_user_agent,
     save_csv_file,
     save_json_file,
-    generate_user_agent,
 )
 
 
@@ -32,44 +32,44 @@ class MarketMovers:
 
     # Supported markets
     SUPPORTED_MARKETS = [
-        'stocks-usa',
-        'stocks-uk',
-        'stocks-india',
-        'stocks-australia',
-        'stocks-canada',
-        'crypto',
-        'forex',
-        'bonds',
-        'futures',
+        "stocks-usa",
+        "stocks-uk",
+        "stocks-india",
+        "stocks-australia",
+        "stocks-canada",
+        "crypto",
+        "forex",
+        "bonds",
+        "futures",
     ]
 
     # Supported categories for stock markets
     STOCK_CATEGORIES = [
-        'gainers',
-        'losers',
-        'most-active',
-        'penny-stocks',
-        'pre-market-gainers',
-        'pre-market-losers',
-        'after-hours-gainers',
-        'after-hours-losers',
+        "gainers",
+        "losers",
+        "most-active",
+        "penny-stocks",
+        "pre-market-gainers",
+        "pre-market-losers",
+        "after-hours-gainers",
+        "after-hours-losers",
     ]
 
     # Default fields to fetch
     DEFAULT_FIELDS = [
-        'name',
-        'close',
-        'change',
-        'change_abs',
-        'volume',
-        'market_cap_basic',
-        'price_earnings_ttm',
-        'earnings_per_share_basic_ttm',
-        'logoid',
-        'description',
+        "name",
+        "close",
+        "change",
+        "change_abs",
+        "volume",
+        "market_cap_basic",
+        "price_earnings_ttm",
+        "earnings_per_share_basic_ttm",
+        "logoid",
+        "description",
     ]
 
-    def __init__(self, export_result: bool = False, export_type: str = 'json'):
+    def __init__(self, export_result: bool = False, export_type: str = "json"):
         """
         Initialize the MarketMovers scraper.
 
@@ -92,10 +92,7 @@ class MarketMovers:
             ValueError: If the market is not supported.
         """
         if market not in self.SUPPORTED_MARKETS:
-            raise ValueError(
-                f"Unsupported market: {market}. "
-                f"Supported markets: {', '.join(self.SUPPORTED_MARKETS)}"
-            )
+            raise ValueError(f"Unsupported market: {market}. Supported markets: {', '.join(self.SUPPORTED_MARKETS)}")
 
     def _validate_category(self, category: str, market: str) -> None:
         """
@@ -108,19 +105,10 @@ class MarketMovers:
         Raises:
             ValueError: If the category is not supported.
         """
-        if market.startswith('stocks') and category not in self.STOCK_CATEGORIES:
-            raise ValueError(
-                f"Unsupported category: {category}. "
-                f"Supported categories for stocks: {', '.join(self.STOCK_CATEGORIES)}"
-            )
+        if market.startswith("stocks") and category not in self.STOCK_CATEGORIES:
+            raise ValueError(f"Unsupported category: {category}. Supported categories for stocks: {', '.join(self.STOCK_CATEGORIES)}")
 
-    def _build_scanner_payload(
-        self,
-        market: str,
-        category: str,
-        fields: Optional[List[str]] = None,
-        limit: int = 50
-    ) -> Dict:
+    def _build_scanner_payload(self, market: str, category: str, fields: Optional[List[str]] = None, limit: int = 50) -> Dict:
         """
         Build the payload for the TradingView scanner API.
 
@@ -142,15 +130,7 @@ class MarketMovers:
         # Build sort configuration
         sort_config = self._get_sort_config(category)
 
-        payload = {
-            "columns": fields,
-            "filter": filter_conditions,
-            "options": {
-                "lang": "en"
-            },
-            "range": [0, limit],
-            "sort": sort_config
-        }
+        payload = {"columns": fields, "filter": filter_conditions, "options": {"lang": "en"}, "range": [0, limit], "sort": sort_config}
 
         return payload
 
@@ -168,56 +148,24 @@ class MarketMovers:
         filters = []
 
         # Base market filter
-        if market == 'stocks-usa':
-            filters.append({
-                "left": "market",
-                "operation": "equal",
-                "right": "america"
-            })
-        elif market == 'stocks-uk':
-            filters.append({
-                "left": "market",
-                "operation": "equal",
-                "right": "uk"
-            })
-        elif market == 'stocks-india':
-            filters.append({
-                "left": "market",
-                "operation": "equal",
-                "right": "india"
-            })
-        elif market == 'stocks-australia':
-            filters.append({
-                "left": "market",
-                "operation": "equal",
-                "right": "australia"
-            })
-        elif market == 'stocks-canada':
-            filters.append({
-                "left": "market",
-                "operation": "equal",
-                "right": "canada"
-            })
+        if market == "stocks-usa":
+            filters.append({"left": "market", "operation": "equal", "right": "america"})
+        elif market == "stocks-uk":
+            filters.append({"left": "market", "operation": "equal", "right": "uk"})
+        elif market == "stocks-india":
+            filters.append({"left": "market", "operation": "equal", "right": "india"})
+        elif market == "stocks-australia":
+            filters.append({"left": "market", "operation": "equal", "right": "australia"})
+        elif market == "stocks-canada":
+            filters.append({"left": "market", "operation": "equal", "right": "canada"})
 
         # Category-specific filters
-        if category == 'penny-stocks':
-            filters.append({
-                "left": "close",
-                "operation": "less",
-                "right": 5
-            })
-        elif category == 'gainers' or category == 'pre-market-gainers' or category == 'after-hours-gainers':
-            filters.append({
-                "left": "change",
-                "operation": "greater",
-                "right": 0
-            })
-        elif category == 'losers' or category == 'pre-market-losers' or category == 'after-hours-losers':
-            filters.append({
-                "left": "change",
-                "operation": "less",
-                "right": 0
-            })
+        if category == "penny-stocks":
+            filters.append({"left": "close", "operation": "less", "right": 5})
+        elif category == "gainers" or category == "pre-market-gainers" or category == "after-hours-gainers":
+            filters.append({"left": "change", "operation": "greater", "right": 0})
+        elif category == "losers" or category == "pre-market-losers" or category == "after-hours-losers":
+            filters.append({"left": "change", "operation": "less", "right": 0})
 
         return filters
 
@@ -231,31 +179,16 @@ class MarketMovers:
         Returns:
             Dict: Sort configuration for the scanner API.
         """
-        if category in ['gainers', 'pre-market-gainers', 'after-hours-gainers']:
-            return {
-                "sortBy": "change",
-                "sortOrder": "desc"
-            }
-        elif category in ['losers', 'pre-market-losers', 'after-hours-losers']:
-            return {
-                "sortBy": "change",
-                "sortOrder": "asc"
-            }
-        elif category == 'most-active':
-            return {
-                "sortBy": "volume",
-                "sortOrder": "desc"
-            }
-        elif category == 'penny-stocks':
-            return {
-                "sortBy": "volume",
-                "sortOrder": "desc"
-            }
+        if category in ["gainers", "pre-market-gainers", "after-hours-gainers"]:
+            return {"sortBy": "change", "sortOrder": "desc"}
+        elif category in ["losers", "pre-market-losers", "after-hours-losers"]:
+            return {"sortBy": "change", "sortOrder": "asc"}
+        elif category == "most-active":
+            return {"sortBy": "volume", "sortOrder": "desc"}
+        elif category == "penny-stocks":
+            return {"sortBy": "volume", "sortOrder": "desc"}
         else:
-            return {
-                "sortBy": "change",
-                "sortOrder": "desc"
-            }
+            return {"sortBy": "change", "sortOrder": "desc"}
 
     def _get_scanner_url(self, market: str) -> str:
         """
@@ -267,25 +200,19 @@ class MarketMovers:
         Returns:
             str: The scanner API URL.
         """
-        if market == 'crypto':
+        if market == "crypto":
             return "https://scanner.tradingview.com/crypto/scan"
-        elif market == 'forex':
+        elif market == "forex":
             return "https://scanner.tradingview.com/forex/scan"
-        elif market == 'bonds':
+        elif market == "bonds":
             return "https://scanner.tradingview.com/bonds/scan"
-        elif market == 'futures':
+        elif market == "futures":
             return "https://scanner.tradingview.com/futures/scan"
         else:
             # Default to america for stocks
             return "https://scanner.tradingview.com/america/scan"
 
-    def scrape(
-        self,
-        market: str = 'stocks-usa',
-        category: str = 'gainers',
-        fields: Optional[List[str]] = None,
-        limit: int = 50
-    ) -> Dict:
+    def scrape(self, market: str = "stocks-usa", category: str = "gainers", fields: Optional[List[str]] = None, limit: int = 50) -> Dict:
         """
         Scrape market movers data from TradingView.
 
@@ -332,27 +259,22 @@ class MarketMovers:
 
         try:
             # Make request
-            response = requests.post(
-                url,
-                json=payload,
-                headers=self.headers,
-                timeout=10
-            )
+            response = requests.post(url, json=payload, headers=self.headers, timeout=10)
 
             if response.status_code == 200:
                 json_response = response.json()
 
                 # Extract data from response
-                data = json_response.get('data', [])
+                data = json_response.get("data", [])
 
                 # Format the data
                 formatted_data = []
                 for item in data:
-                    symbol_data = item.get('d', [])
+                    symbol_data = item.get("d", [])
                     if len(symbol_data) > 0:
                         # Map data to field names
                         formatted_item = {
-                            'symbol': item.get('s', ''),
+                            "symbol": item.get("s", ""),
                         }
 
                         # Map each field value
@@ -365,40 +287,18 @@ class MarketMovers:
 
                 # Export if requested
                 if self.export_result:
-                    self._export(
-                        data=formatted_data,
-                        symbol=f"{market}_{category}",
-                        data_category='market_movers'
-                    )
+                    self._export(data=formatted_data, symbol=f"{market}_{category}", data_category="market_movers")
 
-                return {
-                    'status': 'success',
-                    'data': formatted_data,
-                    'total': len(formatted_data)
-                }
+                return {"status": "success", "data": formatted_data, "total": len(formatted_data)}
             else:
-                return {
-                    'status': 'failed',
-                    'error': f'HTTP {response.status_code}: {response.text}'
-                }
+                return {"status": "failed", "error": f"HTTP {response.status_code}: {response.text}"}
 
         except requests.RequestException as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
         except Exception as e:
-            return {
-                'status': 'failed',
-                'error': f'Request failed: {str(e)}'
-            }
+            return {"status": "failed", "error": f"Request failed: {str(e)}"}
 
-    def _export(
-        self,
-        data: List[Dict],
-        symbol: Optional[str] = None,
-        data_category: Optional[str] = None
-    ) -> None:
+    def _export(self, data: List[Dict], symbol: Optional[str] = None, data_category: Optional[str] = None) -> None:
         """
         Export scraped data to file.
 
@@ -407,7 +307,7 @@ class MarketMovers:
             symbol (str, optional): Symbol identifier for the filename.
             data_category (str, optional): Data category for the filename.
         """
-        if self.export_type == 'json':
+        if self.export_type == "json":
             save_json_file(data=data, symbol=symbol, data_category=data_category)
-        elif self.export_type == 'csv':
+        elif self.export_type == "csv":
             save_csv_file(data=data, symbol=symbol, data_category=data_category)

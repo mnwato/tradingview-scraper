@@ -1,8 +1,9 @@
 import os
 import sys
 import time
-import pytest
 from unittest import mock
+
+import pytest
 
 # Add the current working directory to the system path
 path = str(os.getcwd())
@@ -23,11 +24,7 @@ class TestNews:
         time.sleep(3)
 
         # Scrape news headlines for BTCUSD on BINANCE
-        headlines = news_scraper.scrape_headlines(
-            symbol='BTCUSD',
-            exchange='BINANCE',
-            sort='latest'
-        )
+        headlines = news_scraper.scrape_headlines(symbol="BTCUSD", exchange="BINANCE", sort="latest")
 
         # Assertions - API returns list directly, not wrapped in dict
         assert headlines is not None
@@ -36,8 +33,8 @@ class TestNews:
 
         # Validate headline structure
         first_headline = headlines[0]
-        assert 'id' in first_headline
-        assert 'link' in first_headline or 'title' in first_headline
+        assert "id" in first_headline
+        assert "link" in first_headline or "title" in first_headline
 
     def test_scrape_headlines_with_provider(self, news_scraper):
         """Test scraping news headlines with specific provider."""
@@ -45,10 +42,10 @@ class TestNews:
 
         # Scrape news headlines from a specific provider with symbol (use valid provider)
         headlines = news_scraper.scrape_headlines(
-            symbol='BTCUSD',
-            exchange='BINANCE',
-            provider='cointelegraph',  # Valid provider from news_providers.txt
-            sort='latest'
+            symbol="BTCUSD",
+            exchange="BINANCE",
+            provider="cointelegraph",  # Valid provider from news_providers.txt
+            sort="latest",
         )
 
         # Assertions
@@ -60,16 +57,12 @@ class TestNews:
         time.sleep(3)
 
         # First get headlines to get a story path
-        headlines = news_scraper.scrape_headlines(
-            symbol='BTCUSD',
-            exchange='BINANCE',
-            sort='latest'
-        )
+        headlines = news_scraper.scrape_headlines(symbol="BTCUSD", exchange="BINANCE", sort="latest")
 
         assert len(headlines) > 0
 
         # Get the first story path
-        story_path = headlines[0].get('storyPath') or headlines[0].get('link', '').replace('https://tradingview.com', '')
+        story_path = headlines[0].get("storyPath") or headlines[0].get("link", "").replace("https://tradingview.com", "")
 
         if not story_path:
             pytest.skip("No valid story path found in headlines")
@@ -83,21 +76,18 @@ class TestNews:
         assert isinstance(content, dict)
 
         # Validate content structure
-        assert 'title' in content or 'breadcrumbs' in content
+        assert "title" in content or "breadcrumbs" in content
 
-    @mock.patch('tradingview_scraper.symbols.news.requests.get')
+    @mock.patch("tradingview_scraper.symbols.news.requests.get")
     def test_scrape_headlines_no_data(self, mock_get, news_scraper):
         """Test handling of no news found."""
         # Mock response for no news
         mock_response = mock.Mock()
-        mock_response.json.return_value = {'items': []}
+        mock_response.json.return_value = {"items": []}
         mock_get.return_value = mock_response
 
         time.sleep(3)
-        headlines = news_scraper.scrape_headlines(
-            symbol='BTCUSD',
-            exchange='BINANCE'
-        )
+        headlines = news_scraper.scrape_headlines(symbol="BTCUSD", exchange="BINANCE")
 
         # Check that empty list is returned
         assert headlines is not None
@@ -110,10 +100,10 @@ class TestNews:
 
         # Scrape news headlines for a specific area with symbol (use valid area)
         headlines = news_scraper.scrape_headlines(
-            symbol='BTCUSD',
-            exchange='BINANCE',
-            area='americas',  # Valid area from areas.json
-            sort='latest'
+            symbol="BTCUSD",
+            exchange="BINANCE",
+            area="americas",  # Valid area from areas.json
+            sort="latest",
         )
 
         # Assertions
@@ -125,21 +115,13 @@ class TestNews:
         time.sleep(3)
 
         # Test 'latest' sort
-        latest = news_scraper.scrape_headlines(
-            symbol='BTCUSD',
-            exchange='BINANCE',
-            sort='latest'
-        )
+        latest = news_scraper.scrape_headlines(symbol="BTCUSD", exchange="BINANCE", sort="latest")
         assert latest is not None
         assert isinstance(latest, list)
 
         time.sleep(3)
 
         # Test 'most_urgent' sort
-        urgent = news_scraper.scrape_headlines(
-            symbol='BTCUSD',
-            exchange='BINANCE',
-            sort='most_urgent'
-        )
+        urgent = news_scraper.scrape_headlines(symbol="BTCUSD", exchange="BINANCE", sort="most_urgent")
         assert urgent is not None
         assert isinstance(urgent, list)

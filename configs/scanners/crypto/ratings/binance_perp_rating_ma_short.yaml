@@ -1,0 +1,14 @@
+# Binance Perp - MA Rating - SHORT
+base_preset: ../../../base/universes/binance_perp_base.yaml
+trend:
+  direction: "short"
+  logic: "AND"
+  adx: { enabled: false }
+filters:
+  - { left: "Recommend.MA", operation: "less", right: 0 }
+sort_by: Recommend.MA
+sort_order: asc
+limit: 100
+export_metadata:
+  symbol: perp_rating_ma_short
+  data_category: strategy_alpha

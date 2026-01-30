@@ -1,0 +1,20 @@
+# L3: MTF Trend Alignment Block
+# Checks for trend alignment across D/W/M
+trend:
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 20
+trend_screen:
+  timeframe: "daily"
+  adx: {enabled: true, min: 20}
+  recommendation: {enabled: true, min: 0.1}
+confirm_screen:
+  timeframe: "weekly"
+  adx: {enabled: true, min: 20}
+  recommendation: {enabled: true, min: 0.1}
+execute_screen:
+  timeframe: "monthly"
+  adx: {enabled: true, min: 20}
+  recommendation: {enabled: true, min: 0.1}

@@ -1,0 +1,15 @@
+# Layer 2: Multi-Exchange Top 50 Spot Base
+base_preset: presets/base_crypto_spot.yaml
+exchanges: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+
+ensure_symbols:
+- BINANCE:BTCUSDT
+- BINANCE:ETHUSDT
+- OKX:BTCUSDT
+- BYBIT:BTCUSDT
+- BITGET:BTCUSDT
+
+limit: 50
+export_metadata:
+  symbol: crypto_cex_base_top50
+  data_category: universe_selector

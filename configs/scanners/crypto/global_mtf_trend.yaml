@@ -1,0 +1,37 @@
+# L4: Global Crypto MTF Trend (Perps, Long)
+base_preset: ../../base/universes/global_perp_top50.yaml
+
+# Primary trend gate (daily fields)
+trend:
+  direction: "long"
+  logic: "AND"
+  recommendation: {enabled: true, min: 0.0}
+  adx: {enabled: true, min: 10}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: 0.0}
+
+# MTF confirmation screen (weekly)
+confirm_screen:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  recommendation: {enabled: true, min: 0.0}
+  adx: {enabled: true, min: 10}
+  momentum: {enabled: true, horizons: {Perf.1M: 0.0}}
+
+limit: 50
+export_metadata:
+  symbol: global_crypto_mtf_trend
+  data_category: strategy_alpha
+
+
+
+
+
+
+
+
+
+
+

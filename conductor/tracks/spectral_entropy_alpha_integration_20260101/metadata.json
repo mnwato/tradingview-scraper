@@ -1,0 +1,8 @@
+{
+  "track_id": "spectral_entropy_alpha_integration_20260101",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-01T23:45:00Z",
+  "updated_at": "2026-01-01T23:45:00Z",
+  "description": "Transition from global regime detection to asset-level filtering and weighting using Entropy, Hurst, and Efficiency metrics."
+}

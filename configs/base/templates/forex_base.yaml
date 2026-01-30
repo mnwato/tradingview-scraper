@@ -1,0 +1,7 @@
+# L2: Forex Liquid Template
+base_preset: ../hygiene/institutional.yaml
+markets: ["forex"]
+# Forex doesn't have exchange-specific filters in TV as much as brokers
+# But we focus on liquid pairs via L1 hygiene
+export_metadata:
+  data_category: forex_liquid

@@ -1,0 +1,75 @@
+markets:
+- crypto
+exchanges:
+- BINANCE
+- USDT
+- USDC
+- USD
+- DAI
+- BUSD
+- FDUSD
+columns:
+- name
+- close
+- volume
+- Value.Traded
+- market_cap_calc
+- change
+- Recommend.All
+- ADX
+- Volatility.D
+- Volatility.W
+- Volatility.M
+- Perf.W
+- Perf.1M
+- Perf.3M
+- Perf.6M
+- Perf.Y
+- Perf.YTD
+- ATR
+volume:
+  min: 0
+  value_traded_min: 5000000
+volatility:
+  max: 25.0
+  atr_pct_max: 0.2
+  fallback_use_atr_pct: true
+trend:
+  direction: long
+  timeframe: daily
+  logic: AND
+  recommendation:
+    enabled: false
+  adx:
+    enabled: false
+  momentum:
+    enabled: false
+  osc:
+    enabled: false
+sort_by: Value.Traded
+sort_order: desc
+momentum_composite_fields: []
+momentum_composite_field_name: momentum_zscore
+final_sort_by: Value.Traded
+final_sort_order: desc
+dedupe_by_symbol: true
+attach_perp_counterparts: false
+ensure_symbols: []
+exclude_stable_bases: true
+perp_exchange_priority:
+- BINANCE
+- OKX
+- BYBIT
+- BITGET
+market_cap_file: market_caps_crypto.json
+market_cap_limit: null
+market_cap_require_hit: false
+prefilter_limit: 1500
+limit: 50
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json
+base_universe_sort_by: Value.Traded

@@ -1,0 +1,24 @@
+# Production Preset: Q1 2026 Institutional
+# Strategy: skfolio Barbell (Standardized)
+# Validated: 2026-01-01
+
+backtest:
+  train_window: 252
+  test_window: 20
+  step_size: 20
+  rebalance_mode: window
+  cluster_cap: 0.25
+
+risk:
+  engine: skfolio
+  profile: barbell
+  l2_gamma: 0.13
+  backtest_simulator: cvxportfolio
+  backtest_slippage: 0.0005
+  backtest_commission: 0.0001
+
+features:
+  feat_audit_ledger: true
+  feat_pit_fidelity: true
+  feat_spectral_regimes: true
+  feat_turnover_penalty: true

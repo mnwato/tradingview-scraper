@@ -1,0 +1,12 @@
+# L4: Broad Index ETF Alpha
+base_preset: ../../base/universes/index_etfs.yaml
+volume:
+  value_traded_min: 0
+trend:
+  adx: {enabled: false}
+  recommendation: {enabled: false}
+  momentum: {enabled: false}
+limit: 10
+export_metadata:
+  symbol: index_etf_alpha_trend
+  data_category: strategy_alpha

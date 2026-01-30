@@ -1,0 +1,15 @@
+# Layer 1.1: OKX Spot Base
+base_preset: base_crypto_spot.yaml
+exchanges: ["OKX"]
+
+ensure_symbols:
+- OKX:BTCUSDT
+- OKX:ETHUSDT
+- OKX:SOLUSDT
+- OKX:ADAUSDT
+- OKX:DOGEUSDT
+- OKX:LINKUSDT
+- OKX:LTCUSDT
+- OKX:DOTUSDT
+- OKX:AVAXUSDT
+- OKX:TRXUSDT

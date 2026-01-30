@@ -1,0 +1,14 @@
+# L4: Metals Futures Trend
+base_preset: ../../base/templates/futures_metals.yaml
+# Merge Strategy logic
+trend:
+  direction: "long"
+  logic: "AND"
+  adx: {enabled: true, min: 25}
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 1.0, Perf.1M: 3.0}
+limit: 20
+export_metadata:
+  symbol: metals_futures_trend
+  data_category: strategy_alpha

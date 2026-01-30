@@ -1,0 +1,3 @@
+# L0: Binance Top 50 by Volume
+base_preset: ../templates/crypto_spot.yaml
+exchanges: ["BINANCE"]

@@ -1,0 +1,25 @@
+# Layer 1: Base CFD Universe (Institutional Tradability)
+markets: ["cfd"]
+exchanges: ["SAXO", "OANDA", "FOREXCOM", "IG", "PEPPERSTONE", "CAPITALCOM"]
+
+# Liquidity Guard: $50M ADV baseline for CFDs
+volume:
+  min: 0
+  value_traded_min: 50000000
+
+# Volatility Guard
+volatility:
+  max: 30.0
+  atr_pct_max: 0.2
+  fallback_use_atr_pct: true
+
+# Base Sorting
+sort_by: Value.Traded
+sort_order: desc
+base_universe_sort_by: Value.Traded
+pagination_size: 100
+prefilter_limit: 1000
+retries: 2
+timeout: 10
+
+columns: ["name", "close", "volume", "Value.Traded", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "ATR"]

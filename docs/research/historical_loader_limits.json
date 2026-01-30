@@ -1,0 +1,34 @@
+[
+  {
+    "Timeframe":"1m",
+    "Requested":1000,
+    "Received":1000,
+    "First":"2025-12-20 07:09",
+    "Last":"2025-12-20 23:48",
+    "Elapsed":"0.61s"
+  },
+  {
+    "Timeframe":"5m",
+    "Requested":1000,
+    "Received":1000,
+    "First":"2025-12-17 12:30",
+    "Last":"2025-12-20 23:45",
+    "Elapsed":"0.52s"
+  },
+  {
+    "Timeframe":"1h",
+    "Requested":1000,
+    "Received":1000,
+    "First":"2025-11-09 08:00",
+    "Last":"2025-12-20 23:00",
+    "Elapsed":"0.55s"
+  },
+  {
+    "Timeframe":"1d",
+    "Requested":1000,
+    "Received":1000,
+    "First":"2023-03-27 02:00",
+    "Last":"2025-12-20 01:00",
+    "Elapsed":"0.62s"
+  }
+]

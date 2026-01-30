@@ -1,0 +1,15 @@
+# L4: Crypto Volatility Breakout (Perps)
+# Production scanner for crypto_production profile
+# BINANCE-only for institutional execution quality
+base_preset: ../../base/universes/binance_perp_top100.yaml
+# Compose with Volatility Strategy
+volatility:
+  min_d: 0.05 # Aggressive crypto volatility
+filters:
+  - left: "change"
+    operation: "greater"
+    right: 5.0
+limit: 50
+export_metadata:
+  symbol: crypto_vol_breakout_perp
+  data_category: strategy_alpha

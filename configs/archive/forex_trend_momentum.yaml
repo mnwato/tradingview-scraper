@@ -1,0 +1,25 @@
+# Layer 2: Forex Trend Momentum Strategy
+base_preset: presets/base_forex.yaml
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.1
+  adx:
+    enabled: true
+    min: 15
+  momentum:
+    enabled: true
+    # Aligned with 21d test windows (Perf.1M)
+    horizons: {Perf.W: 0.2, Perf.1M: 0.5, Perf.3M: 1.0}
+  confirmation_momentum:
+    enabled: false
+
+limit: 50
+prefilter_limit: 2000
+export_metadata:
+  symbol: "forex_trend_momentum"
+  data_category: "strategy_selector"

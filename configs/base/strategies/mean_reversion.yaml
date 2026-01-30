@@ -1,0 +1,13 @@
+# L3: Mean Reversion Strategy Block
+trend:
+  direction: "long"
+  logic: "OR"
+  recommendation:
+    enabled: true
+    min: -0.5
+volatility:
+  min_d: 0.02  # At least 2% daily volatility for mean reversion
+columns:
+  - "RSI"
+  - "BB.lower"
+  - "BB.upper"

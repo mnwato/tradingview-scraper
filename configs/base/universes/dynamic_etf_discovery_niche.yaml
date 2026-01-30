@@ -1,0 +1,21 @@
+# L0: Dynamic ETF Discovery (Niche/Emerging)
+# Relaxed liquidity floor for high-alpha thematic/yield assets
+base_preset: ../hygiene/institutional.yaml
+markets: ["america"]
+static_mode: false
+filters:
+  - left: "type"
+    operation: "equal"
+    right: "fund"
+  - left: "Value.Traded"
+    operation: "greater"
+    right: 2000000 # $2M Floor (vs $10M Institutional)
+# Override institutional volume floor
+volume:
+  value_traded_min: 2000000
+sort_by: "Value.Traded"
+sort_order: "desc"
+limit: 100
+export_metadata:
+  symbol: dynamic_etf_niche
+  data_category: universe_foundation

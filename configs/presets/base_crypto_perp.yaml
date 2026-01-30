@@ -1,0 +1,18 @@
+# Layer 1: Base Crypto Perp Universe (Institutional Tradability)
+base_preset: base_crypto_spot.yaml
+perp_exchange_priority: ["BINANCE", "OKX", "BYBIT", "BITGET"]
+quote_priority: ["USDT", "USDC", "FDUSD", "BUSD", "DAI", "USD"]
+
+# Overrides for Perps if any (currently matching spot institutional floor)
+volume:
+  min: 0
+  value_traded_min: 10000000
+
+# Disable discovery-stage trend filtering in base universe
+trend:
+  recommendation:
+    enabled: false
+  adx:
+    enabled: false
+  momentum:
+    enabled: false

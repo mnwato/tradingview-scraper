@@ -1,0 +1,13 @@
+# L1: Binance Perp Pure Liquidity Baseline
+base_preset: binance_liquid_base.yaml
+filters:
+  - { left: "Value.Traded", operation: "greater", right: 50000000 }
+  - { left: "type", operation: "equal", right: "swap" }
+  - { left: "name", operation: "match", right: "USDT.P$|USDC.P$|BUSD.P$|USD.P$" }
+sort_by: name
+sort_order: asc
+base_universe_sort_by: name
+limit: 500
+export_metadata:
+  symbol: binance_perp_base
+  data_category: universe_base

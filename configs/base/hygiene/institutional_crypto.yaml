@@ -1,0 +1,45 @@
+# L1: Institutional Crypto Technical & Liquidity Hygiene
+# Extends base institutional hygiene with crypto-specific thresholds
+base_preset: institutional.yaml
+
+# Override volume floor for crypto markets ($10M vs $500M TradFi)
+volume:
+  value_traded_min: 10000000  # $10M USD min daily turnover
+
+# Relaxed trend gates for crypto volatility
+trend:
+  adx:
+    enabled: true
+    min: 10  # Lower than TradFi (20) due to crypto noise
+  recommendation:
+    enabled: true
+    min: 0.0  # Neutral or better
+
+# Predictability gates (programmatic enforcement)
+predictability:
+  entropy_max: 0.999      # Filter white noise (higher than TradFi 0.995)
+  hurst_min: 0.40         # Accept some mean-reversion
+  hurst_max: 0.60         # Accept some persistence
+  efficiency_min: 0.15    # Min price efficiency ratio
+
+# Crypto-specific columns
+columns:
+  - "name"
+  - "description"
+  - "close"
+  - "volume"
+  - "Value.Traded"
+  - "ADX"
+  - "ATR"
+  - "Recommend.All"
+  - "Recommend.MA"
+  - "Recommend.Other"
+  - "Perf.W"
+  - "Perf.1M"
+  - "Perf.3M"
+  - "change"
+  - "Volatility.D"
+  - "Volatility.W"
+  - "volume_change"
+  - "ROC"
+  - "market_cap_calc"

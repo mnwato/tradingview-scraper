@@ -1,19 +1,19 @@
 """
-Module providing functionality to connect to TradingView's WebSocket API 
-for real-time trade data streaming. This module includes classes and methods 
+Module providing functionality to connect to TradingView's WebSocket API
+for real-time trade data streaming. This module includes classes and methods
 to manage WebSocket connections, send messages, and handle session management.
 """
 
 import json
-import string
 import logging
+import os
 import secrets
+import string
 
 from websocket import create_connection
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class StreamHandler:
@@ -44,12 +44,10 @@ class StreamHandler:
             "Pragma": "no-cache",
             "Sec-WebSocket-Extensions": "permessage-deflate; client_max_window_bits",
             "Upgrade": "websocket",
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
-            )
+            "User-Agent": ("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"),
         }
-        self.ws = create_connection(websocket_url, headers=self.request_header)
+        ws_timeout = float(os.getenv("STREAMER_WS_TIMEOUT", "15"))
+        self.ws = create_connection(websocket_url, headers=self.request_header, timeout=ws_timeout)
         self._initialize(jwt_token=jwt_token)
 
     def _initialize(self, jwt_token: str):
@@ -65,8 +63,7 @@ class StreamHandler:
         """
         quote_session = self.generate_session(prefix="qs_")
         chart_session = self.generate_session(prefix="cs_")
-        logging.info("Quote session generated: %s, Chart session generated: %s",
-                     quote_session, chart_session)
+        logging.info("Quote session generated: %s, Chart session generated: %s", quote_session, chart_session)
 
         self._initialize_sessions(quote_session, chart_session, jwt_token)
         self.quote_session = quote_session
@@ -85,7 +82,7 @@ class StreamHandler:
         Returns:
             str: A unique session identifier.
         """
-        random_string = ''.join(secrets.choice(string.ascii_lowercase) for _ in range(12))
+        random_string = "".join(secrets.choice(string.ascii_lowercase) for _ in range(12))
         return prefix + random_string
 
     def prepend_header(self, message: str) -> str:
@@ -114,7 +111,7 @@ class StreamHandler:
         Returns:
             str: A JSON string representing the message.
         """
-        return json.dumps({"m": func, "p": param_list}, separators=(',', ':'))
+        return json.dumps({"m": func, "p": param_list}, separators=(",", ":"))
 
     def create_message(self, func: str, param_list: list) -> str:
         """
@@ -180,9 +177,38 @@ class StreamHandler:
             list: A list of field names for the quote session.
         """
         return [
-            "ch", "chp", "current_session", "description", "local_description",
-            "language", "exchange", "fractional", "is_tradable", "lp",
-            "lp_time", "minmov", "minmove2", "original_name", "pricescale",
-            "pro_name", "short_name", "type", "update_mode", "volume",
-            "currency_code", "rchp", "rtc"
+            "ch",
+            "chp",
+            "current_session",
+            "description",
+            "local_description",
+            "language",
+            "exchange",
+            "fractional",
+            "is_tradable",
+            "lp",
+            "lp_time",
+            "minmov",
+            "minmove2",
+            "original_name",
+            "pricescale",
+            "pro_name",
+            "short_name",
+            "type",
+            "update_mode",
+            "volume",
+            "currency_code",
+            "rchp",
+            "rtc",
         ]
+
+    def close(self):
+        """
+        Closes the WebSocket connection and clean up sessions.
+        """
+        try:
+            if hasattr(self, "ws") and self.ws:
+                self.ws.close()
+                logging.info("WebSocket connection closed successfully.")
+        except Exception as e:
+            logging.error("Error closing WebSocket: %s", e)

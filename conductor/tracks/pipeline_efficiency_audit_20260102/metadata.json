@@ -1,0 +1,8 @@
+{
+  "id": "pipeline_efficiency_audit_20260102",
+  "title": "Pipeline Efficiency & Scoring Consolidation",
+  "status": "in_progress",
+  "priority": "medium",
+  "owner": "jules",
+  "description": "Consolidated alpha scoring into the Log-MPS 3.2 engine and simplified the Discovery stage to focus on venue consolidation and liquidity tie-breaking."
+}

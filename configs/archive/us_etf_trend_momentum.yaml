@@ -1,0 +1,29 @@
+# Layer 2: US ETFs trend momentum (Long)
+base_preset: presets/base_us_etf.yaml
+
+limit: 50
+prefilter_limit: 3000
+final_sort_by: volume
+
+# Prioritize secular proxies
+include_symbols: ["SPY", "QQQ", "DIA", "IWM", "GLD", "TLT", "IEF", "AGG", "BND", "HYG", "LQD", "VTI", "VXUS", "VWO", "VEA"]
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "OR" # capture strong secular trend even if short-term is weak
+  recommendation:
+    enabled: false
+  adx:
+    enabled: true
+    min: 5 
+  momentum:
+    enabled: true
+    # Align with downstream 21d test windows
+    horizons: {Perf.1M: 0.0, Perf.3M: 1.0, Perf.6M: 2.0}
+  confirmation_momentum:
+    enabled: false
+
+export_metadata:
+  symbol: "us_etf_trend_momentum"
+  data_category: "strategy_selector"

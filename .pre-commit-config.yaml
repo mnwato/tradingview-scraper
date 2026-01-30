@@ -1,0 +1,32 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: uvx ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff-format
+        entry: uvx ruff format
+        language: system
+        types: [python]
+
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty
+        entry: uvx ty
+        args: ["check"]
+        language: system
+        types: [python]
+        pass_filenames: true
+        # Exclude tests and currently failing files to allow incremental adoption
+        exclude: >
+          (?x)^(
+            tests/|
+            tradingview_scraper/symbols/news\.py|
+            tradingview_scraper/futures_universe_selector\.py|
+            tradingview_scraper/symbols/cal\.py|
+            tradingview_scraper/symbols/stream/streamer\.py
+          )

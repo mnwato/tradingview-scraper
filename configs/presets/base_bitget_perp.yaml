@@ -1,0 +1,15 @@
+# Layer 1.1: Bitget Perp Base
+base_preset: base_crypto_perp.yaml
+exchanges: ["BITGET"]
+
+ensure_symbols:
+- BITGET:BTCUSDT.P
+- BITGET:ETHUSDT.P
+- BITGET:SOLUSDT.P
+- BITGET:ADAUSDT.P
+- BITGET:DOGEUSDT.P
+- BITGET:LINKUSDT.P
+- BITGET:LTCUSDT.P
+- BITGET:DOTUSDT.P
+- BITGET:AVAXUSDT.P
+- BITGET:TRXUSDT.P

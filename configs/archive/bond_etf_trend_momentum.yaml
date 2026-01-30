@@ -1,0 +1,46 @@
+# Bond ETF trend momentum (daily)
+# Universe: Major US-listed Bond ETFs
+markets: ["america"]
+include_symbols: ["TLT", "IEF", "SHY", "LQD", "HYG", "AGG", "BND", "TIP", "MBB", "JNK", "BNDX", "VWOB", "EMB", "MUB", "TIPS"]
+filters:
+  - left: "type"
+    operation: "in_range"
+    right: ["fund"]
+
+columns: ["name", "description", "sector", "close", "volume", "change", "Recommend.All", "Value.Traded", "ADX", "Volatility.D", "Perf.W", "Perf.1M", "Perf.3M", "ATR", "market_cap_basic"]
+
+volume:
+  min: 50000
+  value_traded_min: 1000000
+
+volatility:
+  max: 10.0
+  atr_pct_max: 0.08
+  fallback_use_atr_pct: true
+
+trend:
+  direction: "long"
+  timeframe: "daily"
+  logic: "OR" # More lenient for bonds
+  recommendation:
+    enabled: true
+    min: 0.0
+  adx:
+    enabled: true
+    min: 5
+  momentum:
+    enabled: true
+    horizons: {change: -2.0, Perf.W: -2.0} # Lower thresholds for bonds
+
+limit: 50
+pagination_size: 100
+sort_by: Value.Traded
+sort_order: desc
+
+export:
+  enabled: true
+  type: json
+
+export_metadata:
+  symbol: bond_etf_trend_momentum
+  data_category: universe_selector

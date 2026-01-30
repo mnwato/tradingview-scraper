@@ -1,0 +1,12 @@
+# L4: Dow Jones 30 Trend
+base_preset: ../../base/universes/dw30.yaml
+trend:
+  direction: "long"
+  logic: "AND"
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.0, Perf.1M: 0.5, Perf.3M: 1.0}
+limit: 30
+export_metadata:
+  symbol: dw30_alpha_trend
+  data_category: strategy_alpha

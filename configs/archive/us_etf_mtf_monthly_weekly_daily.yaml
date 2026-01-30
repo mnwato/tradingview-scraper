@@ -1,0 +1,74 @@
+# US ETF MTF: monthly trend -> weekly confirm -> daily execute
+markets: ["america"]
+exchanges: []
+columns: ["name", "close", "volume", "Value.Traded", "change", "Recommend.All", "ADX", "Volatility.D", "Volatility.W", "Volatility.M", "Perf.W", "Perf.1M", "Perf.3M", "Perf.6M", "Perf.Y", "Perf.YTD", "ATR", "RSI", "Stoch.K", "market_cap_basic"]
+volume:
+  min: 800000
+volatility:
+  max: 8.0
+  atr_pct_max: 0.08
+  fallback_use_atr_pct: true
+trend:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.2
+  adx:
+    enabled: true
+    min: 12
+  momentum:
+    enabled: true
+    horizons: {Perf.1M: 0.8, Perf.3M: 1.5, Perf.6M: 2.5}
+  confirmation_momentum:
+    enabled: false
+trend_screen:
+  timeframe: "monthly"
+  direction: "long"
+  logic: "AND"
+  recommendation:
+    enabled: true
+    min: 0.2
+  adx:
+    enabled: true
+    min: 12
+  momentum:
+    enabled: true
+    horizons: {Perf.1M: 0.8, Perf.3M: 1.5, Perf.6M: 2.5}
+confirm_screen:
+  timeframe: "weekly"
+  direction: "long"
+  logic: "AND"
+  adx:
+    enabled: true
+    min: 10
+  momentum:
+    enabled: true
+    horizons: {Perf.W: 0.15, Perf.1M: 0.3}
+  osc:
+    enabled: false
+execute_screen:
+  timeframe: "daily"
+  direction: "long"
+  logic: "AND"
+  momentum:
+    enabled: true
+    horizons: {change: 0.0, Perf.W: 0.0}
+  osc:
+    enabled: true
+    horizons: {RSI: 65, Stoch.K: 80}
+  volatility:
+    enabled: true
+    horizons: {Volatility.D: 8.0}
+sort_by: market_cap_basic
+sort_order: desc
+final_sort_by: volume
+final_sort_order: desc
+limit: 100
+pagination_size: 50
+retries: 2
+timeout: 10
+export:
+  enabled: false
+  type: json

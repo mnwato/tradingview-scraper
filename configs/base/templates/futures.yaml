@@ -1,0 +1,5 @@
+# L2: Futures Template (CME/EUREX aware)
+base_preset: ../hygiene/institutional.yaml
+markets: ["futures"]
+export_metadata:
+  data_category: futures_secular
