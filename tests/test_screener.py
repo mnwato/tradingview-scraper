@@ -1,15 +1,27 @@
-import os
-import sys
 import time
 import pytest
 from unittest import mock
 
-# Add the current working directory to the system path
-path = str(os.getcwd())
-if path not in sys.path:
-    sys.path.append(path)
-
 from tradingview_scraper.symbols.screener import Screener
+
+
+def _skip_if_network_unavailable(result):
+    if not isinstance(result, dict):
+        return
+
+    error = str(result.get('error', ''))
+    if result.get('status') == 'failed' and error.startswith('Request failed:'):
+        pytest.skip(f"Live TradingView API unavailable: {error}")
+
+
+def test_skip_if_network_unavailable_raises_skip_on_request_failure():
+    with pytest.raises(pytest.skip.Exception):
+        _skip_if_network_unavailable(
+            {
+                'status': 'failed',
+                'error': 'Request failed: HTTPSConnectionPool(host="scanner.tradingview.com")',
+            }
+        )
 
 
 class TestScreener:
@@ -194,6 +206,7 @@ class TestScreener:
             sort_order='desc',
             limit=5
         )
+        _skip_if_network_unavailable(result)
 
         # Assertions
         assert result is not None
@@ -209,6 +222,7 @@ class TestScreener:
             sort_by='volume',
             limit=5
         )
+        _skip_if_network_unavailable(result)
 
         # Assertions
         assert result is not None
@@ -223,6 +237,7 @@ class TestScreener:
             market='forex',
             limit=5
         )
+        _skip_if_network_unavailable(result)
 
         # Assertions
         assert result is not None
@@ -238,6 +253,7 @@ class TestScreener:
             columns=custom_columns,
             limit=3
         )
+        _skip_if_network_unavailable(result)
 
         # Assertions
         assert result is not None
@@ -258,6 +274,7 @@ class TestScreener:
             filters=filters,
             limit=5
         )
+        _skip_if_network_unavailable(result)
 
         # Assertions
         assert result is not None
