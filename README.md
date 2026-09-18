@@ -568,6 +568,7 @@ print("Top Losers:", losers['data'])
 - `stocks-india`: Indian Stock Market
 - `stocks-australia`: Australian Stock Market
 - `stocks-canada`: Canadian Stock Market
+- `stocks-pakistan`: Pakistan Stock Market
 - `crypto`: Cryptocurrency Market
 - `forex`: Forex Market
 - `bonds`: Bonds Market
@@ -697,6 +698,7 @@ print("Stocks in Range:", range_results['data'])
 - `mexico`: Mexican Stock Market
 - `spain`: Spanish Stock Market
 - `turkey`: Turkish Stock Market
+- `pakistan`: Pakistan Stock Market
 - `uk`: UK Stock Market
 - `crypto`: Cryptocurrency Market
 - `forex`: Forex Market
@@ -813,6 +815,7 @@ for market in custom_markets['data']:
 #### Supported Scanners
 - `global`: Search across all markets worldwide (default)
 - `america`: US stock markets
+- `pakistan`: Pakistan stock markets
 - `crypto`: Cryptocurrency exchanges
 - `forex`: Forex markets
 - `cfd`: CFD markets
@@ -947,6 +950,7 @@ for stock in custom_results['data']:
 - `canada`: Canadian Stock Market
 - `germany`: German Stock Market
 - `india`: Indian Stock Market
+- `pakistan`: Pakistan Stock Market
 - `uk`: UK Stock Market
 - `crypto`: Cryptocurrency Market
 - `forex`: Forex Market
@@ -1619,6 +1623,8 @@ All symbols must include exchange prefix:
 ```
 
 ## Changes:
+- Release `0.4.21`:
+  Add Pakistan market
 - Release `0.4.19`:
   Fix raise error while fetching ideas for pages greater than 1
 - Release `0.4.17`:
