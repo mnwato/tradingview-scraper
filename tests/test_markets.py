@@ -22,6 +22,7 @@ class TestMarkets:
         """Test validation of valid markets."""
         try:
             markets._validate_market('america')
+            markets._validate_market('pakistan')
             markets._validate_market('crypto')
             markets._validate_market('uk')
         except ValueError:
@@ -239,7 +240,7 @@ class TestMarkets:
 
     def test_supported_markets(self, markets):
         """Test that all supported markets are accessible."""
-        supported_markets = ['america', 'australia', 'canada', 'germany', 'india', 'uk', 'crypto', 'forex', 'global']
+        supported_markets = ['america', 'australia', 'canada', 'germany', 'india', 'uk', 'pakistan', 'crypto', 'forex', 'global']
 
         for market in supported_markets:
             assert market in markets.SCANNER_ENDPOINTS

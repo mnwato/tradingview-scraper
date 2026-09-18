@@ -22,6 +22,7 @@ class TestMarketMovers:
         """Test validation of valid markets."""
         try:
             market_movers_scraper._validate_market('stocks-usa')
+            market_movers_scraper._validate_market('stocks-pakistan')
             market_movers_scraper._validate_market('crypto')
             market_movers_scraper._validate_market('forex')
         except ValueError:
@@ -49,6 +50,7 @@ class TestMarketMovers:
     def test_get_scanner_url(self, market_movers_scraper):
         """Test getting correct scanner URLs for different markets."""
         assert market_movers_scraper._get_scanner_url('stocks-usa') == "https://scanner.tradingview.com/america/scan"
+        assert market_movers_scraper._get_scanner_url('stocks-pakistan') == "https://scanner.tradingview.com/pakistan/scan"
         assert market_movers_scraper._get_scanner_url('crypto') == "https://scanner.tradingview.com/crypto/scan"
         assert market_movers_scraper._get_scanner_url('forex') == "https://scanner.tradingview.com/forex/scan"
 

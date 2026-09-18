@@ -47,6 +47,7 @@ class Screener:
         'spain': 'https://scanner.tradingview.com/spain/scan',
         'turkey': 'https://scanner.tradingview.com/turkey/scan',
         'uk': 'https://scanner.tradingview.com/uk/scan',
+        'pakistan': 'https://scanner.tradingview.com/pakistan/scan',
         'crypto': 'https://scanner.tradingview.com/crypto/scan',
         'forex': 'https://scanner.tradingview.com/forex/scan',
         'cfd': 'https://scanner.tradingview.com/cfd/scan',

@@ -38,6 +38,7 @@ class Markets:
         'germany': 'https://scanner.tradingview.com/germany/scan',
         'india': 'https://scanner.tradingview.com/india/scan',
         'uk': 'https://scanner.tradingview.com/uk/scan',
+        'pakistan': 'https://scanner.tradingview.com/pakistan/scan',
         'crypto': 'https://scanner.tradingview.com/crypto/scan',
         'forex': 'https://scanner.tradingview.com/forex/scan',
         'global': 'https://scanner.tradingview.com/global/scan',

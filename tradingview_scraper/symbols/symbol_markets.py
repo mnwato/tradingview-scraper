@@ -36,6 +36,7 @@ class SymbolMarkets:
         'crypto': 'https://scanner.tradingview.com/crypto/scan',
         'forex': 'https://scanner.tradingview.com/forex/scan',
         'cfd': 'https://scanner.tradingview.com/cfd/scan',
+        'pakistan': 'https://scanner.tradingview.com/pakistan/scan',
     }
 
     # Default columns to fetch

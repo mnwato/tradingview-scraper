@@ -37,6 +37,7 @@ class MarketMovers:
         'stocks-india',
         'stocks-australia',
         'stocks-canada',
+        'stocks-pakistan',
         'crypto',
         'forex',
         'bonds',
@@ -198,6 +199,12 @@ class MarketMovers:
                 "operation": "equal",
                 "right": "canada"
             })
+        elif market == 'stocks-pakistan':
+                    filters.append({
+                        "left": "market",
+                        "operation": "equal",
+                        "right": "pakistan"
+            })
 
         # Category-specific filters
         if category == 'penny-stocks':
@@ -275,6 +282,8 @@ class MarketMovers:
             return "https://scanner.tradingview.com/bonds/scan"
         elif market == 'futures':
             return "https://scanner.tradingview.com/futures/scan"
+        elif market == 'stocks-pakistan':
+            return "https://scanner.tradingview.com/pakistan/scan"
         else:
             # Default to america for stocks
             return "https://scanner.tradingview.com/america/scan"
