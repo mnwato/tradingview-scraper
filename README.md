@@ -1623,7 +1623,7 @@ All symbols must include exchange prefix:
 ```
 
 ## Changes:
-- Release `0.4.21`:
+- Release `0.4.22`:
   Add Pakistan market
 - Release `0.4.19`:
   Fix raise error while fetching ideas for pages greater than 1
